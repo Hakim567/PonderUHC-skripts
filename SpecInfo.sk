@@ -1,0 +1,49 @@
+on mine of diamond ore:
+	{UHC::Status} is true
+	wait 1 tick
+	{UHC::Diamond::%x-coordinate of event-block%.%y-coordinate of event-block%.%z-coordinate of event-block%} is not set
+	set {_c} to 1
+	loop blocks in radius 2 around event-block:
+		loop-block is equal to diamond ore
+		add 1 to {_c}
+		set {UHC::Diamond::%x-coordinate of loop-block%.%y-coordinate of loop-block%.%z-coordinate of loop-block%} to true
+	add {_c} to {UHC::mined::diamond::%player%}
+	StaffMessage("&c%player% mined %{_c}% diamonds &7[&b&o%{UHC::mined::diamond::%player%}% total&7]CMD/tp %player%", "JSON")
+
+on mine of stone:
+	{UHC::Status} is true
+	player's y-coordinate < 32
+	loop blocks in radius 1 of event-block:
+		{UHC::Diamond::%x-coordinate of loop-block%.%y-coordinate of loop-block%.%z-coordinate of loop-block%} is not set
+		loop-block is diamond ore
+		loop blocks in radius 1 of loop-block:
+			loop-block-2 is air
+			set {_cancel::%x-coordinate of loop-block-1%.%y-coordinate of loop-block-1%.%z-coordinate of loop-block-1%} to true
+		{_cancel::%x-coordinate of loop-block%.%y-coordinate of loop-block%.%z-coordinate of loop-block%} is not set
+		add 1 to {UHC::UnexposedDiamond::%player%}
+		StaffMessage("&c%player% mined unexposed diamonds &7[&c&o%{UHC::UnexposedDiamond::%player%}% VL&7]CMD/tp %player%", "JSON")
+
+on damage of player:
+	{UHC::Status} is true
+	attacker is a player
+	{Vanish::%attacker%} is not set
+	if damage cause is projectile:
+		"%projectile.getType()%" is "FISHING_HOOK"
+		stop
+	if {UHC::SI::LastDamage::%victim%} is not set:
+		set {UHC::SI::LastDamage::%victim%} to now
+		StaffMessage("&c&oPvP &7-&c&o %victim% (%health of victim%) &7[Victim] &7- &c&o%attacker% (%health of attacker%) &7[Attacker]CMD/tp %attacker%", "JSON")
+	else:
+		difference between {UHC::SI::LastDamage::%victim%} and now is more than 1 second
+		StaffMessage("&c&oPvP &7-&c&o %victim% (%health of victim%) &7[Victim] &7- &c&o%attacker% (%health of attacker%) &7[Attacker]CMD/tp %attacker%", "JSON")
+		set {UHC::SI::LastDamage::%victim%} to now
+
+on inventory click:
+	{UHC::Status} is true
+	if player is sneaking:
+		StaffMessage("&c&oToggleSneak? &7-&c&o %player% &7-&c&o InventoryCMD/tp %player%", "JSON")
+
+on chat:
+	{UHC::Status} is true
+	if player is sneaking:
+		StaffMessage("&c&oToggleSneak? &7-&c&o %player% &7-&c&o ChatCMD/tp %player%", "JSON")

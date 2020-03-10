@@ -1,0 +1,106 @@
+options:
+	P: &d&lPonderUHC &6»
+
+command /heal [<text>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is "*" or "all":
+			loop all players:
+				set loop-player's health to 10
+			broadcast "{@P} &d%player% healed everyone"
+		else:
+			if arg-1 is not set:
+				set {_P} to player
+			else:
+				set {_P} to arg-1 parsed as offline player
+			if {_P} is not set:
+				message "{@P} &d/heal [<player>]"
+			else:
+				set {_P}'s health to 10
+				if {Scenarios::Superheroes} is true:
+					{UHC::Superheroes::%{_P}%} is 2
+					set {_P}'s health to 16
+				message "{@P} &dYou healed %{_P}%"
+
+command /feed [<player>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is "*" or "all":
+			loop all players:
+				set loop-player's food level to 10
+			broadcast "{@P} &d%player% fed everyone"
+		else:
+			if arg-1 is not set:
+				set {_P} to player
+			else:
+				set {_P} to arg-1 parsed as offline player
+			if {_P} is not set:
+				message "{@P} &d/feed [<player>]"
+			else:
+				set {_P}'s food level to 10
+				message "{@P} &dYou fed %{_P}%"
+
+command /fly [<player>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is not set:
+			set {_P} to player
+		else:
+			set {_P} to arg-1
+		if {_P}.getAllowFlight() is false:
+			{_P}.setAllowFlight(true)
+			message "{@P} &dYou &aenabled &dflight for %{_P}%"
+		else:
+			{_P}.setAllowFlight(false)
+			message "{@P} &dYou &cdisabled &dflight for %{_P}%"
+
+command /god [<player>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is not set:
+			set {_P} to player
+		else:
+			set {_P} to arg-1
+		if {UHC::God::%{_P}%} is true:
+			delete {UHC::God::%{_P}%}
+			message "{@P} &dYou &cdisabled &dGod mode for %{_P}%"
+		else:
+			set {UHC::God::%{_P}%} to true
+			message "{@P} &dYou &aenabled &dGod mode for %{_P}%"
+
+on damage:
+	if {UHC::God::%victim%} is true:
+		cancel the event
+
+command /top:
+	permission: staff.member
+	trigger:
+		set {_loc} to player's location
+		set {_Y} to player's world.getHighestBlockYAt(x-coordinate of {_loc}, z-coordinate of {_loc})
+		set y-coordinate of {_loc} to {_Y}
+		teleport player to {_loc}
+		message "{@P} &dTeleported you to the highest block"
+
+command /gm0 [<text>]:
+	aliases: /gms
+	trigger:
+		if arg-1 is set:
+			make player execute command "/gamemode 0 %arg-1%"
+		else:
+			make player execute command "/gamemode 0"
+
+command /gm1 [<text>]:
+	aliases: /gmc
+	trigger:
+		if arg-1 is set:
+			make player execute command "/gamemode 1 %arg-1%"
+		else:
+			make player execute command "/gamemode 1"
+
+command /gm2 [<text>]:
+	aliases: /gma
+	trigger:
+		if arg-1 is set:
+			make player execute command "/gamemode 2 %arg-1%"
+		else:
+			make player execute command "/gamemode 2"

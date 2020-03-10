@@ -1,0 +1,10 @@
+options:
+	perms: staff.member
+
+command /playsoundall <text>:
+	usage: /playsoundall <Sound>
+	trigger:
+		if command sender has permission "{@perms}":
+			play raw sound "%arg-1%" at all players with pitch 1 volume 0.5	
+		else:
+			message "&dYou do not have the required permission to use this command!"

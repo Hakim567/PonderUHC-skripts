@@ -1,0 +1,24 @@
+on craft of golden apple:1:
+	{Config::Notch Apples} is not set
+	cancel the event
+	message "&d&lPonderUHC &6» &cNotch apples are disabled!"
+
+on skript load:
+	register new shaped recipe with result golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit" using gold ingot and player head with shape "aaa", "aba" and "aaa"
+
+on craft of golden apple:0:
+	name of event-item is "&5Golden Head"
+	{Config::Golden Heads} is not set
+	cancel the event
+	message "&d&lPonderUHC &6» &cGolden Heads are disabled!"
+
+on consume of golden apple:0:
+	name of event-item is "&5Golden Head"
+	lore of event-item contains "head of a fallen foe"
+	{Config::Golden Heads} is true
+	apply regeneration 2 to the player for 10 seconds
+
+on consume of golden apple:0:
+	wait 1 tick
+	if {Config::Absorption} is not set:
+		remove absorption from player

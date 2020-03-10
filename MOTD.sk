@@ -1,0 +1,6 @@
+on server ping:
+	set motd to "&d&lPonderUHC %server region% &7[&51.7&7/&51.8&7] &6» &d%random element out of {Splashes::*}%%nl%&6» &c%{Config::Match name}% - %{MatchLink}%"
+
+on skript load:
+	delete {Splashes::*}
+	add "Welcome to your Doom!", "Stay a while, stay forever!", "Scary!", "Something's not quite right...", "An illusion!", "Run, coward!", "Getting ready to drop!", "90%% bug free!", "Freaky!", "Hard to label!", "Technically good!", "Absolutely no memes!", "Awesome community!", "Minecraft!", "Keyboard compatible!", "l33t!", "Singleplayer!", "As seen on TV!", "Awesome!", "100%% pure!", "May contain nuts!", "More polygons!", "Sexy!", "Limited edition!", "Flashing letters!", "Made by Notch!", "It's here!", "Best in class!", "It's finished!", "Kind of dragon free!" and "Excitement!" to {Splashes::*}

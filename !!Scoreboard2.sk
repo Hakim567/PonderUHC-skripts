@@ -1,0 +1,452 @@
+options:
+	P: &d&lPonderUHC &6»
+
+#Made with love by hakim <3 
+#Contact me on discord - 愛してる#5199
+on skript load:
+	delete {Scoreboard::*}
+
+import:
+	org.bukkit.Bukkit
+	org.bukkit.scoreboard.DisplaySlot
+	org.bukkit.ChatColor
+
+function genEntry(slot: number) :: string:
+	return ChatColor.values()[{_slot}].toString()
+
+function animatedName(sidebar: object, p: player):
+	while {_p} is online:
+		if {_sidebar} is not set:
+			stop loop
+		{_sidebar}.setDisplayName("&d&lPonderUHC")
+		wait 16 ticks
+		{_sidebar}.setDisplayName("&f&lP&d&londerUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPo&d&lnderUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPon&d&lderUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPond&d&lerUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPonde&d&lrUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPonder&d&lUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&d&lPonder&f&lU&d&lHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&d&lPonder&f&lUH&d&lC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&d&lPonder&f&lUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&f&lPonderUHC")
+		wait 8 ticks
+		{_sidebar}.setDisplayName("&d&lPonderUHC")
+		wait 48 ticks
+
+function createScore(p: player):
+	set {_scoreboard} to Bukkit.getScoreboardManager().getNewScoreboard()
+	set {_sidebar} to {_scoreboard}.registerNewObjective("sidebar", "dummy")
+	set {_nametag} to {_scoreboard}.registerNewObjective("nametag", "health")
+	set {_health} to {_scoreboard}.registerNewObjective("health", "health")
+	{_nametag}.setDisplaySlot(DisplaySlot.PLAYER_LIST!)
+	{_sidebar}.setDisplaySlot(DisplaySlot.SIDEBAR!)
+	{_health}.setDisplaySlot(DisplaySlot.BELOW_NAME!)
+	{_health}.setDisplayName("&c❤")
+	animatedName({_sidebar}, {_p})
+	loop 15 times:
+		set {_team} to {_scoreboard}.registerNewTeam("SLOT_%loop-number%")
+		{_team}.addEntry("%genEntry(loop-number)%")
+	{_p}.setScoreboard({_scoreboard})
+	set {Scoreboard::%{_P}%} to true
+
+function getFirstSplit(s: string) :: string:
+	if {_s}.length() > 16:
+		return {_s}.substring(0, 16)
+	else:
+		return {_s}
+
+function getSecondSplit(s: string) :: string:
+	if {_s}.length() > 32:
+		set {_s} to {_s}.substring(0, 32)
+	if {_s}.length() > 16:
+		return {_s}.substring(16)
+	else:
+		return ""
+
+function setSlot(scoreboard: object, sidebar: object, slot: number, text: string):
+	set {_team} to {_scoreboard}.getTeam("SLOT_%{_slot}%")
+	set {_entry} to genEntry({_slot})
+	if {_scoreboard}.getEntries().contains("%{_entry}%") is not true:
+		{_sidebar}.getScore({_entry}).setScore({_slot})
+	set {_char} to "&"
+	set {_text} to ChatColor.translateAlternateColorCodes({_char}.charAt(0), {_text})
+	set {_pre} to getFirstSplit({_text})
+	set {_suf} to getFirstSplit("%ChatColor.getLastColors({_pre})%%getSecondSplit({_text})%")
+	{_team}.setPrefix({_pre})
+	{_team}.setSuffix({_suf})
+
+function setNametag(scoreboard: object, p: player, entry: string, prefix: string, suffix: string):
+	set {_team} to {_scoreboard}.getTeam("%{_entry}%")
+	if {_team} is not set:
+		set {_team} to {_scoreboard}.registerNewTeam("%{_entry}%")
+	{_team}.setPrefix({_prefix})
+	{_team}.setSuffix({_suffix})
+	{_team}.addPlayer({_p})
+
+function removeSlot(scoreboard: object, slot: number):
+	set {_entry} to genEntry({_slot})
+	if {_scoreboard}.getEntries().contains("%{_entry}%") is true:
+		{_scoreboard}.resetScores({_entry})
+
+function setSlotsFromList(scoreboard: object, sidebar: object, list: objects):
+	set {_slot} to size of {_list::*}
+	set {_i} to {_slot}
+	while {_i} < 15:
+		add 1 to {_i}
+		removeSlot({_scoreboard}, {_i})
+	set {_fori} to 1
+	while {_fori} <= size of {_list::*}:
+		setSlot({_scoreboard}, {_sidebar}, {_slot}, "%{_list::%{_fori}%}%")
+		remove 1 from {_slot}
+		add 1 to {_fori}
+
+#------------------------------------------------------------------------------------------------------------
+
+function Scoreboard(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {ScoreboardSimple::%{_P}%} is true:
+			add "" to {_list::*}
+			add "&fHost: &d%{Host}%" to {_list::*}
+			if {UHC::GameTimeT} is not set:
+				add "&fTime: &d00:00:00" to {_list::*}
+			else:
+				add "&fTime: &d%{UHC::GameTimeT}%" to {_list::*}
+			if {UHC::Border} is not set:
+				add "&fBorder: &dN/A" to {_list::*}
+			else:
+				add "&fBorder: &d%{UHC::Border}%" to {_list::*}
+			add "" to {_list::*}
+			add "&fKills: &d%({UHC::Kills::%{_p}%}-0)%" to {_list::*}
+			if {UHC::Status} is true:
+				add "&fPlayers: &d%size of {UHC::AlivePlayers::*}%"  to {_list::*}
+			else if {Tournaments::Status} is true:
+				add "&fPlayers: &d%size of {Tournaments::AlivePlayers::*}%" to {_list::*}
+			else:
+				add "&fPlayers: &d%(size of all players - size of {UHC::Spectators::*})%" to {_list::*}
+			add "&fSpectators: &d%spectators count%" to {_list::*}
+			add "" to {_list::*}
+			if {_P} has permission "staff.member":
+				set {_var} to true
+			if {UHC::Scatter} is true:
+				add "&6&lScatter" to {_list::*}
+				add "&fScattering: &d%{UHC::Scatter::scattered}%/%{UHC::Scatter::size}%" to {_list::*}
+				add "" to {_list::*}
+			else if {UHC::WorldGen} and {_var} is set:
+				add "&c&lWorld Generation" to {_list::*}
+				add "&fChunks: &d%{UHC::WorldGen}.getChunksCompleted()%/%{UHC::WorldGen}.getChunksTotal()%" to {_list::*}
+				add "&fPercentage: &d%{UHC::WorldGen}.getPercentageCompleted()%%%" to {_list::*}
+				add "" to {_list::*}
+			else if {UHC::Spectators::%{_p}%} is true:
+				add "&c&lSpecboard" to {_list::*}
+				if {Vanish::%{_p}%} is true:
+					add "&fVanish: &aOn" to {_list::*}
+				else:
+					add "&fVanish: &cOff" to {_list::*}
+				add "&fTPS: %tps%" to {_list::*}
+				add "" to {_list::*}
+			else if {UHC::NoClean::%{_p}%} is set:
+				add "&fImmunity: &d%({UHC::NoClean::%{_p}%::Timer}-0)%" to {_list::*}
+				add "" to {_list::*}
+			else if {restore::%{_p}%::timer} is set:
+				add "&fImmunity: &d%({restore::%{_p}%::timer}-0)%" to {_list::*}
+				add "" to {_list::*}
+			add "&7%server region%.ponderuhc.cf" to {_list::*}
+		else:
+			add "&7&m-----------------------" to {_list::*}
+			add "&fHost: &d%{Host}%" to {_list::*}
+			if {UHC::GameTimeT} is not set:
+				add "&fGame Time: &d00:00:00" to {_list::*}
+			else:
+				add "&fGame Time: &d%{UHC::GameTimeT}%" to {_list::*}
+			if {UHC::Border} is not set:
+				add "&fBorder: &dN/A" to {_list::*}
+			else:
+				add "&fBorder: &d%{UHC::Border}%" to {_list::*}
+			add "" to {_list::*}
+			add "&fKills: &d%({UHC::Kills::%{_p}%}-0)%" to {_list::*}
+			if {UHC::Status} is true:
+				add "&fPlayers: &d%size of {UHC::AlivePlayers::*}%"  to {_list::*}
+			else if {Tournaments::Status} is true:
+				add "&fPlayers: &d%size of {Tournaments::AlivePlayers::*}%" to {_list::*}
+			else:
+				add "&fPlayers: &d%(size of all players - size of {UHC::Spectators::*})%" to {_list::*}
+			add "&fSpectators: &d%spectators count%" to {_list::*}
+			add "&7&m-----------------------" to {_list::*}
+			if {_P} has permission "staff.member":
+				set {_var} to true
+			if {UHC::Scatter} is true:
+				add "&6&lScatter progress" to {_list::*}
+				if {UHC::Scatter::mode} is "chunk":
+					add "&fLoading Chunks: &d%{UHC::Scatter::chunk::loaded}%/%{UHC::Scatter::chunk::amount}%" to {_list::*}
+				else:
+					add "&fScattering: &d%{UHC::Scatter::scattered}%/%{UHC::Scatter::size}%" to {_list::*}
+				add "&7&m-----------------------" to {_list::*}
+			else if {UHC::WorldGen} and {_var} is set:
+				add "&c&lWorld Generation" to {_list::*}
+				add "&fChunks: &d%{UHC::WorldGen}.getChunksCompleted()%/%{UHC::WorldGen}.getChunksTotal()%" to {_list::*}
+				add "&fPercentage: &d%{UHC::WorldGen}.getPercentageCompleted()%%%" to {_list::*}
+				add "&7&m-----------------------" to {_list::*}
+			else if {UHC::Spectators::%{_p}%} is true:
+				add "&c&lSpecboard" to {_list::*}
+				if {Vanish::%{_p}%} is true:
+					add "&fVanish: &aOn" to {_list::*}
+				else:
+					add "&fVanish: &cOff" to {_list::*}
+				add "&fTPS: %tps%" to {_list::*}
+				add "&7&m-----------------------" to {_list::*}
+			else if {UHC::NoClean::%{_p}%} is set:
+				add "&fImmunity: &d%({UHC::NoClean::%{_p}%::Timer}-0)%" to {_list::*}
+				add "&7&m-----------------------" to {_list::*}
+			else if {restore::%{_p}%::timer} is set:
+				add "&fImmunity: &d%({restore::%{_p}%::timer}-0)%" to {_list::*}
+				add "&7&m-----------------------" to {_list::*}
+			add "&7discord.ponderuhc.cf" to {_list::*}
+		setSlotsFromList({_scoreboard}, {_sidebar}, {_list::*})
+	else:
+		createScore({_P})
+		Scoreboard({_P})
+
+function updateGameTime(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 11
+		else if {UHC::WorldGen} and {_var} is set:
+			set {_i} to 12
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 12
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 10
+		else:
+			set {_i} to 8
+		if {ScoreboardSimple::%{_P}%} is true:
+			if {UHC::GameTimeT} is not set:
+				setSlot({_scoreboard}, {_sidebar}, {_i}, "&fTime: &d00:00:00")
+			else:
+				setSlot({_scoreboard}, {_sidebar}, {_i}, "&fTime: &d%{UHC::GameTimeT}%")
+		else:
+			if {UHC::GameTimeT} is not set:
+				setSlot({_scoreboard}, {_sidebar}, {_i}, "&fGame Time: &d00:00:00")
+			else:
+				setSlot({_scoreboard}, {_sidebar}, {_i}, "&fGame Time: &d%{UHC::GameTimeT}%")
+
+function updateBorder(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 10
+		else if {UHC::WorldGen} and {_var} is set:
+			set {_i} to 11
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 11
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 9
+		else:
+			set {_i} to 7
+		if {UHC::Border} is not set:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fBorder: &dN/A")
+		else:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fBorder: &d%{UHC::Border}%")
+
+function updateTPS(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			stop
+		else if {UHC::WorldGen} and {_var} is set:
+			stop
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 3
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			stop
+		else:
+			stop
+		setSlot({_scoreboard}, {_sidebar}, {_i}, "&fTPS: %tps%")
+
+function updateKills(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 8
+		else if {UHC::WorldGen} and {_var} is set:
+			set {_i} to 9
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 9
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 7
+		else:
+			set {_i} to 5
+		setSlot({_scoreboard}, {_sidebar}, {_i}, "&fKills: &d%({UHC::Kills::%{_p}%}-0)%")
+
+function updatePlayers(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 7
+		else if {UHC::WorldGen} and {_var} is set:
+			set {_i} to 8
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 8
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 6
+		else:
+			set {_i} to 4
+		if {UHC::Status} is true:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fPlayers: &d%size of {UHC::AlivePlayers::*}%")
+		else if {Tournaments::Status} is true:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fPlayers: &d%size of {Tournaments::AlivePlayers::*}%")
+		else:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fPlayers: &d%(size of all players - size of {UHC::Spectators::*})%")
+
+function updateSpectators(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 6
+		else if {UHC::WorldGen} and {_var} is set:
+			set {_i} to 7
+		else if {UHC::Spectators::%{_p}%} is true:
+			set {_i} to 7
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 5
+		else:
+			set {_i} to 3
+		setSlot({_scoreboard}, {_sidebar}, {_i}, "&fSpectators: &d%spectators count%")
+
+function updateScatter(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			set {_i} to 3
+		else if {UHC::WorldGen} and {_var} is set:
+			stop
+		else if {UHC::Spectators::%{_p}%} is true:
+			stop
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			stop
+		else:
+			stop
+		setSlot({_scoreboard}, {_sidebar}, {_i}, "&fScattering: &d%{UHC::Scatter::scattered}%/%{UHC::Scatter::size}%")
+
+function updateImmunity(P: player):
+	if {Scoreboard::%{_P}%} is true:
+		set {_scoreboard} to {_p}.getScoreboard()
+		set {_sidebar} to {_scoreboard}.getObjective("sidebar")
+		if {_P} has permission "staff.member":
+			set {_var} to true
+		if {UHC::Scatter} is true:
+			stop
+		else if {UHC::WorldGen} and {_var} is set:
+			stop
+		else if {UHC::Spectators::%{_p}%} is true:
+			stop
+		else if {UHC::NoClean::%{_p}%} or {restore::%{_p}%::timer} is set:
+			set {_i} to 3
+		else:
+			stop
+		if {UHC::NoClean::%{_p}%} is set:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fImmunity: &d%({UHC::NoClean::%{_p}%::Timer}-0)%")
+		else if {restore::%{_p}%::timer} is set:
+			setSlot({_scoreboard}, {_sidebar}, {_i}, "&fImmunity: &d%({restore::%{_p}%::timer}-0)%")
+
+function updateNametagfor(p: player):
+	if {UHC::Spectators::%{_p}%} is true:
+		set {_prefix} to "&o"
+		set {_suffix} to "&7 [&bS&7]"
+		set {_entry} to "0"
+	else if {Teams.InTeam::%{_p}%} is set:
+		set {_prefix} to {Teams.Colors::%{Teams.InTeam::%{_p}%}%}
+		set {_suffix} to ""
+		set {_entry} to "1%{Teams.Colors::%{Teams.InTeam::%{_p}%}%}%"
+	else:
+		set {_prefix} to ""
+		set {_suffix} to ""
+		set {_entry} to "2"
+	loop all players:
+		if {Scoreboard::%loop-player%} is true:
+			set {_scoreboard} to loop-player.getScoreboard()
+			setNametag({_scoreboard}, {_p}, {_entry}, {_prefix}, {_suffix})
+
+function updateNametags(p: player):
+	set {_scoreboard} to {_p}.getScoreboard()
+	set {_nametag} to {_scoreboard}.getObjective("nametag")
+	loop all players:
+		if {UHC::Spectators::%loop-player%} is true:
+			set {_prefix} to "&o"
+			set {_suffix} to "&7 [&bS&7]"
+			set {_entry} to "0"
+		else if {Teams.InTeam::%loop-player%} is set:
+			set {_prefix} to {Teams.Colors::%{Teams.InTeam::%loop-player%}%}
+			set {_suffix} to ""
+			set {_entry} to "1%{Teams.Colors::%{Teams.InTeam::%loop-player%}%}%"
+		else:
+			set {_prefix} to ""
+			set {_suffix} to ""
+			set {_entry} to "2"
+		setNametag({_scoreboard}, loop-player, {_entry}, {_prefix}, {_suffix})
+
+command /scoreboard [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "{@P} &c/scoreboard <default|simple>"
+		else if arg-1 is "default":
+			message "{@P} &aYour scoreboard has been set to &ddefault"
+			delete {ScoreboardSimple::%player%}
+			Scoreboard(player)
+		else if arg-1 is "simple":
+			message "{@P} &aYour scoreboard has been set to &dsimple"
+			set {ScoreboardSimple::%player%} to true
+			Scoreboard(player)
+		else:
+			message "{@P} &c/scoreboard <default|simple>"
+
+on skript load:
+	delete {Scoreboard::*}
+
+on join:
+	Scoreboard(player)
+	updateNametagfor(player)
+	updateNametags(player)
+	if {UHC::Status} is not set:
+		loop all players:
+			updatePlayers(loop-player)
+
+on disconnect:
+	delete {Scoreboard::%player%}
+	wait 1 tick
+	if {UHC::Status} is not set:
+		loop all players:
+			updatePlayers(loop-player)

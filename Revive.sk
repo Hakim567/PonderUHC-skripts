@@ -1,0 +1,84 @@
+options:
+	P: &d&lPonderUHC &6»
+
+command /revive <player>:
+	aliases: /respawn, /ressurect
+	permission: staff.member
+	trigger:
+		if {restore::%arg-1%::*} is not set:
+			send "{@P} &c%arg-1% has not died yet!"
+		else:
+			if {UHC::Spectators::%arg-1%} is true:
+				SpecMode(arg-1, "Off") 
+			if {Scenarios::Timebomb} is true:
+				{UHC::Timebomb::%arg-1%} is true
+				set {UHC::Timebomb::%arg-1%::cancel} to true
+				set block at {UHC::Timebomb::%arg-1%::block1} to air
+				set block at {UHC::Timebomb::%arg-1%::block2} to air
+			else:
+				set block at {UHC::Skull::%arg-1%::block1} to air
+				set block at {UHC::Skull::%arg-1%::block2} to air
+			loop all entities:
+				loop-entity is not a player
+				distance between loop-entity and {restore::%arg-1%::loc} is less than 6
+				delete loop-entity
+			teleport arg-1 to {restore::%arg-1%::loc}
+			restore inventory of arg-1 from {restore::%arg-1%::inv}
+			set arg-1's helmet to {restore::%arg-1%::helm}
+			set arg-1's chestplate to {restore::%arg-1%::chest}
+			set arg-1's boots to {restore::%arg-1%::boots}
+			set arg-1's leggings to {restore::%arg-1%::leg}
+			set arg-1's max health to {restore::%arg-1%::max}
+			set arg-1's level to {restore::%arg-1%::xp}
+			set arg-1's level progress to {restore::%arg-1%::xpp}
+			joinTeam(arg-1, "%{restore::%arg-1%::team}%" parsed as integer)
+			if {restore::%arg-1%::moles} is true:
+				set {UHC::Moles::%arg-1%} to true
+			set {UHC::AlivePlayers::%arg-1%} to true
+			if {UHC::DeathKick::%arg-1%} is true:
+				set {UHC::CancelDeathKick::%arg-1%} to true
+			execute console command "/wl add %arg-1%"
+			BirdsEffect(arg-1)
+			broadcast "{@P} &d%arg-1% has been respawned."
+			discordLog("Respawn", "%player% respawned %arg-1%")
+			send "{@P} &dYou are now immune for the next 15 seconds" to arg-1
+			set {restore::%arg-1%::timer} to 15
+			Scoreboard(arg-1)
+			loop 15 times:
+				wait 1 second
+				remove 1 from {restore::%arg-1%::timer}
+				updateImmunity(arg-1)
+			send "{@P} &dYour Immunity has expired" to arg-1
+			delete {restore::%arg-1%::timer}
+			delete {restore::%arg-1%::*}
+			Scoreboard(arg-1)
+	
+on damage:
+	if {restore::%victim%::timer} is set:
+		send "{@P} &dTarget is immune from respawn" to attacker
+		cancel the event
+	if {restore::%attacker%::timer} is set:
+		send "{@P} &dYou can't attack while being immune from respawn" to attacker
+		cancel the event
+
+on death:
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%victim%} is true
+	set {restore::%victim%::team} to {Teams.InTeam::%victim%}
+	set {restore::%victim%::loc} to location of victim
+	set {restore::%victim%::inv} to serialized contents of victim's inventory
+	set {restore::%victim%::helm} to victim's helmet
+	set {restore::%victim%::chest} to victim's chestplate
+	set {restore::%victim%::leg} to victim's leggings
+	set {restore::%victim%::boots} to victim's boots
+	set {restore::%victim%::max} to victim's max health
+	set {restore::%victim%::xp} to victim's level
+	set {restore::%victim%::xpp} to victim's level progress
+	if {UHC::Moles::%victim%} is true:
+		set {restore::%victim%::moles} to true
+	
+on skript load:
+	delete {restore::*}
+	delete {timebombcancel::*}
+	delete {timebombcancelloc::*}
+	delete {headcancelloc::*}

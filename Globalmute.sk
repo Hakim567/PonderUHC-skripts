@@ -1,0 +1,34 @@
+options:
+	P: &d&lPonderUHC &6»
+
+command /gmute [<text>]:
+	permission: staff.member
+	aliases: /globalmute
+	trigger:
+		if arg-1 is "on":
+			set {UHC::Globalmute} to true
+			broadcast "{@P} &dGlobalmute has been activated"
+		if arg-1 is "off":
+			delete {UHC::Globalmute}
+			broadcast "{@P} &dGlobalmute has been deactivated"
+		if arg-1 is not set:
+			if {UHC::Globalmute} is true:
+				delete {UHC::Globalmute}
+				broadcast "{@P} &dGlobalmute has been deactivated"
+			else if {UHC::Globalmute} is not set:
+				set {UHC::Globalmute} to true
+				broadcast "{@P} &dGlobalmute has been activated"
+
+command /mutechat [<text>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is set:
+			make player execute command "/gmute %arg-1%"
+		else:
+			make player execute command "/gmute"
+			
+on chat:
+	if {UHC::Globalmute} is true:
+		player does not have permission "staff.member"
+		cancel the event
+		message "{@P} &cGlobalmute is currently activated"

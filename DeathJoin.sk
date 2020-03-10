@@ -1,0 +1,138 @@
+options:
+	P: &d&lPonderUHC &6»
+
+on death of a player:
+	{UHC::Status} is true
+	if {UHC::AlivePlayers::%victim%} is true:
+		if attacker is not player:
+			set the death message to "{@P} &d%player% was slain by &ePvE"
+		if damage was caused by potion:
+			set the death message to "{@P} &d%player% was slain by &5Magic"
+		if damage was caused by fall:
+			set the death message to "{@P} &d%player% was slain by &7Gravity"
+		if damage was caused by burning:
+			set the death message to "{@P} &d%player% burned to death"
+		if damage was caused by lava:
+			set the death message to "{@P} &d%player% took a lava bath"
+		if damage was caused by block explosion:
+			set the death message to "{@P} &d%player% blew up (timebomb?)"
+		if damage was caused by drowning:
+			set the death message to "{@P} &d%player% drowned with the fishes"
+		if damage was caused by suffocation:
+			set the death message to "{@P} &d%player% suffocated to death"
+		if attacker is a player:
+			if name of attacker's tool is not "%type of attacker's tool%":
+				set the death message to "{@P} &d%player% was slain by %attacker% with %name of attacker's tool%"
+			else:
+				set the death message to "{@P} &d%player% was slain by %attacker%"
+		if {UHC::Bats::%victim%} is true:
+			set the death message to "{@P} &d%player% was eaten alive by bats *nom*"
+		if {UHC::Entropy::%victim%} is true:
+			set the death message to "{@P} &d%player% ran out of energy"
+		if {UHC::CombatLogged::%victim%} is true:
+			set the death message to "{@P} &d%player% combatlogged"
+			delete {UHC::CombatLogged::%victim%}
+		if {UHC::DQ::%victim%} is true:
+			set the death message to "{@P} &d%player% was DQ'd"
+			delete {UHC::DQ::%victim%}
+		if {UHC::DeathByL::%victim%} is true:
+			set the death message to "{@P} &d%player% was killed by L!"
+		if {UHC::LFail::%victim%} is true:
+			set the death message to "{@P} &d%player% failed to kill Kira and has died."
+		if {UHC::DeathbyKira::%victim%} is true:
+			set the death message to "{@P} &d%player% was struck down by Kira."
+		wait 5 ticks
+		delete {UHC::AlivePlayers::%victim%}
+		loop all players:
+			updatePlayers(loop-player)
+		leaveTeam(victim)
+		if attacker is a player:
+			add 1 to {UHC::Kills::%attacker%}
+			updateKills(attacker)
+		else if attacker is an entity:
+			add 1 to {UHC::Kills::pve}
+		else:
+			if damage was caused by block explosion:
+				add 1 to {UHC::Kills::timebomb}
+			else if damage was caused by fall:
+				add 1 to {UHC::Kills::gravity}
+			else if damage was caused by burning:
+				add 1 to {UHC::Kills::fire}
+			else if damage cause is set:
+				add 1 to {UHC::Kills::%damage cause%}
+		if player doesn't have permission "rank.spec":
+			set {UHC::DeathKick::%victim%} to true
+			execute console command "/mv tp %victim% Spawn"
+			execute console command "/wl remove %victim%"
+			message "{@P} &4You have 30 seconds to say your goodbyes! (No salt plz)" to victim
+			wait 30 seconds
+			if {UHC::CancelDeathKick::%victim%} is true:
+				delete {UHC::CancelDeathKick::%victim%}
+				stop
+			if {UHC::Spectators::%victim%} is true:
+				stop
+			kick the victim due to "&d&lPonderUHC%nl%&cBetter luck next time!"
+			delete {UHC::DeathKick::%victim%}
+		else:
+			set {UHC::Spectators::%victim%} to true
+			execute console command "/spec %victim% On"
+		
+on death:
+	player.spigot().respawn()
+
+on join:
+	set the join message to "&7[&2+&7] &7%player% &7(%number of all players%&7/%{maxplayers}%&7)"
+	message "{@P} &dWelcome to %{Config::Match name}%"
+	message "{@P} &dTeamsize : %{Config::Teamsize}%"
+	message "{@P} &dScenarios : %active scenarios%"
+	message "{@P} &dDiscord : discord.ponderuhc.cf"
+
+on damage:
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%victim%} is true
+	attacker is a player
+	if {Teams.InTeam::%victim%} is set:
+		{Teams.InTeam::%victim%} != {Teams.InTeam::%attacker%}
+		set {UHC::CombatLog::%victim%} to now
+	else:
+		set {UHC::CombatLog::%victim%} to now
+
+on quit:
+	set the quit message to "&7[&c-&7] &7%player% &7(%number of all players-1%/%{maxplayers}%&7)"
+	{UHC::Status} or {UHC::Scatter} is true
+	if {UHC::AlivePlayers::%player%} is true:
+		set {_waited} to difference between {UHC::CombatLog::%player%} and now
+		if {_waited} is less than 5 seconds:
+			set {UHC::CombatLogged::%player%} to true
+			kill player
+			delete {UHC::AlivePlayers::%player%}
+			execute console command "/wl remove %player%"
+			stop
+		set {UHC::Quit::%player%} to true
+		while {UHC::Quit::%player%} is true:
+			wait 10 seconds
+			add 10 to {_N}
+			if player is online:
+				set {UHC::Quit::%player%} to false
+				stop
+			if {UHC::Killed::%player%} is true:
+				set {UHC::Quit::%player%} to false
+				stop
+			if {_N} >= 300:
+				if {UHC::Killed::%player%} is true:
+					set {UHC::Quit::%player%} to false
+					delete {UHC::Killed::%player%}
+					stop loop
+				execute console command "/wl remove %player%"
+				broadcast "{@P} &d%player% didnt login within 5 minutes thus was killed"
+				set {UHC::Quit::%player%} to false
+				set {UHC::Killed::%player%} to true
+				delete {UHC::AlivePlayers::%player%}
+				delete {UHC::OppositesAttractInventory::%player%::*}
+				loop all players:
+					updatePlayers(loop-player)
+
+on join:
+	{UHC::Quit::%player%} is true
+	set {UHC::Quit::%player%} to false
+	delete {UHC::Killed::%player%}

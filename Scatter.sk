@@ -1,0 +1,183 @@
+options:
+	P: &d&lPonderUHC &6»
+
+import:
+	org.bukkit.metadata.FixedMetadataValue
+	org.bukkit.Bukkit
+
+function SpawnFreeze(p: player):
+	spawn 1 pig at {_p}'s location
+	apply invisibility 2 to the last spawned entity for a day
+	apply potion of slowness 500 to the last spawned entity for a day
+	last spawned entity.setMetadata("FreezeEntity", new FixedMetadataValue(Bukkit.getPluginManager().getPlugin("Skript") and "yes"))
+	make {_p} ride last spawned entity
+
+on "org.spigotmc.event.entity.EntityDismountEvent":
+	{UHC::Scatter} is true
+	if event.getDismounted().hasMetadata("FreezeEntity") is true:
+		event.setCancelled(true)
+
+on damage:
+	{UHC::Scatter} is true
+	if victim.hasMetadata("FreezeEntity") is true:
+		cancel the event
+
+function getScatterLocation(r: number) :: location:
+	world("UHC") is set
+	while {_done} is not set:
+		set {_X} to random integer between ({_r} * -1) and {_r}
+		set {_Z} to random integer between ({_r} * -1) and {_r}
+		set {_world} to world("UHC")
+		{_world}.loadChunk({_X}, {_Z})
+		set {_Y} to {_world}.getHighestBlockYAt({_X}, {_Z})
+		set {_loc} to location({_X}, {_Y}, {_Z}, world("UHC"))
+		if block at {_loc} is not lava or water or cactus:
+			return {_loc}
+			set {_done} to true
+
+command /sca [<int>] [<text>]:
+	aliases: /scatter
+	permission: staff.member
+	trigger:
+		if arg-1 > {Config::Map Size}:
+			send "{@P} &dYou're scattering larger than the map what the fuck"
+			stop
+		if arg-1 is not set:
+			send "{@P} &d/sca <radius> <teams/all/*/player>"
+			stop
+		else if arg-2 is not set:
+			send "{@P} &d/sca <radius> <teams/all/*/player>"
+			stop
+		if {Arena} is true:
+			send "{@P} &cArena is currently &aON &cturn it off before scattering"
+			stop
+		if arg-2 is "team" or "teams":
+			message "{@P} &cStarting location search"
+			set {UHC::Scatter} to true
+			set {_scatterteams} to true
+			loop all players:
+				{UHC::Spectators::%loop-player%} is not set
+				set {UHC::AlivePlayers::%loop-player%} to true
+				SpawnFreeze(loop-player)
+				if {Teams.InTeam::%loop-player%} is set:
+					add loop-player to {_scattering::team::%{Teams.InTeam::%loop-player%}%::*}
+					set {_scattering::team::%{Teams.InTeam::%loop-player%}%} to true
+					set {_locs::%{Teams.InTeam::%loop-player%}%} to getScatterLocation(arg-1)
+					add 1 to {UHC::Scatter::size}
+					wait 1 tick
+				else:
+					add loop-player to {_scattering::solos::*}
+					set {_locs::%loop-player%} to getScatterLocation(arg-1)
+					add 1 to {UHC::Scatter::size}
+					wait 1 tick
+		else if arg-2 is "*" or "all":
+			message "{@P} &cStarting location search"
+			set {UHC::Scatter} to true
+			set {_scatterall} to true
+			loop all players:
+				{UHC::Spectators::%loop-player%} is not set
+				set {UHC::AlivePlayers::%loop-player%} to true
+				SpawnFreeze(loop-player)
+				add loop-player to {_scattering::solos::*}
+				set {_locs::%loop-player%} to getScatterLocation(arg-1)
+				add 1 to {UHC::Scatter::size}
+				wait 1 tick
+		else:
+			if contains(all players, "%arg-2%" parsed as player):
+				add ("%arg-2%" parsed as player) to {_scattering::amalone::*}
+				set {UHC::AlivePlayers::%arg-2%} to true
+			else:
+				message "{@P} &c%arg-2% is not a player/online the fuck"
+				stop
+		if {_scatterall} or {_scatterteams} is true:
+			set {UHC::Scatter::scattered} to 0
+			loop all players:
+				Scoreboard(loop-player)
+			broadcast "{@P} &dStarting scatter, tps might go down hang on"
+			set {_time} to now
+			wait 1 second
+		loop {_scattering::team::*}:
+			broadcast "{@P} &dTeam %loop-index%"
+			set {_loc} to {_locs::%loop-index%}
+			set {UHC::ScatterLoc::%loop-index%} to {_loc}
+			loop {_scattering::team::%loop-index%::*}:
+				if loop-value-2 is online:
+					delete loop-value-2's vehicle
+					teleport loop-value-2 to {_loc}
+					SpawnFreeze(loop-value-2)
+					broadcast "{@P} &d- %loop-value-2%"
+					add 1 to {UHC::Scatter::scattered}
+					loop all players:
+						updateScatter(loop-player)
+				else:
+					set {UHC::Scatter::Delay::%loop-value-2%} to {_loc}
+				wait 5 ticks
+			wait 10 ticks
+		if {_scatterteams} is true:
+			broadcast "{@P} &dSolos"
+			wait 1 second
+		loop {_scattering::solos::*}:
+			set {_loc} to {_locs::%loop-value%}
+			if loop-value is online:
+				delete loop-value's vehicle
+				teleport loop-value to {_loc}
+				SpawnFreeze(loop-value)
+				broadcast "{@P} &d- %loop-value%"
+				add 1 to {UHC::Scatter::scattered}
+				loop all players:
+					updateScatter(loop-player)
+			else:
+				set {UHC::Scatter::Delay::%loop-value%} to {_loc}
+			wait 10 ticks
+		loop {_scattering::amalone::*}:
+			if {Teams.InTeam::%loop-value%} is set:
+				if {UHC::ScatterLoc::%{Teams.InTeam::%loop-value%}%} is set:
+					set {_loc} to {UHC::ScatterLoc::%{Teams.InTeam::%loop-value%}%}
+				else:
+					set {_loc} to getScatterLocation(arg-1)
+					wait 1 tick
+			else:
+				set {_loc} to getScatterLocation(arg-1)
+				wait 1 tick
+			teleport loop-value to {_loc}
+			broadcast "{@P} &d- %loop-value%"
+			if {UHC::Spectators::%loop-value%} is true:
+				SpecMode(loop-value, "Off")
+			give ("%loop-value%" parsed as player) 16 steak
+			InfiniteEnchanterItems(loop-value)
+			ChickenEffect(loop-value)
+			GigaDrillEffect(loop-value)
+			SuperHeroesEffect(loop-value)
+			SkyHighItems(loop-value)
+			GoneFishinItems(loop-value)
+			BirdsEffect(loop-value)
+		if {_scatterall} or {_scatterteams} is true:
+			broadcast "{@P} &dScatter finished took %difference between {_time} and now%"
+			discordLog("Scatter", "Took %difference between {_time} and now% for %size of all players% TPS - %tps%")
+
+on join:
+	{UHC::Scatter::Delay::%player%} is set
+	teleport player to {UHC::Scatter::Delay::%player%}
+	give player 16 steak
+	InfiniteEnchanterItems(player)
+	ChickenEffect(player)
+	GigaDrillEffect(player)
+	SuperHeroesEffect(player)
+	SkyHighItems(player)
+	GoneFishinItems(player)
+	BirdsEffect(player)
+	broadcast "{@P} &d- %player%"
+	delete {UHC::Scatter::Delay::%player%}
+
+on connect:
+	player doesn't have permission "staff.member"
+	{UHC::Scatter} is true
+	kick the player due to "{@P}%nl%&cTheres a scatter going join back later"
+
+on chunk unload:
+	{UHC::Scatter} is set
+	cancel the event
+
+on damage of a player:
+	{UHC::Scatter} is set
+	cancel the event

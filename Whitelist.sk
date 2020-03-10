@@ -1,0 +1,65 @@
+options:
+	prefix : &d&lPonderUHC &6»&d
+	kickmsg : &d&lPonderUHC%nl%&cYou are not whitelisted!%nl%&cUse time.is for the exact opening time%nl%&dJoin our discord! - discord.ponderuhc.cf
+       
+command /whitelist [<text>] [<text>]:
+	permission: staff.member
+	permission message: {@prefix} &4No Permission
+	aliases: /wl
+	executable by: players and console
+	trigger:
+		if arg 1 is "on":
+			if {whitelist} is false:
+				set {whitelist} to true
+				broadcast "{@prefix} Whitelist on"
+				discordLog("Whitelist", "%sender% turned whitelist on at %now%")
+			else:
+				message "{@prefix} The whitelist is already on!" to command sender    
+		else if arg 1 is "off":
+			if {whitelist} is true:
+				set {whitelist} to false
+				broadcast "{@prefix} Whitelist off"
+				discordLog("Whitelist", "%sender% turned whitelist off at %now%")
+			else:
+				message "{@prefix} The whitelist is already off!" to command sender
+		else if arg 1 is "add":
+			if arg 2 is not set:
+				message "{@prefix} Please set a player or all players to add to the whitelist" to command sender
+			else if arg 2 is "all":
+				loop all players:
+					set {whitelisted::%loop-player%} to true
+				broadcast "{@prefix} All whitelisted"
+			else:
+				set {whitelisted::%arg 2%} to true
+				StaffMessage("%arg 2% added to whitelist", "Normal")
+		else if arg 1 is "remove":
+			if arg 2 is not set:
+				message "{@prefix} Please set a player or all players to add to the whitelist" to command sender
+			else if arg 2 is "all":
+				clear {whitelisted::*}
+				broadcast "{@prefix} Whitelist emptied"
+			else:
+				delete {whitelisted::%arg 2%}
+				StaffMessage("%arg 2% removed from whitelist", "Normal")
+		else if arg 1 is "list":
+			loop {whitelisted::*}:
+				add "%loop-index%" to {_Temp::*}
+			message "{@prefix} Whitelisted players:" to command sender
+			message "%{_Temp::*}%" to command sender
+		else:
+			message "{@prefix} List of available commands:" to command sender
+			message "/whitelist on &7- Turns the whitelist on" to command sender
+			message "/whitelist off &7- Turns the whitelist off" to command sender
+			message "/whitelist add <player/all> &7- Adds a player or everyone on the server to the whitelist" to command sender
+			message "/whitelist remove <player/all> &7- Removes a player from the whitelist or clears the whitelist" to command sender
+			message "/whitelist list &7- Lists everyone on the whitelist currently" to command sender
+		       
+on connect:
+	{whitelist} is true
+	{whitelisted::%player%} is not set
+	player does not have permission "whitelist.bypass"
+	kick the player due to "{@kickmsg}"
+
+on load:
+	set {whitelist} to true
+	clear {whitelisted::*}

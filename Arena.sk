@@ -1,0 +1,96 @@
+options:
+	P: &d&lPonderUHC &6»
+
+command /arena [<text>]:
+	aliases: /a, /practice
+	trigger:
+		if arg-1 is not set:
+			if player's world is "Arena":
+				message "{@P} &cYou are already in Arena, type ""/arena leave"" to leave the arena"
+				stop
+			else:
+				if {Arena} is not set:
+					message "{@P} &cArena is currently disabled"
+					stop
+				if {Arena} is false:
+					message "{@P} &cArena is currently disabled"
+				if {Arena} is true:
+					execute console command "/mv tp %player% Arena"
+					clear player's inventory
+					set the player's gamemode to adventure
+					set the player's health to 10
+					set the player's helmet slot to diamond helmet of protection 2
+					set the player's chestplate slot to diamond chestplate of protection 2
+					set the player's leggings slot to diamond leggings of protection 2
+					set the player's boots slot to diamond boots of projectile protection 2
+					set slot 0 of player to diamond sword of sharpness 3
+					set slot 1 of player to fishing rod
+					set slot 2 of player to bow of power 2
+					set slot 3 of player to 2 golden apple:0
+					set slot 4 of player to 1 golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit"
+					set slot 17 of player to 64 arrow
+					if {Vanish::%player%} is true:
+						message "{@P} &cCannot be vanished in arena (auto turn back on when arena off)"
+						Vanish(player, "OffSilent")
+		if arg-1 is "leave":
+			if player's world is "Arena":
+				if {Arena} is true:
+					execute console command "/mv tp %player% Spawn"
+					ClearAllEffects(player)
+					if {UHC::Spectators::%player%} is true:
+						SpecMode(player, "On")
+		if arg-1 is "on":
+			if player has permission "staff.member":
+				set {Arena} to true
+				broadcast "{@P} &dArena has been Enabled"
+				discordLog("Arena", "%sender% enabled arena")
+		if arg-1 is "off":
+			if player has permission "staff.member":
+				set {Arena} to false
+				delete {UHC::ArenaDeath::*}
+				loop all players:
+					if loop-player's world is "Arena":
+						if {UHC::Spectators::%loop-player%} is true:
+							ClearAllEffects(loop-player)
+							SpecMode(loop-player, "On")
+						else:
+							ClearAllEffects(loop-player)
+						execute console command "/mv tp %loop-player% Spawn"
+				broadcast "{@P} &dArena has been Disabled"
+				discordLog("Arena", "%sender% disabled arena")
+
+on death of player:
+	victim's world is "Arena"
+	{Arena} is true
+	set death message to ""
+	cancel drops
+	set {_loc} to block at victim's location
+	drop 1 golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit" at {_loc}
+	if attacker and victim is set:
+		send "{@P} &d%attacker% killed you with %health of attacker% health left." to victim
+		send "{@P} &dYou have killed %victim% with %health of attacker% hearts" to attacker
+	while victim is not alive:
+		wait 5 ticks
+	clear victim's inventory
+	execute console command "/mv tp %victim% Arena"
+	set the victim's gamemode to adventure
+	set the victim's health to 10
+	set the victim's helmet slot to diamond helmet of protection 2
+	set the victim's chestplate slot to diamond chestplate of protection 2
+	set the victim's leggings slot to diamond leggings of protection 2
+	set the victim's boots slot to diamond boots of projectile protection 2
+	set slot 0 of victim to diamond sword of sharpness 3
+	set slot 1 of victim to fishing rod
+	set slot 2 of victim to bow of power 2
+	set slot 3 of victim to 2 golden apple
+	set slot 4 of victim to 1 golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit"
+	set slot 17 of victim to 64 arrow
+
+on damage:
+	victim's world is "Arena"
+	if {Arena} is true:
+		damage cause is fall
+		cancel the event
+
+on skript load:
+	set {Arena} to false

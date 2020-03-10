@@ -1,0 +1,247 @@
+function url(s: string) :: string:
+	replace all "§" in {_s} with "&"
+	return {_s}
+
+command /matchpost:
+	aliases: /post, /match
+	trigger:
+		message "&d&lPonderUHC &6» &dhttps://hosts.uhc.gg/m/%{MatchID}%"
+
+command /matchlink [<text>]:
+	aliases: /ml
+	trigger:
+		if player doesn't have permission "staff.member":
+			message "&d&lPonderUHC &6» &dhttps://hosts.uhc.gg/m/%{MatchID}%"
+			stop
+		set {_MatchID} to arg-1 parsed as integer
+		if arg-1 is not set:
+			message "&d&lPonderUHC &6» &dUsage /matchlink ID"
+			stop
+		if {_MatchID} is an integer:
+			discordLog("Matchlink", "%sender% matchlinked with ID %{_MatchID}%")
+			message "&d&lPonderUHC &6» &dSetting up might take a few seconds hold your butts!"
+			send a request to "https://hosts.uhc.gg/api/matches/%{_MatchID}%"
+			set {_resp} to body of the last http response
+			set {_Match::*} to {_resp} split at ","
+			set {_N} to 0
+			set {_Error1} to the first 3 characters of {_Match::1}
+			set {_Error2} to the first 7 characters of {_Match::1}
+			if "%{_Error2}%" is "Illegal":
+				message "&d&lPonderUHC &6» &dInvalid Match ID! etc. https://imgur.com/a/ULBh5"
+				stop
+			if "%{_Error1}%" is "The":
+				message "&d&lPonderUHC &6» &dInvalid Match ID! etc. https://imgur.com/a/ULBh5"
+				stop
+			loop {_Match::*}:
+				add 1 to {_N}
+				set {_API} to "%loop-value%"
+				replace all """" with "" in {_API}
+				set {_API::*} to {_API} split at ":"
+				set {_APIScenarios::*} to {_API} split at "["
+				if {_APIScenarios::1} contains "scenarios:":
+					if {_APIScenarios::2} contains "]":
+						replace all "]" with "" in {_APIScenarios::2}
+						add "%{_APIScenarios::2}%" to {_MatchScenarios::*}
+					else:
+						add "%{_APIScenarios::2}%" to {_MatchScenarios::*}
+						set {_ScenN} to {_N}
+						loop 50 times:
+							set {_ScenN} to ({_ScenN} + 1)
+							set {_Scen} to {_Match::%{_ScenN}%}
+							replace all """" with "" in {_Scen}
+							set {_ScenLast} to the last character of {_Scen}
+							if {_ScenLast} is not "]":
+								add "%{_Scen}%" to {_MatchScenarios::*}
+							else:
+								add "%subtext of {_Scen} from characters 1 to (the length of {_Scen} - 1)%" to {_MatchScenarios::*}
+								stop loop
+				if {_API::1} is "length":
+					set {_length} to {_API::2} parsed as integer
+					if {_length} is set:
+						broadcast "&d&lPonderUHC &6» &dMeetup has been set to %{_length}% minutes"
+						set {Config::Meetup} to {_length}
+				if {_API::1} is "pvpEnabledAt":
+					set {_pvpEnabledAt} to {_API::2} parsed as integer
+					if {_pvpEnabledAt} is set:
+						broadcast "&d&lPonderUHC &6» &dPvP time has been set to %{_pvpEnabledAt}% minutes"
+						set {Config::PvP} to {_pvpEnabledAt}
+				if {_API::1} is "address":
+					set {_address} to {_API::2}
+				if {_API::1} is "ip":
+					{_API::2} != ""
+					set {_ip} to {_API::2}
+				if {_API::1} is "tournament":
+					set {_text} to {_API}
+					if {_text} contains "true":
+						set {_tournament} to true
+				if {_API::1} is "author":
+					set {_text} to {_API}
+					set {_author} to "%subtext of {_text} from characters 8 to the length of {_text}%"
+				if {_API::1} is "hostingName":
+					set {_text} to {_API}
+					"%subtext of {_text} from characters 13 to the length of {_text}%" != "null"
+					set {_hostingname} to "%subtext of {_text} from characters 13 to the length of {_text}%"
+				if {_API::1} is "opens":
+					set {_text} to {_API}
+					set {Time} to "%subtext of {_text} from characters 7 to the length of {_text}%"
+					set {_matchtime} to "%subtext of {_text} from characters 7 to 16% %subtext of {_text} from characters 18 to 22%"
+				if {_API::1} is "teams":
+					set {_TeamsOf} to {_API}
+					set {_TeamsOf} to "%subtext of {_TeamsOf} from characters 7 to the length of {_TeamsOf}%"
+					if {_TeamsOf} is "chosen":
+						set {_TeamsOf} to "To"
+					else if {_TeamsOf} is "random":
+						set {_TeamsOf} to "Ro"
+					else if {_TeamsOf} is "market":
+						set {UHC::custom} to "Slavemarket"
+						set {Teamsize} to "Slavemarket"
+					else if {_TeamsOf} is "rvb":
+						set {UHC::custom} to "Red vs Blue"
+						set {Teamsize} to "Red vs Blue"
+					else:
+						set {_TeamsOf} to ""
+				if {_API::1} is "customStyle":
+					set {_custom} to {_API}
+					"%subtext of {_custom} from characters 13 to the length of {_custom}%" != "null"
+					set {UHC::custom} to {_API}
+					set {UHC::custom} to "%subtext of {UHC::custom} from characters 13 to the length of {UHC::custom}%"
+				if {_API::1} is "size":
+					set {_TeamSize} to {_API}
+					set {_TeamSize} to "%subtext of {_TeamSize} from characters 6 to the length of {_TeamSize}%"
+				if {_API::1} is "slots":
+					set {_maxplayers} to {_API}
+					set {maxplayers} to "%subtext of {_maxplayers} from characters 7 to the length of {_maxplayers}%" parsed as integer
+					broadcast "&d&lPonderUHC &6» &dMaxplayers has been set to %{maxplayers}%"
+				if {_API::1} is "count":
+					set {_Count} to "%{_API::2}%"
+			if {_address} is set:
+				set {_ip} to {_address}
+			if {_hostingname} is set:
+				set {Host} to {_hostingname}
+				broadcast "&d&lPonderUHC &6» &dHost has been set to %{Host}%"
+			else:
+				set {Host} to {_author}
+				broadcast "&d&lPonderUHC &6» &dHost has been set to %{Host}%"
+			if {UHC::custom} is set:
+				broadcast "&d&lPonderUHC &6» &dTeams set to %{UHC::custom}%"
+				set {Config::Teamsize} to "%{UHC::custom}%"
+			else if {_TeamSize} is "null":
+				delete {Teams.Limit}
+				broadcast "&d&lPonderUHC &6» &dTeams set to FFA"
+				set {Config::Teamsize} to "FFA"
+			else:
+				set {Teams.Limit} to {_TeamSize} parsed as integer
+				broadcast "&d&lPonderUHC &6» &dTeams set to %{_TeamsOf}%%{_TeamSize}%"
+				set {Config::Teamsize} to "%{_TeamsOf}%%{_TeamSize}%"
+			wait 2 seconds
+			delete {UHC::custom}
+			set {MatchLink} to "hosts.uhc.gg/m/%{_MatchID}%"
+			DisableAllScenarios("Gay")
+			delete {MatchScenarios::*}
+			loop {_MatchScenarios::*}:
+				OnScenario("%loop-value%")
+				add loop-value to {MatchScenarios::*}
+			message "&d&lPonderUHC &6» &2Please recheck some scenarios might not be enabled"
+			set {_host} to {Host} parsed as offline player
+			send a "post" request to "https://discordapp.com/api/webhooks/470120392422326272/AVjZpTs3ZDaZnQOLIJTxq-6UxPsAlJQD34n37v4i3asBfJyYIfmeuc1u7GNe0qbBVTv_" with header "User-Agent: Hakim" and body "{""username"":""%{_host}%"", ""avatar_url"":""https://crafatar.com/avatars/%{_host}'s uuid%"", ""embeds"":[{""title"":""Upcoming Matches | hosts.uhc.gg/m/%{_MatchID}%"", ""url"":""https://hosts.uhc.gg/m/%{_MatchID}%"", ""color"":16223655, ""footer"":{""text"":""PonderUHC | %now%""}, ""fields"":[{""name"":""\u00BB Host"", ""value"":""*%{Host}% ##%{_Count}%*"", ""inline"":true}, {""name"":""\u00BB IP"", ""value"":""*%{_address}%*"", ""inline"":true}, {""name"":""\u00BB Time"", ""value"":""*%{_matchtime}% UTC*"", ""inline"":true}, {""name"":""\u00BB Teams"", ""value"":""*%{Config::Teamsize}%*"", ""inline"":true}, {""name"":""\u00BB Scenarios"", ""value"":""*%{_MatchScenarios::*}%*"", ""inline"":true}]}]}"
+			while last http response is not set:
+				wait 2 seconds
+			wait 2 seconds
+			set mention state of role "Notify" in guild "399489114912587789" to true as "Matches"
+			send message url("<@&425202360894095360>") to channel "480393768114323489" as "Matches"
+			send message "Timer%server region%" to channel "480393768114323489" as "Matches"
+			loop 50 times:
+				set mention state of role "Notify" in guild "399489114912587789" to false as "Matches"
+				set mention state of role "425202360894095360" in guild "399489114912587789" to false as "Matches"
+				wait 5 ticks
+			set {MatchID} to "%{_MatchID}%"
+			set {Config::Match name} to "%{Host}% ##%{_Count}%"
+		else:
+			message "&d&lPonderUHC &6» &dUsage /matchlink ID"
+
+function runTimer(m: object):
+	while {Timer::Countdown::%{_m}%} is set:
+		set {_time} to difference between now and {Timer::Countdown::%{_m}%}
+		if {Timer::Countdown::%{_m}%} was more than 1 second ago:
+			discord edit message {_m} to say "**Whitelist should be off already**" with bot "Matches"
+			delete {Timer::Countdown::%{_m}%}
+		else:
+			discord edit message {_m} to say "Whitelist off in **%roundedTimespan({_time})%**" with bot "Matches"
+		wait 5 second
+
+on guild message sent by "Matches":
+	"%event-string%" == "Timer%server region%"
+	set {_now} to "%now%"
+	set {_time} to {Time}
+	replace all "Z" with "" in {_time}
+	set {_time::*} to {_time} split at "T"
+	set {_date::*} to {_time::1} split at "-"
+	set {_date2::*} to {_time::2} split at ":"
+	set {_MatchTime} to date("%{_date::1}%" parsed as number, "%{_date::2}%" parsed as number, "%{_date::3}%" parsed as number, "%{_date2::1}%" parsed as number, "%{_date2::2}%" parsed as number)
+	set {Timer::Countdown::%event-message%} to {_MatchTime}
+	runTimer(event-message)
+
+on skript load:
+	login to user with token "NDAwMjA5Nzk1Nzc4NjA5MTUy.DTYUiQ.s-is02FjBqRmhd46giJEX-_Q0Vw" with name "Matches"
+	set streaming of bot "Matches" to stream titled "[EU/NA] PonderUHC" with url "https://www.twitch.tv/."
+	wait 2 seconds
+	loop {Timer::Countdown::*}:
+		set {_message} to message with id "%loop-index%" in textchannel "480393768114323489"
+		if {_message} is set:
+			runTimer({_message})
+		else:
+			delete {Timer::Countdown::%loop-index%}
+
+command /host [<text>]:
+	permission: staff.member
+	trigger:
+		set {Host} to arg-1
+		broadcast "&d&lPonderUHC &6» &dHost has been set to %arg-1%"
+		loop all players:
+			Scoreboard(loop-player)
+
+on guild member join seen by "Matches":
+	give role "Notify" to user "%event-user%" in guild "399489114912587789" with "Matches"
+
+on guild message receive seen by "Matches":
+	set {_m::*} to event-string split at " "
+	if {_m::1} is "!wl":
+		set {_m::2} to {_m::2}.toLowerCase()
+		if {_m::2} is "eu" or "na":
+			if {_m::2} is "%server region.toLowerCase()%":
+				loop {Timer::Countdown::*}:
+					if difference between now and {Timer::Countdown::%loop-index%} is less than 10 minutes:
+						execute console command "/wl add %{_m::3}%"
+						reply with "`%{_m::3}%` has been whitelisted"
+						set {_true} to true
+						stop loop
+				if {_true} is not set:
+					reply with "This command only works 10 minutes before a match opens"
+		else:
+			"%server region%" is "EU"
+			reply with "!wl <EU/NA> <player>"
+
+on guild message receive seen by "Matches":
+	"%server region%" is "EU"
+	if "%event-string%" is "!Notify":
+		if user "%event-user%" has role "Notify" in "399489114912587789":
+			reply with "You will now not be notified of our games."
+			remove role "Notify" from user "%event-user%" in guild "399489114912587789" with "Matches"
+		else:
+			reply with "You will now be notified of our games."
+			give role "Notify" to user "%event-user%" in guild "399489114912587789" with "Matches"
+	else if "%event-string%" is "!ip":
+		reply with "EU.ponderuhc.cf | NA.ponderuhc.cf"
+	else if "%event-string%" is "!notifytag":
+		set {_role::*} to roles of user event-user in guild "399489114912587789"
+		if "%{_role::*}%" contains "Owner" or "Host" or "Moderator" or "Admin" or "Manager":
+			delete message event-message with "Matches"
+			set mention state of role "Notify" in guild "399489114912587789" to true as "Matches"
+			send message url("<@&425202360894095360>") to channel "%event-channel%" as "Matches"
+			loop 50 times:
+				set mention state of role "Notify" in guild "399489114912587789" to false as "Matches"
+				set mention state of role "425202360894095360" in guild "399489114912587789" to false as "Matches"
+	else if "%event-string%" is "!time.is":
+		set {_time} to now
+		reply with "%{_time}%"
+

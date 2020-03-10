@@ -1,0 +1,238 @@
+options:
+	P: &d&lPonderUHC &6»
+	CH: &5&lChat &6»
+	PMS: &5&lPM &6»
+	PMR: &5&lPM &6«
+
+command /sc <text>:
+	permission: staff.member
+	trigger:
+		if {UHC::Spectators::%player%} is true:
+			StaffMessage("&6%player%&7: &c%arg-1%", "Normal")
+		else:
+			message "{@P} &dYou need to be a spectator to use or see staff chat"
+
+command /tag [<text>] [<text>] [<text>]:
+	aliases: /tags
+	permission: staff.member
+	trigger:
+		if arg-1 is not set:
+			message "{@P} &c/tag <Prefix/Suffix> <Player> <Tag without []>"
+			stop
+		if arg-1 is not "Prefix" or "Suffix":
+			message "{@P} &c/tag <Prefix/Suffix> <Player> <Tag without []>"
+			stop
+		if arg-2 is not set:
+			message "{@P} &c/tag <Prefix/Suffix> <Player> <Tag without []>"
+			stop
+		set {_P} to arg-2 parsed as offline player
+		if {_P} is not set:
+			message "{@P} &c%arg-2% has never joined the server"
+			stop
+		if arg-1 is "Prefix":
+			if arg-3 is not set:
+				message "{@P} &d%arg-2%'s prefix has been reset/deleted"
+				delete {Prefix::%arg-2%}
+				stop
+			set {Prefix::%arg-2%} to "%arg-3%"
+			message "{@P} &d%arg-2%'s prefix has been set to &7[%coloured arg-3%&7]"
+		if arg-1 is "Suffix":
+			if arg-3 is not set:
+				message "{@P} &d%arg-2%'s suffix has been reset/deleted"
+				delete {Suffix::%arg-2%}
+				stop
+			set {Suffix::%arg-2%} to "%arg-3%"
+			message "{@P} &d%arg-2%'s prefix has been set to &7[%coloured arg-3%&7]"
+
+function playerPrefix(p: player) :: string:
+	if {Prefix::%{_p}%} is set:
+		return "%coloured {Prefix::%{_p}%}%"
+	else if {_p} is OP:
+		return "&0OP"
+	else if {_p} has permission "staff.Owner":
+		return "&dOwner"
+	else if {_p} has permission "staff.Manager":
+		return "&2Manager"
+	else if {_p} has permission "staff.Admin":
+		return "&3Admin"
+	else if {_p} has permission "staff.Host":
+		return "&4Host"
+	else if {_p} has permission "staff.Moderator":
+		return "&9Mod"
+	else if {_p} has permission "staff.Builder":
+		return "&cBuilder"
+	else if {_p} has permission "normal.Twitch":
+		return "&5Twitch"
+	else if {_p} has permission "normal.Youtuber":
+		return "&4YT"
+	else if {_p} has permission "normal.Friend":
+		return "&eFriend"
+	else if {Winner::%{_p}%} is set:
+		return "&bWinner"
+	else:
+		return "&fRegular"
+
+function playerSuffix(p: player) :: string:
+	if {Suffix::%{_p}%} is set:
+		return "&7[%coloured {Suffix::%{_p}%}%&7]"
+	else:
+		return ""
+
+function playerNameColor(p: player) :: string:
+	return last color of playerPrefix({_p})
+
+function playerChatColor(p: player) :: string:
+	if {ChatColor::%{_p}%} is set:
+		return "%coloured {ChatColor::%{_p}%}%"
+	else if {_p} has permission "staff.member":
+		return "&6"
+	else if {_p} has permission "normal.Twitch" or "normal.Youtuber" or "normal.Friend":
+		return "&f"
+	else if {Winner::%{_p}%} is set:
+		return "&f"
+	else:
+		return "&7"
+
+on chat:
+	set {_M} to "%message%"
+	replace all "%%" with "%%%%" in {_M}
+	if {UHC::ChatType::%player%} is "team":
+		cancel the event
+		if {Teams.InTeam::%player%} is not set:
+			message "{@P} &cYou are not in a team setting chat to public chat"
+			delete {UHC::ChatType::%player%}
+		else:
+			make player execute command "/pm %{_m}%"
+	else if {UHC::ChatType::%player%} is "staff":
+		cancel the event
+		if player doesn't have permission "staff.member":
+			message "{@P} &cYou aren't staff, setting chat to public chat"
+			delete {UHC::ChatType::%player%}
+		else if {UHC::Spectators::%player%} is not set:
+			message "{@P} &cYou are not spectating, setting chat to public chat"
+			delete {UHC::ChatType::%player%}
+		else:
+			make player execute command "/sc %{_m}%"
+	else:
+		if first character of message is "@":
+			player has permission "staff.member"
+			if {UHC::Spectators::%player%} is true:
+				cancel the event
+				StaffMessage("&6%player%&7: &c%subtext of message from characters 2 to the length of message%", "Normal")
+				stop
+			else:
+				cancel the event
+				message "{@P} &dYou need to be a spectator to use or see staff chat"
+				stop
+		loop all players:
+			{Ignore::%loop-player%::%player%} is true
+			remove loop-player from chat recipients
+		set message format to "&7[%playerPrefix(player)%&7] %playerNameColor(player)%%chat name of player% %playerSuffix(player)%&7: %playerChatColor(player)%%{_M}%"
+
+command /message [<player>] [<text>]:
+	aliases: /msg, /tell, /w, /whisper
+	trigger:
+		if arg-1 or arg-2 is not set:
+			make player execute command "/chat help"
+			stop
+		if arg-1 is player:
+			message "&cSurely you aren't that lonely &7[Cannot message yourself]"
+			stop
+		if {Ignore::%arg-1%::%player%} is true:
+			message "{@CH} &c%arg-1% is ignoring you"
+			stop
+		if {Ignore::%player%::%arg-1%} is true:
+			message "{@CH} &cYou are ignoring %arg-1%"
+			stop
+		if {TogglePM::%arg-1%} is true:
+			message "{@CH} &c%arg-1% has PM's disabled"
+			stop
+		set {Message::%player%} to arg-1
+		set {Message::%arg-1%} to player
+		send "{@PMS} &d%arg-1% &7: &f%arg-2%" to player
+		play sound "ORB_PICKUP" to player with volume 0.4 and pitch 10
+		send "{@PMR} &d%player% &7: &f%arg-2%" to arg-1
+		play sound "ORB_PICKUP" to arg-1 with volume 0.4 and pitch 10
+
+command /reply [<text>]:
+	aliases: /r
+	trigger:
+		if {Message::%player%} is not set:
+			message "{@CH} &cNobody messaged you"
+			stop
+		if arg-1 is not set:
+			make player execute command "/chat help"
+			stop
+		if {Message::%player%} is not online:
+			message "{@CH} &c%{Message::%player%}% is offline"
+			stop
+		if {Ignore::%{Message::%player%}%::%player%} is true:
+			message "{@CH} &c%arg-1% is ignoring you"
+			stop
+		if {Ignore::%player%::%{Message::%player%}%} is true:
+			message "{@CH} &cYou are ignoring %arg-1%"
+			stop
+		if {TogglePM::%{Message::%player%}%} is true:
+			message "{@CH} &c%{Message::%player%}% has PM's disabled"
+			stop
+		send "{@PMS} &d%{Message::%player%}% &7: &f%arg-1%" to player
+		play sound "ORB_PICKUP" to player with volume 0.4 and pitch 10
+		send "{@PMR} &d%player% &7: &f%arg-1%" to ("%{Message::%player%}%" parsed as player)
+		play sound "ORB_PICKUP" to {Message::%player%} with volume 0.4 and pitch 10
+
+command /ignore [<player>]:
+	trigger:
+		if arg-1 is not set:
+			message "{@CH} /ignore <player> &7- &cyou will not see any of their messages!"
+			stop
+		if arg-1 has permission "staff.member":
+			message "{@CH} You may not ignore staff members, please report them instead."
+			stop
+		if {Ignore::%player%::%arg-1%} is not set:
+			set {Ignore::%player%::%arg-1%} to true
+			message "{@CH} &dYou are now ignoring %arg-1% from PM's and chat."
+		else:
+			delete {Ignore::%player%::%arg-1%}
+			message "{@CH} &dYou are no longer ignoring %arg-1%"
+
+command /togglepm:
+	trigger:
+		if {TogglePM::%player%} is not set:
+			set {TogglePM::%player%} to true
+			message "{@CH} &cYou will not receive anymore PM's"
+		else:
+			delete {TogglePM::%player%}
+			message "{@CH} &aYou can now receive PM's"
+
+command /chat [<text>]:
+	trigger:
+		if arg-1 is "help":
+			message "{@CH} /msg <player> <message>"
+			message " &6/reply <message>"
+			message " &6/ignore <player> <message>"
+			message " &6/togglepm"
+			message " &6/chat <all|team|staff>"
+		else if arg-1 is "all":
+			message "{@CH} &aYour messages will now be sent to public chat"
+			delete {UHC::ChatType::%player%}
+		else if arg-1 is "team" or "teams":
+			if {Teams.InTeam::%player%} is not set:
+				message "{@CH} &cYou don't have a team"
+			else:
+				message "{@CH} &aYour messages will now be sent to team chat"
+				set {UHC::ChatType::%player%} to "team"
+		else if arg-1 is "staff":
+			if player doesn't have permission "staff.member":
+				message "{@CH} &cThis is for staff members only"
+			else if {UHC::Spectators::%player%} is not set:
+				message "{@CH} &cYou must be a spectator to use this chat type"
+			else:
+				message "{@CH} &aYour messages will now be sent to staff chat"
+				set {UHC::ChatType::%player%} to "staff"
+		else:
+			message "{@CH} /msg <player> <message>"
+			message " &6/reply <message>"
+			message " &6/ignore <player> <message>"
+			message " &6/togglepm"
+			message " &6/chat <all|team|staff>"
+

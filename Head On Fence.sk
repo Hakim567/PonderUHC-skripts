@@ -1,0 +1,12 @@
+on death of player:
+	"%victim's world%" is "UHC"
+	{UHC::Status} is true
+	{Scenarios::Timebomb} is false
+	if {UHC::AlivePlayers::%victim%} is true:
+		set {_loc} to victim's location
+		set {_loc2} to the block above the victim
+		set {UHC::Skull::%victim%::block1} to block above the victim
+		set {UHC::Skull::%victim%::block2} to {_loc}
+		set block at {_loc} to nether brick fence
+		set block at {_loc2} to floor head
+		add "{SkullType:3,ExtraType:""%victim%""}" to nbt of block at {_loc2}

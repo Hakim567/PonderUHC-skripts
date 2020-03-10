@@ -1,0 +1,30 @@
+command /ping [<player>]:
+	usage: /ping <IGN>
+	trigger:
+		if arg-1 is not set:
+			set {_ping} to player.getHandle().ping!
+			if {_ping} is between 0 and 100:
+				message "&d&lPonderUHC &6» &dYou have &a&l%{_ping}%ms &7(&aGood&7)"
+			else if {_ping} is between 100 and 250:
+				message "&d&lPonderUHC &6» &dYou have &e&l%{_ping}%ms &7(&eAlright&7)"
+			else if {_ping} is greater than 250:
+				message "&d&lPonderUHC &6» &dYou have &c&l%{_ping}%ms &7(&cBad&7)"
+		else:
+			set {_ping} to arg-1.getHandle().ping!
+			if {_ping} is between 0 and 100:
+				message "&d&lPonderUHC &6» &d%arg-1% has &a&l%{_ping}%ms &7(&aGood&7)"
+			else if {_ping} is between 100 and 250:
+				message "&d&lPonderUHC &6» &d%arg-1% has &e&l%{_ping}%ms &7(&eAlright&7)"
+			else if {_ping} is greater than 250:
+				message "&d&lPonderUHC &6» &d%arg-1% has &c&l%{_ping}%ms &7(&cBad&7)"
+
+command /tps:
+	trigger:
+		message "&d&lPonderUHC &6» &dServer Status"
+		message "&6» %tps% TPS"
+		message "&6» &d%used memory%/%max memory% MB"
+		message "&7*Max memory goes up when server starts stressing"
+
+command /memory:
+	trigger:
+		make player execute command "/tps"

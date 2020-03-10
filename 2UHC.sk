@@ -1,0 +1,1062 @@
+options:
+	P: &d&lPonderUHC &6»
+
+#Made with love by hakim <3 
+#Contact me on discord - 愛してる#5199
+function BorderShrink(i: integer):
+	set {UHC::Border} to {_i}
+	set {_io} to ({_i} / 3)
+	execute console command "/wb UHC set %{_i}% %{_i}% 0 0"
+	execute console command "/wb UHC_nether set %{_io}% %{_io}% 0 0"
+	loop all players:
+		updateBorder(loop-player)
+	set {_aux} to {_i} + {_i} + 1
+	set {_aux2} to 0 - {_i}	
+	set {_loc} to location at {_i}, 150, {_i} of the world ("UHC" parsed as world)
+	loop {_aux} times:
+		while block at {_loc} is air or long grass:
+			remove 1 from y-location of {_loc}
+		add 5 to y-location of {_loc}
+		loop 5 times:
+			set block at {_loc} to bedrock
+			remove 1 from y-location of {_loc}
+			wait 0.2 ticks
+		remove 1 from x-location of {_loc}
+		set y-location of {_loc} to 150	
+	set {_loc} to location at {_aux2}, 150, {_aux2} of the world ("UHC" parsed as world)
+	loop {_aux} times:
+		while block at {_loc} is air or long grass:
+			remove 1 from y-location of {_loc}
+		add 5 to y-location of {_loc}
+		loop 5 times:
+			set block at {_loc} to bedrock
+			remove 1 from y-location of {_loc}
+			wait 0.2 ticks
+		add 1 to x-location of {_loc}
+		set y-location of {_loc} to 150
+	set {_loc} to location at {_i}, 150, {_i} of the world ("UHC" parsed as world)
+	remove 1 from z-location of {_loc}
+	loop ({_aux} -2) times:
+		while block at {_loc} is air or long grass:
+			remove 1 from y-location of {_loc}
+		add 5 to y-location of {_loc}
+		loop 5 times:
+			set block at {_loc} to bedrock
+			remove 1 from y-location of {_loc}
+			wait 0.2 ticks
+		remove 1 from z-location of {_loc}
+		set y-location of {_loc} to 150	
+	set {_loc} to location at {_aux2}, 150, {_aux2} of the world ("UHC" parsed as world)
+	add 1 to z-location of {_loc}
+	loop ({_aux} -2) times:
+		while block at {_loc} is air or long grass:
+			remove 1 from y-location of {_loc}
+		add 5 to y-location of {_loc}
+		loop 5 times:
+			set block at {_loc} to bedrock
+			remove 1 from y-location of {_loc}
+			wait 0.2 ticks
+		add 1 to z-location of {_loc}
+		set y-location of {_loc} to 150
+
+import:
+	org.bukkit.Material
+
+every 1 second:
+	loop all players:
+		loop-player's world is world("UHC")
+		if floor(loop-player's x coordinate + 1) is {UHC::Border}:
+			set {_P1} to location((loop-player's x coordinate + 1), (loop-player's y coordinate + 3), (loop-player's z coordinate + 3), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate + 1), (loop-player's y coordinate - 3), (loop-player's z coordinate - 3), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's z coordinate + 1) is {UHC::Border}:
+			set {_P1} to location((loop-player's x coordinate + 3), (loop-player's y coordinate + 3), (loop-player's z coordinate + 1), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 3), (loop-player's y coordinate - 3), (loop-player's z coordinate + 1), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's x coordinate + 2) is {UHC::Border}:
+			set {_P1} to location((loop-player's x coordinate + 2), (loop-player's y coordinate + 3), (loop-player's z coordinate + 3), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate + 2), (loop-player's y coordinate - 3), (loop-player's z coordinate - 3), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's z coordinate + 2) is {UHC::Border}:
+			set {_P1} to location((loop-player's x coordinate + 3), (loop-player's y coordinate + 3), (loop-player's z coordinate + 2), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 3), (loop-player's y coordinate - 3), (loop-player's z coordinate + 2), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's x coordinate - 1) is ({UHC::Border} * -1):
+			set {_P1} to location((loop-player's x coordinate - 1), (loop-player's y coordinate + 3), (loop-player's z coordinate + 3), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 1), (loop-player's y coordinate - 3), (loop-player's z coordinate - 3), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's z coordinate - 1) is ({UHC::Border} * -1):
+			set {_P1} to location((loop-player's x coordinate + 3), (loop-player's y coordinate + 3), (loop-player's z coordinate - 1), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 3), (loop-player's y coordinate - 3), (loop-player's z coordinate - 1), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's x coordinate - 2) is ({UHC::Border} * -1):
+			set {_P1} to location((loop-player's x coordinate - 2), (loop-player's y coordinate + 3), (loop-player's z coordinate + 3), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 2), (loop-player's y coordinate - 3), (loop-player's z coordinate - 3), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+		if floor(loop-player's z coordinate - 2) is ({UHC::Border} * -1):
+			set {_P1} to location((loop-player's x coordinate + 3), (loop-player's y coordinate + 3), (loop-player's z coordinate - 2), world("UHC"))
+			set {_P2} to location((loop-player's x coordinate - 3), (loop-player's y coordinate - 3), (loop-player's z coordinate - 2), world("UHC"))
+			loop blocks within {_P1} and {_P2}:
+				loop-block is air or water
+				loop-player.sendBlockChange(loop-block's location, Material.STAINED_GLASS!, 14)
+
+function turnEvents(s: string):
+	if {_s} is "Final heal":
+		if {Scenarios::Chicken} is true:
+			broadcast "{@P} &dFinal heal did not happen because it is Chicken"
+		else:
+			broadcast "{@P} &dFinal heal!"
+			execute console command "/playsoundall note.pling"
+			loop {UHC::AlivePlayers::*}:
+				set {_P} to loop-index parsed as offline player
+				if {_P} is online:
+					set {_P}'s health to 10
+					if {Scenarios::Superheroes} is true:
+						{UHC::Superheroes::%{_P}%} is 2
+						set {_P}'s health to 16
+				else:
+					set {UHC::FinalHeal::%{_P}%} to true
+	if {_s} is "PvP":
+		execute console command "/mv modify set PvP true UHC"
+		execute console command "/mv modify set PvP true UHC_nether"
+		execute console command "/mv modify set PvP true UHC_the_end"
+		SetMoles("gay")
+		SetKiraL("Gay")
+		broadcast "{@P} &dPvP Enabled!"
+		execute console command "/playsoundall mob.irongolem.death"
+	if {_s} is "Meetup":
+		SkyHighStart("Gay")
+		EnderDragonRushPortalCreate("Gay")
+		BorderShrink(1000)
+		broadcast "{@P} &dIt is now Meetup"
+		broadcast "{@P} &dBorder shrunk to 1000"
+		execute console command "/playsoundall mob.irongolem.death"
+	if {_s} is "Border Shrink to 500":
+		BorderShrink(500)
+		broadcast "{@P} &dBorder shrunk to 500"
+		execute console command "/playsoundall mob.irongolem.death"
+	if {_s} is "Border Shrink to 100":
+		BorderShrink(100)
+		broadcast "{@P} &dBorder shrunk to 100"
+		execute console command "/playsoundall mob.irongolem.death"
+
+function checkEvents(s: string, seconds: boolean = false):
+	if {_s} is "PvP":
+		set {_time} to ({Config::PvP} * 60)
+	if {_s} is "Meetup":
+		set {_time} to ({Config::Meetup} * 60)
+	if {_s} is "Final heal":
+		set {_time} to ({Config::Final heal} * 60)
+	if {_s} is "Border shrink to 500":
+		set {_time} to ({Config::Meetup} * 60)
+		add 300 to {_time}
+	if {_s} is "Border shrink to 100":
+		set {_time} to ({Config::Meetup} * 60)
+		add 600 to {_time}
+	set {_check} to ({_time} - {UHC::GameTime})
+	if {_check} is 300:
+		broadcast "{@P} &d%{_s}% is in 5 minutes"
+		execute console command "/playsoundall gui.button.press"
+	if {_check} is 60:
+		broadcast "{@P} &d%{_s}% is in 1 minute"
+		execute console command "/playsoundall gui.button.press"
+	if {_seconds} is true:
+		if {_check} is 15:
+			broadcast "{@P} &d%{_s}% is in 15 seconds"
+			execute console command "/playsoundall gui.button.press"
+		if {_check} is 10:
+			broadcast "{@P} &d%{_s}% is in 10 seconds"
+			execute console command "/playsoundall gui.button.press"
+		if {_check} is 5:
+			broadcast "{@P} &d%{_s}% is in 5 seconds"
+			execute console command "/playsoundall gui.button.press"
+	if {_check} is 0:
+		turnEvents("%{_s}%")
+
+command /border <integer>:
+	permission: staff.member
+	trigger:
+		broadcast "{@P} &cBorder Shrinking to %arg-1% in 3 seconds"
+		wait 1 second
+		broadcast "{@P} &cBorder Shrinking to %arg-1% in 2 seconds"
+		wait 1 second
+		broadcast "{@P} &cBorder Shrinking to %arg-1% in 1 second"
+		wait 1 second
+		BorderShrink(arg-1)
+		broadcast "{@P} &dBorder shrunk to %arg-1% in radius"
+
+function StartGameTime(s: text):
+	set {UHC::GameTime} to 0
+	checkEvents("Final heal")
+	while {UHC::Status} is true:
+		wait 5 seconds
+		set {UHC::GameTime} to ({UHC::GameTime} + 5)
+		set {_Hours} to floor(({UHC::GameTime} / 60) / 60)
+		set {_Minutes} to floor(({UHC::GameTime} / 60) - ({_Hours} * 60))
+		set {_Seconds} to floor(({UHC::GameTime} - ({_Minutes} * 60)) - (({_Hours} * 60) * 60))
+		if length of "%{_Hours}%" is 1:
+			set {_Hours} to "0%{_Hours}%"
+		if length of "%{_Minutes}%" is 1:
+			set {_Minutes} to "0%{_Minutes}%"
+		if length of "%{_Seconds}%" is 1:
+			set {_Seconds} to "0%{_Seconds}%"
+		set {UHC::GameTimeT} to "%{_Hours}%:%{_Minutes}%:%{_Seconds}%"
+		checkEvents("Final heal")
+		checkEvents("PvP")
+		checkEvents("Meetup", true)
+		checkEvents("Border Shrink to 500", true)
+		checkEvents("Border Shrink to 100", true)
+		loop all players:
+			updateGameTime(loop-player)
+
+on join:
+	{UHC::FinalHeal::%player%} is true
+	set player's health to 10
+	if {Scenarios::Superheroes} is true:
+		{UHC::Superheroes::%player%} is 2
+		set player's health to 16
+	message "{@P} You have been given final heal since you were offline"
+	delete {UHC::FinalHeal::%player%}
+
+command /topkills:
+	aliases: /topkill, /kt, /tk
+	trigger:
+		{UHC::Status} is true
+		message "{@P} &dTop 5 Kills of the game"
+		loop {UHC::Kills::*}:
+			add loop-index to {_indexes::*}
+		set {_sortedIndexes::*} to sortHighestToLowest({_indexes::*}, {UHC::Kills::*})
+		set {_N} to 0
+		loop {_sortedIndexes::*}:
+			{_N} < 5
+			add 1 to {_N}
+			set {_P} to "%loop-value%" parsed as offline player
+			message "&d%{_N}%. %{_P}% (%{UHC::Kills::%loop-value%}%)"
+
+command /spec [<text>]:
+	permission: staff.member
+	trigger:
+		if command sender is CONSOLE:
+			if arg-1 is set:
+				execute console command "/uhc spec %arg-1%"
+		if arg-1 is set:
+			execute player command "/uhc spec %arg-1%"
+		else:
+			execute player command "/uhc spec"
+
+import:
+	java.lang.System
+
+function getConfigStatus(C: text, type: object = 1) :: item:
+	if {_C} is "Nether":
+		if world("UHC_nether") is set:
+			return light green dye named "&aOn"
+		else:
+			return gray dye named "&cOff"
+	else if {_C} is "End":
+		if world("UHC_the_end") is set:
+			return light green dye named "&aOn"
+		else:
+			return gray dye named "&cOff"
+	else if {_type} is "percent" or "string" or "number":
+		if {_type} is "percent":
+			return paper named "&6%{Config::%{_C}%}%%%"
+		if {_type} is "string":
+			return paper named "&6%{Config::%{_C}%}%"
+		if {_type} is "number":
+			return paper named "&6%{Config::%{_C}%}%"
+	else if {Config::%{_C}%} is true:
+		if {_type} is "rule":
+			return light green dye named "&aAllowed"
+		else:
+			return light green dye named "&aOn"
+	else if {Config::%{_C}%} is not set:
+		if {_type} is "rule":
+			return gray dye named "&cDisallowed"
+		else:
+			return gray dye named "&cOff"
+	else if {Config::%{_C}%} is set:
+		return paper named "&6%{Config::%{_C}%}%"
+
+function getConfigStatusText(C: text, rule: boolean = false) :: string:
+	if {_C} is "Nether":
+		if world("UHC_nether") is set:
+			return "&aOn"
+		else:
+			return "&cOff"
+	else if {_C} is "End":
+		if world("UHC_the_end") is set:
+			return "&aOn"
+		else:
+			return "&cOff"
+	else if {Config::%{_C}%} is true:
+		if {_rule} is true:
+			return "&aAllowed"
+		else:
+			return "&aOn"
+	else if {Config::%{_C}%} is false:
+		if {_rule} is true:
+			return "&cDisallowed"
+		else:
+			return "&cOff"
+	else if {Config::%{_C}%} is not set:
+		if {_rule} is true:
+			return "&cDisallowed"
+		else:
+			return "&cOff"
+
+function toggleConfig(C: text, P: object = 1, S: number = 1):
+	if {_P} is set:
+		{_P} doesn't have permission "staff.member"
+		stop
+	if {_C} is "Nether":
+		if world("UHC_nether") is set:
+			send "{@P} &dDisable Nether with /mv delete UHC_nether" to {_P}
+		else:
+			send "{@P} &dEnable Nether with /uhc gennether" to {_P}
+	else if {_C} is "End":
+		if world("UHC_the_end") is set:
+			send "{@P} &dDisable End with /mv delete UHC_the_end" to {_P}
+		else:
+			send "{@P} &dEnable End with /uhc genend" to {_P}
+	else if {Config::%{_C}%} is true:
+		delete {Config::%{_C}%}
+		broadcast "{@P} &d%{_C}% has been turned &coff"
+		{_P} != 1
+		discordLog("Config", "%{_P}% toggled %{_C}% off")
+	else if {Config::%{_C}%} is false:
+		set {Config::%{_C}%} to true
+		broadcast "{@P} &d%{_C}% has been turned &aon"
+		{_P} != 1
+		discordLog("Config", "%{_P}% toggled %{_C}% on")
+	else if {Config::%{_C}%} is not set:
+		set {Config::%{_C}%} to true
+		broadcast "{@P} &d%{_C}% has been turned &aon"
+		{_P} != 1
+		discordLog("Config", "%{_P}% toggled %{_C}% on")
+	if {_P} is a player:
+		format gui slot {_S} of {_P} with getConfigStatus("%{_C}%") to run function toggleConfig("%{_C}%", {_P}, {_S})
+
+on chat:
+	{UHC::setConfig::%player%} is set
+	if difference between {UHC::setConfig::%player%::time} and now is more than 1 minute:
+		delete {UHC::setConfig::%player%}
+		delete {UHC::setConfig::%player%::*}
+	else:
+		cancel the event
+		if {UHC::setConfig::%player%::type} is "percent":
+			set {_m} to message
+			if {_m} contains "%%":
+				replace all "%%" with "" in {_m}
+				set {_number} to {_m} parsed as number
+				if {_number} is set:
+					{_number} is between 1 and 100
+					set {_type} to true
+			if {_type} is not set:
+				message "{@P} &c%message% is not a percentage (1%%-100%%) which is required for %{UHC::setConfig::%player%}% config"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+			else:
+				set {Config::%{UHC::setConfig::%player%}%} to {_number}
+				message "{@P} &aThe config %{UHC::setConfig::%player%}% has been set to %{_number}%%%"
+				broadcast "{@P} &d%player% has set %{UHC::setConfig::%player%}% to %{_number}%%%" 
+				discordLog("Config", "%player% set %{UHC::setConfig::%player%}% to %{_number}%%%")
+				execute console command "/playsoundall note.pling"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+		if {UHC::setConfig::%player%::type} is "number":
+			set {_type} to message parsed as number
+			if {_type} is not set:
+				message "{@P} &c%message% is not a Number which is required for %{UHC::setConfig::%player%}% config"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+			else:
+				set {Config::%{UHC::setConfig::%player%}%} to {_type}
+				message "{@P} &aThe config %{UHC::setConfig::%player%}% has been set to %message%"
+				broadcast "{@P} &d%player% has set %{UHC::setConfig::%player%}% to %message%" 
+				discordLog("Config", "%player% set %{UHC::setConfig::%player%}% to %message%")
+				execute console command "/playsoundall note.pling"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+		else if {UHC::setConfig::%player%::type} is "string":
+			set {_type} to message parsed as string
+			if {_type} is not set:
+				message "{@P} &c%message% is not a Text which is required for %{UHC::setConfig::%player%}% config"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+			else:
+				set {Config::%{UHC::setConfig::%player%}%} to {_type}
+				message "{@P} &aThe config %{UHC::setConfig::%player%}% has been set to %message%"
+				broadcast "{@P} &d%player% has set %{UHC::setConfig::%player%}% to %message%"
+				discordLog("Config", "%player% set %{UHC::setConfig::%player%}% to %message%")
+				execute console command "/playsoundall note.pling"
+				delete {UHC::setConfig::%player%}
+				delete {UHC::setConfig::%player%::*}
+
+function setConfigValue(C: text, P: player, type: string):
+	{_P} has permission "staff.member"
+	set {UHC::setConfig::%{_P}%} to {_C}
+	set {UHC::setConfig::%{_P}%::time} to now
+	set {UHC::setConfig::%{_P}%::type} to {_type}
+	send "{@P} &dPlease input the value for %{_C}% using chat (Must be a %{_type}%)" to {_P}
+	send "{@P} &dExpires in 1 minute" to {_P}
+
+function GameSettings(P: player):
+	open virtual chest inventory with size 6 named "&c&lUHC - &6&lGame Settings" to {_P}
+	format gui slot 0 of {_P} with crafting table named "&6&lGame Settings" to close then run function GameSettings({_P})
+	format gui slot 1 of {_P} with empty map named "&6&lMap Settings" to close then run function MapSettings({_P})
+	format gui slot 2 of {_P} with redstone named "&6&lRules Settings" to close then run function RulesSettings({_P})
+	format gui slot 3 of {_P} with compass named "&6&lMatch Settings" to close then run function MatchSettings({_P})
+	loop 9 times:
+		format gui slot (loop-number + 8) of {_P} with white glass
+	format gui slot 18 of {_P} with oak sapling named "&6&lApple drops from all trees"
+	format gui slot 27 of {_P} with getConfigStatus("Apple drops from all trees") to run function toggleConfig("Apple drops from all trees", {_P}, 27)
+	format gui slot 19 of {_P} with apple named "&6&lApple rates"
+	format gui slot 28 of {_P} with getConfigStatus("Apple rates", "percent") to close then run function setConfigValue("Apple rates", {_P}, "percent")
+	format gui slot 20 of {_P} with shears named "&6&lShears"
+	format gui slot 29 of {_P} with getConfigStatus("Shears") to run function toggleConfig("Shears", {_P}, 29)
+	format gui slot 21 of {_P} with ender pearl named "&6&lEnderpearl damage"
+	format gui slot 30 of {_P} with getConfigStatus("Enderpearl damage") to run function toggleConfig("Enderpearl damage", {_P}, 30)
+	format gui slot 22 of {_P} with saddle named "&6&lHorses"
+	format gui slot 31 of {_P} with getConfigStatus("Horses") to run function toggleConfig("Horses", {_P}, 31)
+	format gui slot 23 of {_P} with iron sword named "&6&lTeam damage"
+	format gui slot 32 of {_P} with getConfigStatus("Team damage") to run function toggleConfig("Team damage", {_P}, 32)
+	format gui slot 24 of {_P} with golden apple:0 named "&6&lAbsorption"
+	format gui slot 33 of {_P} with getConfigStatus("Absorption") to run function toggleConfig("Absorption", {_P}, 33)
+	format gui slot 25 of {_P} with player head named "&6&lGolden Heads"
+	format gui slot 34 of {_P} with getConfigStatus("Golden Heads") to run function toggleConfig("Golden Heads", {_P}, 34)
+	format gui slot 26 of {_P} with golden apple:1 named "&6&lNotch Apples"
+	format gui slot 35 of {_P} with getConfigStatus("Notch Apples") to run function toggleConfig("Notch Apples", {_P}, 35)
+	format gui slot 36 of {_P} with netherrack named "&6&lNether"
+	format gui slot 45 of {_P} with getConfigStatus("Nether") to close then run function toggleConfig("Nether", {_P}, 45)
+	format gui slot 37 of {_P} with eye of ender named "&6&lEnd"
+	format gui slot 46 of {_P} with getConfigStatus("End") to close then run function toggleConfig("End", {_P}, 46)
+	format gui slot 38 of {_P} with glowstone dust named "&6&lTier 2 Potions"
+	format gui slot 47 of {_P} with getConfigStatus("Tier 2 Potions") to run function toggleConfig("Tier 2 Potions", {_P}, 47)
+	format gui slot 39 of {_P} with potion:16452 named "&6&lPoison"
+	format gui slot 48 of {_P} with getConfigStatus("Poison") to run function toggleConfig("Poison", {_P}, 48)
+	format gui slot 40 of {_P} with potion:16457 named "&6&lStrength"
+	format gui slot 49 of {_P} with getConfigStatus("Strength") to run function toggleConfig("Strength", {_P}, 49)
+
+function MapSettings(P: player):
+	open virtual chest inventory with size 6 named "&c&lUHC - &6&lBorder Settings" to {_P}
+	format gui slot 0 of {_P} with crafting table named "&6&lGame Settings" to close then run function GameSettings({_P})
+	format gui slot 1 of {_P} with empty map named "&6&lMap Settings" to close then run function MapSettings({_P})
+	format gui slot 2 of {_P} with redstone named "&6&lRules Settings" to close then run function RulesSettings({_P})
+	format gui slot 3 of {_P} with compass named "&6&lMatch Settings" to close then run function MatchSettings({_P})
+	loop 9 times:
+		format gui slot (loop-number + 8) of {_P} with white glass
+	format gui slot 18 of {_P} with bedrock named "&6&lMap size (Radius)"
+	format gui slot 27 of {_P} with getConfigStatus("Map Size", "number") to close then run function setConfigValue("Map Size", {_P}, "number")
+	format gui slot 19 of {_P} with golden apple:0 named "&6&lFinal heal (in minutes)"
+	format gui slot 28 of {_P} with getConfigStatus("Final heal", "number") to close then run function setConfigValue("Final heal", {_P}, "number")
+	format gui slot 20 of {_P} with iron sword named "&6&lPvP Enable (in minutes)"
+	format gui slot 29 of {_P} with getConfigStatus("PvP", "number") to close then run function setConfigValue("PvP", {_P}, "number")
+	format gui slot 21 of {_P} with compass named "&6&lMeetup (in minutes)"
+	format gui slot 30 of {_P} with getConfigStatus("Meetup", "number") to close then run function setConfigValue("Meetup", {_P}, "number")
+
+function RulesSettings(P: player):
+	open virtual chest inventory with size 6 named "&c&lUHC - &6&lRules Settings" to {_P}
+	format gui slot 0 of {_P} with crafting table named "&6&lGame Settings" to close then run function GameSettings({_P})
+	format gui slot 1 of {_P} with empty map named "&6&lMap Settings" to close then run function MapSettings({_P})
+	format gui slot 2 of {_P} with redstone named "&6&lRules Settings" to close then run function RulesSettings({_P})
+	format gui slot 3 of {_P} with compass named "&6&lMatch Settings" to close then run function MatchSettings({_P})
+	loop 9 times:
+		format gui slot (loop-number + 8) of {_P} with white glass
+	format gui slot 18 of {_P} with diamond ore named "&6&lXray [UBL - Change with precaution]"
+	format gui slot 27 of {_P} with getConfigStatus("Xray", "rule") to run function toggleConfig("Xray", {_P}, 28)
+	format gui slot 19 of {_P} with crafting table named "&6&lToggle Sneak [UBL - Change with precaution]"
+	format gui slot 28 of {_P} with getConfigStatus("Toggle Sneak", "rule") to run function toggleConfig("Toggle Sneak", {_P}, 29)
+	format gui slot 20 of {_P} with crafting table named "&6&lToggle Sprint"
+	format gui slot 29 of {_P} with getConfigStatus("Toggle Sprint" , "rule") to run function toggleConfig("Toggle Sprint", {_P}, 30)
+	format gui slot 21 of {_P} with eye of ender named "&6&lStalking"
+	format gui slot 30 of {_P} with getConfigStatus("Stalking", "string") to close then run function setConfigValue("Stalking", {_P}, "string")
+	format gui slot 22 of {_P} with wooden plank named "&6&lTowering"
+	format gui slot 31 of {_P} with getConfigStatus("Towering", "string") to close then run function setConfigValue("Towering", {_P}, "string")
+	format gui slot 23 of {_P} with bedrock named "&6&lBorder Trapping"
+	format gui slot 32 of {_P} with getConfigStatus("Border Trapping", "rule") to run function toggleConfig("Border Trapping", {_P}, 32)
+	format gui slot 36 of {_P} with iron pickaxe named "&6&lStripmining"
+	format gui slot 45 of {_P} with getConfigStatus("Stripmining", "string") to close then run function setConfigValue("Stripmining", {_P}, "string")
+	format gui slot 37 of {_P} with cobblestone stairs named "&6&lStaircasing"
+	format gui slot 46 of {_P} with getConfigStatus("Staircasing", "string") to close then run function setConfigValue("Staircasing", {_P}, "string")
+	format gui slot 38 of {_P} with note block named "&6&lMining to sounds"
+	format gui slot 47 of {_P} with getConfigStatus("Mining to sounds", "rule") to run function toggleConfig("Mining to sounds", {_P}, 47)
+	format gui slot 39 of {_P} with compass named "&6&lMining to coords"
+	format gui slot 48 of {_P} with getConfigStatus("Mining to coords", "rule") to run function toggleConfig("Mining to coords", {_P}, 48)
+	format gui slot 40 of {_P} with stone named "&6&lPokeholing"
+	format gui slot 49 of {_P} with getConfigStatus("Pokeholing", "rule") to run function toggleConfig("Pokeholing", {_P}, 49)
+
+function MatchSettings(P: player):
+	open virtual chest inventory with size 6 named "&c&lUHC - &6&lMatch Settings" to {_P}
+	format gui slot 0 of {_P} with crafting table named "&6&lGame Settings" to close then run function GameSettings({_P})
+	format gui slot 1 of {_P} with empty map named "&6&lMap Settings" to close then run function MapSettings({_P})
+	format gui slot 2 of {_P} with redstone named "&6&lRules Settings" to close then run function RulesSettings({_P})
+	format gui slot 3 of {_P} with compass named "&6&lMatch Settings" to close then run function MatchSettings({_P})
+	loop 9 times:
+		format gui slot (loop-number + 8) of {_P} with white glass
+	format gui slot 18 of {_P} with name tag named "&6&lMatch name"
+	format gui slot 27 of {_P} with getConfigStatus("Match name", "string") to close then run function setConfigValue("Match name", {_P}, "string")
+	format gui slot 19 of {_P} with player head named "&6&lTeamsize"
+	format gui slot 28 of {_P} with getConfigStatus("Teamsize", "string") to close then run function setConfigValue("Teamsize", {_P}, "string")
+	format gui slot 20 of {_P} with powered rail named "&6&lScenarios"
+	format gui slot 29 of {_P} with paper named "&6/scen"
+
+#HORSES
+on spawn:
+	{Config::Horse} is not set
+	event-entity is a horse
+	cancel the event
+
+on "org.spigotmc.event.entity.EntityMountEvent":
+	{Config::Horse} is not set
+	event.getMount() is a horse
+	event.setCancelled(true)
+
+#ENDERPEARL DAMAGE
+on "org.bukkit.event.entity.EntityDamageByEntityEvent":
+	event.getEntity() is a player
+	event.getDamager() is ender pearl
+	{Config::Enderpearl damage} is not set
+	cancel the event
+
+#POTIONS
+on "org.bukkit.event.inventory.BrewEvent":
+	loop ...event.getContents():
+		if loop-value is glowstone dust:
+			{Config::Tier 2 Potions} is not set
+			event.setCancelled(true)
+			set {_M} to "Tier 2 Potions"
+		if loop-value is blaze powder:
+			{Config::Strength} is not set
+			event.setCancelled(true)
+			set {_M} to "Strength potions"
+		if loop-value is spider eye:
+			{Config::Poison} is not set
+			event.setCancelled(true)
+			set {_M} to "Poison potions"
+	event.isCancelled() is true
+	loop all players:
+		distance between the loop-player's location and event.getBlock()'s location < 10
+		send "{@P} &c%{_M}% are disabled /uhc" to loop-player
+
+on damage:
+	{Config::Poison} is not set
+	damage was caused by Poison
+	cancel the event
+	wait 1 tick
+	remove poison from victim
+
+#hunger fix
+on "org.bukkit.event.entity.FoodLevelChangeEvent":
+	event.getFoodLevel() < event.getEntity().getFoodLevel()
+	if event.getFoodLevel() < random integer between 4 and 100:
+		cancel the event
+
+command /uhc [<text="config">] [<text>] [<text>]:
+	aliases: /config
+	trigger:
+		set {_Host} to "%{Host}%" parsed as player
+		if arg-1 is "admin":
+			execute player command "/uhc config admin"
+		if arg-1 is "config":
+			if arg-2 is "game":
+				GameSettings(player)
+			else if arg-2 is "border":
+				MapSettings(player)
+			else if arg-2 is "rules":
+				RulesSettings(player)
+			else if arg-2 is "match":
+				MatchSettings(player)
+			else:
+				GameSettings(player)
+		else if arg-1 is "genworld":
+			if command sender has permission "staff.member":
+				if {UHC::WorldGen} is set:
+					message "{@P} &cThere is already a world generation running check ##minecraft-logs, if not restart the server"
+				else if world("UHC") is set:
+					message "{@P} &cWorld UHC already exists `/mv delete UHC` to delete it"
+				else:
+					discordLog("World", "%sender% is generating a new UHC world")
+					message "{@P} &4Starting UHC world generation"
+					wait 2 ticks
+					execute command "/mv create UHC normal "
+					execute console command "/mvrule naturalRegeneration false UHC"
+					execute console command "/mvrule doDaylightCycle false UHC"
+					execute console command "/time set 0 UHC"
+					execute console command "/mv modify set pvp false UHC"
+					execute console command "/wb UHC set %{Config::Map Size}% %{Config::Map Size}% 0 0"
+					execute console command "/wb wshape UHC square"
+					BorderShrink({Config::Map Size})
+					if command sender is a player:
+						set {_world} to "UHC" parsed as world
+						teleport player to location at 0, 100, 0 in world {_world}
+						set player's gamemode to creative
+						wait 2 seconds
+						set {_loc1} to location(100, 256, 100, {_world})
+						set {_loc2} to location(-100, 5, -100, {_world}) 
+						loop blocks within {_loc1} and {_loc2}:
+							if loop-block is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood or leaves:
+								set loop-block to air
+							if loop-block is water or sand:
+								set loop-block to grass
+							wait 0.2 ticks
+						System.gc()
+					else:
+						set {WorldGen} to true
+					wait 100 ticks
+					make command sender execute command "/wb UHC fill 70 50"
+					make command sender execute command "/wb fill confirm"
+		else if arg-1 is "gennether":
+			if sender has permission "staff.member":
+				if {UHC::WorldGen} is set:
+					message "{@P} &cThere is already a world generation running check ##minecraft-logs, if not restart the server"
+				else if world("UHC_nether") is set:
+					message "{@P} &cThe nether world already exists. Delete it with /mv delete UHC_nether"
+				else:
+					discordLog("World", "%sender% is generating a new UHC Nether world")
+					message "{@P} &4Starting UHC Nether generation"
+					wait 2 ticks
+					execute command "/mv create UHC_nether nether"
+					execute console command "/mvrule naturalRegeneration false UHC_nether"
+					execute console command "/mv modify set pvp false UHC_nether"
+					execute console command "/wb UHC_nether set %({Config::Map Size} / 3)% %({Config::Map Size} / 3)% 0 0"
+					execute console command "/wb wshape UHC_nether square"
+					BorderShrink(1500)
+					wait 40 ticks
+					make command sender execute command "/wb UHC_nether fill 70 50"
+					make command sender execute command "/wb fill confirm"
+		else if arg-1 is "genend":
+			if sender has permission "staff.member":
+				if {UHC::WorldGen} is set:
+					message "{@P} &cThere is already a world generation running check ##minecraft-logs, if not restart the server"
+				else if world("UHC_the_end") is set:
+					message "{@P} &cThe end world already exists. Delete it with /mv delete UHC_the_end"
+				else:
+					discordLog("World", "%sender% is generating a new UHC End world")
+					message "{@P} &4Starting UHC End generation"
+					wait 2 ticks
+					execute command "/mv create UHC_the_end end"
+					execute console command "/mvrule naturalRegeneration false UHC_the_end"
+					execute console command "/mv modify set pvp false UHC_the_end"
+					execute console command "/wb UHC_the_end set 200 200 0 0"
+					execute console command "/wb wshape UHC_the_end square"
+					wait 40 ticks
+					make command sender execute command "/wb UHC_the_end fill 70 50"
+					make command sender execute command "/wb fill confirm"
+		else if arg-1 is "spec":
+			if command sender is not CONSOLE:
+				player doesn't have permission "staff.member"
+				stop
+			if arg-2 is set:
+				set {_P} to arg-2 parsed as player
+				if {_P} is online:
+					if arg-3 is set:
+						if arg-3 is "On":
+							SpecMode({_P}, "On")
+						if arg-3 is "Off":
+							SpecMode({_P}, "Off")
+					else:
+						SpecMode({_P}, "Gay")
+				else:
+					message "{@P} Player isn't online???"
+			else:
+				SpecMode(player, "Gay")
+		else if arg-1 is "stop":
+			if {UHC::Status} is not set:
+				message "{@P} &cThere is no UHC currently running"
+			else:
+				delete {UHC::*}
+				loop all players:
+					loop-player's world is world("UHC")
+					execute console command "/mv tp %loop-player% Spawn"
+				broadcast "{@P} &aUHC has been stopped and resetted"
+		else if arg-1 is "start":
+			if {UHC::Status} is true:
+				message "{@P} &cA UHC is currently running! You must do /uhc stop before starting another one"
+				stop
+			execute console command "/giveall steak 16"
+			execute console command "/giveall boat 1"
+			set {_world} to world("UHC")
+			{_world}.setStorm(false)
+			{_world}.setTime(0)
+			broadcast "{@P} &dStarting in 3"
+			execute console command "/playsoundall random.click"
+			wait 1 seconds
+			broadcast "{@P} &dStarting in 2"
+			execute console command "/playsoundall random.click"
+			wait 1 seconds
+			broadcast "{@P} &dStarting in 1"
+			execute console command "/playsoundall random.click"
+			wait 1 seconds
+			broadcast "{@P} &dGO!"
+			execute console command "/playsoundall note.pling"
+			set {UHC::Status} to true
+			set {UHC::Border} to {Config::Map Size}
+			delete {UHC::Scatter}
+			StartGameTime("Gay")
+			loop all players:
+				Scoreboard(loop-player)
+				if loop-player's vehicle.hasMetadata("FreezeEntity") is true:
+					delete loop-player's vehicle
+			execute console command "/butcher"
+			delete {Teams.Management}
+			EntropyStart("Gay")
+			LootCratesStart("Gay")
+			InfiniteEnchanterStart("Gay")
+			GoneFishinStart("Gay")
+			ChickenStart("Gay")
+			DoubleDatesStart("Gay")
+			SlavemarketDiamonds("Gay")
+			SkyHighItemStart("Gay")
+			EnderDragonRushStart("gay")
+			SuperHeroesStart("Gay")
+			GigaDrillStart("Gay")
+			BirdsStart("Gay")
+		else:
+			make player execute command "/uhc config %arg-1%"
+
+on join:
+	{UHC::Status} is true
+	if player's vehicle.hasMetadata("FreezeEntity") is true:
+		delete player's vehicle
+
+function BorderScoreboard(S: object = 1):
+	while {UHC::WorldGen} is set:
+		loop all players:
+			loop-player has permission "staff.member"
+			Scoreboard(loop-player)
+		wait 10 ticks
+
+on "com.wimbli.WorldBorder.Events.WorldBorderFillStartEvent":
+	set {UHC::WorldGen} to event.getFillTask()
+	set {UHC::WorldGen::time} to now
+	BorderScoreboard()
+	discordLog("World", "Started world fill task, task is updated every 1 minute")
+	while {UHC::WorldGen} is set:
+		discordLog("World", "Fill %event.getFillTask().getChunksCompleted()%/%event.getFillTask().getChunksTotal()% (%event.getFillTask().getPercentageCompleted()%%%)")
+		wait 1 minute
+
+on "com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent":
+	discordLog("World", "Finished world fill task took %difference between {UHC::WorldGen::time} and now% for %event.getTotalChunks()% chunks")
+	delete {UHC::WorldGen}
+	loop all players:
+		loop-player has permission "staff.member"
+		Scoreboard(loop-player)
+
+on join:
+	{UHC::Status} is not set
+	player has permission "staff.member"
+	{WorldGen} is true
+	set {_world} to "UHC" parsed as world
+	teleport player to location at 0, 100, 0 in world {_world}
+	set player's gamemode to creative
+	wait 2 seconds
+	set {_loc1} to location(100, 256, 100, {_world}) 
+	set {_loc2} to location(-100, 5, -100, {_world}) 
+	loop blocks within {_loc1} and {_loc2}:
+		if loop-block is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood or leaves:
+			set loop-block to air
+		if loop-block is water or sand:
+			set loop-block to grass
+		wait 0.2 ticks
+	System.gc()
+	delete {WorldGen}
+	set player's gamemode to survival
+	execute console command "/mv tp %player% spawn"
+
+on command "/stop":
+	sender has permission "staff.member"
+	discordLog("Server", "%sender% executed /stop")
+
+import:
+	org.bukkit.Bukkit
+
+on skript load:
+	set {AutoUBL} to Bukkit.getPluginManager().getPlugin("AutoUBL")
+
+on server start:
+	while {AutoUBL}.isReady() is false:
+		wait 1 second
+	discordLog("Server", "AutoUBL Finished, Server successfully started (maybe)")
+
+on server stop:
+	discordLog("Server", "Server stopping...")
+
+on damage:
+	victim's world is "Spawn"
+	damage cause is void
+	cancel the event
+	execute console command "/mv tp %victim% Spawn"
+
+on command "/pl":
+	if full command is "pl yes please":
+		stop
+	else if command sender doesn't have permission "staff.member":
+		message "{@P} &dEverything is coded in skript! (still want to see? do /pl yes please)"
+		cancel the event
+
+command /fullbright:
+	trigger:
+		if player doesn't have night vision:
+			apply potion of night vision of tier 1 to player for 1 day
+			message "{@P} &dYou have been given the power of fullbright!"
+		else:
+			remove night vision from player
+			message "{@P} &cYour fullbright has been removed."
+
+on command:
+	{UHC::Status} is true
+	if command is "selfmole" or "top" or "giveall" or "tp" or "teleport" or "invsee" or "gamemode" or "gm" or "fly" or "give" or "heal":
+		player has permission "staff.member"
+		{UHC::Spectators::%player%} is not set
+		message "{@P} &dThis command requires spec mode"
+		StaffMessage("%player% just tried %command% while playing", "Normal")
+		cancel the event
+
+function SpectatorTeleport(P: player, T: player):
+	teleport {_P} to {_T}
+	send "{@P} &dYou teleported to %{_T}%" to {_P}
+
+function SpecPage1(P: player):
+	open virtual chest inventory with size 6 named "&6Player Teleporter - Page 1" to {_P}
+	loop {UHC::AlivePlayers::*}:
+		add ("%loop-index%" parsed as player) to {_Players::*}
+	set {_N} to 0
+	loop {_Players::*}:
+		{_N} < 45
+		remove loop-value from {_Players2::*}
+		if loop-value is online:
+			set {_name} to "&d%loop-value% &7[&aOnline&7]"
+		else:
+			set {_name} to "&d%loop-value% &7[&cOffline&7]"
+		format a gui slot {_N} of {_P} with loop-value's skull named "%{_name}%" to close then run function SpectatorTeleport({_P}, loop-value)
+		add 1 to {_N}
+	format a gui slot 53 of {_P} with paper named "&dNext page" to run function SpecPage2({_P})
+		
+function SpecPage2(P: player):
+	open virtual chest inventory with size 6 named "&6Player Teleporter - Page 2" to {_P}
+	loop {UHC::AlivePlayers::*}:
+		add ("%loop-index%" parsed as player) to {_Players::*}
+	set {_N} to 0
+	loop {_Players::*}:
+		add 1 to {_N}
+		{_N} > 44
+		remove loop-value from {_Players2::*}
+		if loop-value is online:
+			set {_name} to "&d%loop-value% &7[&aOnline&7]"
+		else:
+			set {_name} to "&d%loop-value% &7[&cOffline&7]"
+		format a gui slot ({_N1}-0) of {_P} with loop-value's skull named "%{_name}%" to close then run function SpectatorTeleport({_P}, loop-value)
+		add 1 to {_N1}
+	format a gui slot 45 of {_P} with paper named "&dLast page" to run function SpecPage1({_P})
+
+on rightclick on chest:
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	if block north of event-block is chest:
+		set {_chest2} to block north of event-block
+	if block east of event-block is chest:
+		set {_chest2} to block east of event-block
+	if block west of event-block is chest:
+		set {_chest2} to block west of event-block
+	if block south of event-block is chest:
+		set {_chest2} to block south of event-block
+	if {_chest2} is not set:
+		create a gui with virtual chest with 3 rows named "Chest":
+			set {_N} to 0
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of event-block's inventory
+				add 1 to {_N}
+		open last gui to player
+	else:
+		create a gui with virtual chest with 6 rows named "Chest":
+			set {_N} to 0
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of event-block's inventory
+				add 1 to {_N}
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of {_chest2}'s inventory
+				add 1 to {_N}
+		open last gui to player
+
+on rightclick on trapped chest:
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	if block north of event-block is trapped chest:
+		set {_chest2} to block north of event-block
+	if block east of event-block is trapped chest:
+		set {_chest2} to block east of event-block
+	if block west of event-block is trapped chest:
+		set {_chest2} to block west of event-block
+	if block south of event-block is trapped chest:
+		set {_chest2} to block south of event-block
+	if {_chest2} is not set:
+		create a gui with virtual chest with 3 rows named "Trapped chest":
+			set {_N} to 0
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of event-block's inventory
+				add 1 to {_N}
+		open last gui to player
+	else:
+		create a gui with virtual chest with 6 rows named "Trapped chest":
+			set {_N} to 0
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of event-block's inventory
+				add 1 to {_N}
+			loop 27 times:
+				format gui slot {_N} with slot {_N} of {_chest2}'s inventory
+				add 1 to {_N}
+		open last gui to player
+
+on rightclick with light green dye or gray dye:
+	name of player's tool contains "Vanish"
+	{UHC::Spectators::%player%} is true
+	if player has permission "staff.member":
+		if {Vanish::%player%} is true:
+			Vanish(player, "Off")
+		else:
+			Vanish(player, "On")
+	else:
+		message "{@P} &cYou must be a staff member to use this!"
+
+on rightclick with ender pearl:
+	player's tool is an ender pearl named "&6&oTeleport"
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	if size of {UHC::AlivePlayers::*} < 45:
+		open virtual chest inventory with size 6 named "&6Player Teleporter" to player
+		set {_N} to 0
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as offline player
+			if {_P} is online:
+				set {_name} to "&d%{_P}% &7[&aOnline&7]"
+			else:
+				set {_name} to "&d%{_P}% &7[&cOffline&7]"
+			format a gui slot {_N} of player with {_P}'s skull named "%{_name}%" to close then run function SpectatorTeleport(player, {_P})
+			add 1 to {_N}
+	else:
+		SpecPage1(player)
+
+on rightclick with an iron sword:
+	player's tool is an iron sword named "&6&oTeleport to 0,0"
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	set {_world} to "UHC" parsed as world
+	teleport player to location at 0, 100, 0 in world {_world}
+
+on rightclick with end portal frame:
+	player's tool is a end portal frame named "&6&oRandom Teleport"
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	set {_N1} to a random integer between 1 and size of {UHC::AlivePlayers::*}
+	set {_N2} to 0
+	loop {UHC::AlivePlayers::*}:
+		add 1 to {_N2}
+		{_N1} is {_N2}
+		set {_P} to "%loop-index%" parsed as player
+		SpectatorTeleport(player, {_P})
+
+on rightclick on player:
+	player's tool is book named "&6&oView Inventory"
+	{UHC::Spectators::%player%} is true
+	if player's target is a player:
+		make player execute command "/inv %player's target%"
+
+on rightclick with compass:
+	player's tool is a compass named "&6&oPassthrough blocks"
+	{UHC::Spectators::%player%} is true
+	cancel the event
+	if player has permission "staff.member":
+		make player execute command "/thru"
+	else:
+		message "{@P} &cYou must be a staff member to use this!"
+
+command /inv <player> [<text>]:
+	trigger:
+		if {UHC::Spectators::%player%} is true:
+			if arg-2 is "edit":
+				open arg-1's inventory to player
+			else:
+				create a gui with virtual chest with 6 rows named "&3%arg-1%'s inventory":
+					set {_N1} to 0
+					set {_N2} to 9
+					loop 26 times:
+						format gui slot {_N1} with slot {_N2} of arg-1's inventory
+						add 1 to {_N1} and {_N2}
+					set {_N1} to 27
+					set {_N2} to 0
+					loop 8 times:
+						format gui slot {_N1} with slot {_N2} of arg-1's inventory
+						add 1 to {_N1} and {_N2}
+					format gui slot {_N1} with slot {_N2} of arg-1's inventory
+					format gui slot 45 with arg-1's helmet
+					format gui slot 46 with arg-1's chestplate
+					format gui slot 47 with arg-1's leggings
+					format gui slot 48 with arg-1's boots
+					if {Scenarios::Superheroes} is true:
+						if {UHC::Superheroes::%arg-1%} is 1:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> Strength"
+						if {UHC::Superheroes::%arg-1%} is 2:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> 6 Extra Hearts"
+						if {UHC::Superheroes::%arg-1%} is 3:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> Jump Boost"
+						if {UHC::Superheroes::%arg-1%} is 4:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> Speed"
+						if {UHC::Superheroes::%arg-1%} is 5:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> Resistance"
+						if {UHC::Superheroes::%arg-1%} is 6:
+							format gui slot 50 with fire charge named "&4Superpower (Superheroes)" with lore "&f> Invinsibility"
+					format gui slot 51 with apple named "&cHealth %arg-1's health% / %arg-1's max health%"
+					format gui slot 52 with potion:16453 named "&6Active potions effects" with lore "%all of the active potion effects of arg-1%"
+					if {UHC::AlivePlayers::%arg-1%} is true:
+						format gui slot 53 with slimeball named "&aAlive"
+					else if {UHC::Spectators::%arg-1%} is true:
+						format gui slot 53 with yellow dye named "&eSpectator"
+					else:
+						format gui slot 53 with magma cream named "&cDead"
+				open last gui to player
+		else:
+			message "{@P} &dThis command is for spectators only!"
+
+command /invsee [<text>]:
+	trigger:
+		if arg-1 is set:
+			make player execute command "/inv %arg-1%"
+		else:
+			make player execute command "/inv"
+
+on skript load:
+	delete {UHC::*}
+
+on join:
+	wait 1 tick
+	if {UHC::Status} and {Tournaments::Status} is not set:
+		{UHC::Spectators::%player%} is not set
+		execute console command "/mv tp %player% spawn"
+		ClearAllEffects(player)
+	else:
+		if player has permission "rank.spec":
+			{UHC::AlivePlayers::%player%} is not set
+			{UHC::Spectators::%player%} is not set
+			{Tournaments::AlivePlayers::%player%} is not set
+			SpecMode(player, "On")
+		else if {UHC::Spectators::%player%} is true:
+			set player's gamemode to creative
+
+on weather change to rain:
+	if event-world is "Spawn" or "Arena":
+		set weather to sunny

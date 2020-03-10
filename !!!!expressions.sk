@@ -1,0 +1,77 @@
+function contains(l: objects, v: object) :: boolean:
+  return not ((random element out of ({_l::*} where [object input is {_v}])) == null)
+
+function sortHighestToLowest(indexes: strings, values: objects) :: strings:
+	set {_size} to size of {_values::*}
+	loop {_size} times:
+		loop {_size} - 1 times:
+			set {_value1} to {_values::%loop-number-2%}
+			set {_value2} to {_values::%loop-number-2 + 1%}
+			{_value1} is less than {_value2}
+			set {_index1} to {_indexes::%loop-number-2%}
+			set {_indexes::%loop-number-2%} to {_indexes::%loop-number-2 + 1%}
+			set {_values::%loop-number-2%} to {_value2}
+			set {_indexes::%loop-number-2 + 1%} to {_index1}
+			set {_values::%loop-number-2 + 1%} to {_value1}
+		remove 1 from {_size}
+	return {_indexes::*}
+
+expression [server] region:
+	get:
+		return "EU"
+
+function discordLog(prefix: string, message: string):
+	send message "**[%server region%] %{_prefix}%** » %{_message}%" to channel "474851366779748352" as "Matches"
+
+expression alive player[s] count:
+	get:
+		return size of {UHC::AlivePlayers::*}
+
+expression spectator[s] count:
+	get:
+		set {_N} to 0
+		loop {UHC::Spectators::*}:
+			if ("%loop-index%" parsed as player) is online:
+				add 1 to {_N}
+		return {_N}
+
+import:
+	org.apache.commons.lang.ClassUtils
+	com.btk5h.skriptmirror.LibraryLoader
+	java.lang.Runtime
+
+effect import %string% [as %-objects%]:
+	trigger:
+		set {_class} to ClassUtils.getClass(LibraryLoader.classLoader! and expression 1)
+		if raw exprs-2 is not set:
+			set {_name} to {_class}.getSimpleName()
+			set {%{_name}%} to java class expression 1
+		else:
+			set {_name} to (raw exprs-2).name!.toString(event)
+			set {%{_name}%} to java class expression 1
+
+on script load:
+	set {_bukkit} to (class "org.bukkit.Bukkit").getServer().getClass().getPackage().getName()
+	set {_rev::*} to split {_bukkit} by "."
+	import "net.minecraft.server.%{_rev::4}%.MinecraftServer"
+
+expression [the] tps:
+	get:
+		set {_tps} to first element out of (...{MinecraftServer}.getServer().recentTps!)
+		if {_tps} <= 17:
+			return "&c%{_tps}%"
+		else if {_tps} >= 22:
+			return "&c%{_tps}%"
+		else:
+			return "&a%{_tps}%"
+
+expression used memory:
+	get:
+		set {_max} to Runtime.getRuntime().maxMemory() 
+		set {_free} to Runtime.getRuntime().freeMemory()
+		set {_count} to ({_max} - {_free})
+		return floor({_count} / 1048576)
+
+expression max memory:
+	get:
+		return (Runtime.getRuntime().maxMemory() / 1048576)

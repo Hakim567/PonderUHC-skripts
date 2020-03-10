@@ -1,0 +1,5 @@
+on command:
+	command sender is not CONSOLE
+	if command contains "calc" or "calculate" or "solve" or "eval" or "evaluate":
+		message "&d&lPonderUHC &6» &dNah dont think so :p"
+		cancel the event

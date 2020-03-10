@@ -1,0 +1,20 @@
+command /maxplayers [<integer>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is not set:
+			message "&eMaximum players &fis &e%{maxplayers}%"
+		else:
+			delete {maxplayers}
+			wait 5 ticks
+			set {maxplayers} to arg 1
+			message "&eMaximum players &fset to &e%arg-1%"
+			
+on connect:
+	if player does not have the permission "maxplayers.exempt":
+		if amount of players >= {maxplayers}:
+			if {whitelisted::%player%} is true:
+				stop
+			kick the player due to "&d&lPonderUHC%nl%&4Server is full &7(&e%amount of players%&7/&e%{maxplayers}%&7)"
+			
+on server list ping:
+	set max player count to {maxplayers}

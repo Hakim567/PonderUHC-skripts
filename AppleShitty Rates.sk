@@ -1,0 +1,73 @@
+on break of gravel:
+	event-player's gamemode is survival
+	world is not "pvparena" or "spawn" or "musim"
+	if {Config::Flint Rates} is not set:
+		stop
+	cancel the event
+	set the event-block to air
+	set {_chance} to a random integer between 1 and 100
+	if {_chance} is between -1 and {Config::Flint Rates}:
+		drop 1 flint at event-block
+	else:
+		drop 1 gravel at event-block
+		
+on leaves decay:
+	world is not "pvparena" or "spawn" or "musim"
+	if {Config::Apple Rates} is not set:
+		stop 
+	cancel the event
+	set the event-block to air
+	chance of {Config::Apple Rates}%:
+		drop 1 apple at event-block
+	if event-block is oak leaves:
+		chance of 5%
+		drop 1 oak sapling at event-block
+	else if event-block is spruce leaves:
+		chance of 5%
+		drop 1 spruce sapling at event-block
+	else if event-block is birch leaves:
+		chance of 5%
+		drop 1 birch sapling at event-block
+	else if event-block is jungle leaves:
+		chance of 5%
+		drop 1 jungle sapling at event-block
+	else if event-block is acacia leaves:
+		chance of 5%
+		drop 1 acacia sapling at event-block
+	else if event-block is dark oak leaves:
+		chance of 5%
+		drop 1 dark oak sapling at event-block	
+
+on break of leaves:
+	event-player's gamemode is survival
+	world is not "pvparena" or "spawn" or "musim"
+	if {Config::Apple Rates} is not set:
+		stop
+	if player's tool is shears:
+		{Config::Shears} is not set
+		stop
+	if {Config::Apple drops from all trees} is not set:
+		event-block is not oak leaves or dark oak leaves
+		stop
+	cancel the event
+	set the event-block to air
+	chance of {Config::Apple Rates}%:
+		drop 1 apple at event-block
+	if event-block is oak leaves:
+		chance of 5%
+		drop 1 oak sapling at event-block
+	else if event-block is spruce leaves:
+		chance of 5%
+		drop 1 spruce sapling at event-block
+	else if event-block is birch leaves:
+		chance of 5%
+		drop 1 birch sapling at event-block
+	else if event-block is jungle leaves:
+		chance of 5%
+		drop 1 jungle sapling at event-block
+	else if event-block is acacia leaves:
+		chance of 5%
+		drop 1 acacia sapling at event-block
+	else if event-block is dark oak leaves:
+		chance of 5%
+		drop 1 dark oak sapling at event-block

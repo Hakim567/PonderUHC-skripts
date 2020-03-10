@@ -1,0 +1,21 @@
+options:
+	P: &d&lPonderUHC &6»
+
+on chat:
+	player has permission "staff.member" or "normal.friend"
+	wait 5 ticks
+	if message contains "!discord":
+		broadcast "{@P} &ddiscord.ponderuhc.cf"
+	else if message contains "!ip":
+		broadcast "{@P} &dplay.ponderuhc.cf"
+	else if message contains "!store":
+		broadcast "{@P} &dstore.ponderuhc.cf"
+	else if message contains "!relog":
+		if {UHC::Status} is true:
+			broadcast "{@P} &dYou can relog but if you dont come back before 5 minutes after relogging you will be auto killed"
+		else:
+			broadcast "{@P} &dYou can relog after the game starts"
+
+command /discord:
+	trigger:
+		message "{@P} &ddiscord.ponderuhc.cf | https://discordapp.com/invite/jj9kZ8B"

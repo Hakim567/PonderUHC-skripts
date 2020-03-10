@@ -1,0 +1,155 @@
+options:
+	P: &d&lPonderUHC &6»
+
+function DQ(P: object, type: text, R: text, CS: player, Time: text, warn: boolean = false):
+	if {_P} is a number:
+		set {_N} to 0
+		loop {Team.%{_P}%::*}:
+			add 1 to {_N}
+			if {_warn} is true:
+				{UHC::%{_R}%::%loop-value%} <= 2
+				add 1 to {UHC::%{_R}%::%loop-value%}
+				send "{@P} &dYour team has been warned for %{_R}% [%{UHC::%{_R}%::%loop-value%}%/2]" to loop-value
+				play sound "note_bass" to loop-value with volume 1 and pitch 5
+				{_N} <= 1
+				send "{@P} &dFirst offense Team %{_P}% has been warned for %{_R}%" to {_CS}
+				StaffMessage("%{_CS}% warned Team %{_P}% for %{_R}%", "Normal")
+				stop
+			if {_type} is "ban":
+				set {UHC::DQ::%loop-value%} to true
+				broadcast "{@P} &dDQ in 3"
+				execute console command "/playsoundall random.click"
+				wait 1 second
+				broadcast "{@P} &dDQ in 2"
+				execute console command "/playsoundall random.click"
+				wait 1 second
+				broadcast "{@P} &dDQ in 1"
+				execute console command "/playsoundall random.click"
+				wait 1 second
+				kill loop-value
+				wait 20 ticks
+				if {_Time} is "0s":
+					broadcast "{@P} &d%loop-value% was DQ'd for %{_R}%"
+				else:
+					make {_CS} execute command "/tempban %loop-value% %{_Time}% %{_R}%"
+				{_N} <= 1
+				set {_UUID} to {_CS}'s UUID
+			else if {_type} is "mute":
+				make {_CS} execute command "/tempmute %loop-value% %{_Time}% %{_R}%"
+			else if {_type} is "warn":
+				send "{@P} &dYour team has been warned for %{_R}%" to loop-value
+				play sound "note_bass" to loop-value with volume 1 and pitch 5
+				{_N} <= 1
+				send "{@P} &dTeam %{_P}% has been warned for %{_R}%" to {_CS}
+				StaffMessage("%{_CS}% warned Team %{_P}% for %{_R}%", "Normal")
+	else:
+		if {_warn} is true:
+			add 1 to {UHC::%{_R}%::%{_P}%}
+			{UHC::%{_R}%::%{_P}%} <= 2
+			send "{@P} &dYou have been warned for %{_R}% [%{UHC::%{_R}%::%{_P}%}%/2]" to {_P}
+			play sound "note_bass" to {_P} with volume 2 and pitch 5
+			send "{@P} &d%{_P}% has been warned for %{_R}% [%{UHC::%{_R}%::%{_P}%}%/2]" to {_CS}
+			StaffMessage("%{_CS}% warned %{_P}% for %{_R}% [%{UHC::%{_R}%::%{_P}%}%/2]", "Normal")
+			stop
+		if {_type} is "ban":
+			set {UHC::DQ::%{_P}%} to true
+			broadcast "{@P} &dDQ in 3"
+			execute console command "/playsoundall random.click"
+			wait 1 second
+			broadcast "{@P} &dDQ in 2"
+			execute console command "/playsoundall random.click"
+			wait 1 second
+			broadcast "{@P} &dDQ in 1"
+			execute console command "/playsoundall random.click"
+			wait 1 second
+			kill {_P}
+			wait 20 ticks
+			if {_Time} is "0s":
+				broadcast "{@P} &d%{_P}% was DQ'd for %{_R}%"
+			else:
+				make {_CS} execute command "/tempban %{_P}% %{_Time}% %{_R}%"
+			set {_UUID} to {_CS}'s UUID
+		else if {_type} is "mute":
+			make {_CS} execute command "/tempmute %{_P}% %{_Time}% %{_R}%"
+		else if {_type} is "warn":
+			send "{@P} &dYou have been warned for %{_R}%" to {_P}
+			play sound "note_bass" to {_P} with volume 1 and pitch 5
+			send "{@P} &d%{_P}% has been warned for %{_R}%" to {_CS}
+			StaffMessage("%{_CS}% warned %{_P}% for %{_R}%", "Normal")
+
+command /punish [<text>]:
+	aliases: /p
+	trigger:
+		if player doesn't have permission "staff.member":
+			message "{@P} &c&oNo perms sadly :(((((("
+			stop
+		else:
+			if arg-1 is not set:
+				message "{@P} &c&o/punish player"
+				stop
+			if arg-1 contains "team":
+				set {_team} to arg-1
+				replace all "team" with "" in {_team}
+				set {_teamp} to "%{_team}%" parsed as number
+				if {_teamp} is not set:
+					message "{@P} &c%arg-1% is not a valid team!"
+					stop
+				else:
+					if {Teams::%{_teamp}%} is set:
+						set {_P} to {Teams::%{_teamp}%}
+					else:
+						message "{@P} &cTeam %{_team}% does not exist!"
+						stop
+			else:
+				set {_P} to arg-1 parsed as offline player
+			open virtual chest inventory with size 3 named "&c&oPunish - &c&l%arg-1%" to player
+			set {_CS} to command sender
+			format gui slot 0 of player with redstone named "&c&oGame punishments [DQ/Ban]"
+			format gui slot 1 of player with white glass
+			format gui slot 2 of player with crafting table named "&c&oToggleSneak - 30d" to close:
+				DQ({_P}, "ban", "ToggleSneak", {_CS}, "30d")
+			format gui slot 3 of player with diamond ore named "&c&oXray - 60d" to close:
+				DQ({_P}, "ban", "Xray", {_CS}, "60d")
+			format gui slot 4 of player with iron sword named "&c&oHacked Client - 60d" to close:
+				DQ({_P}, "ban", "Hacked Client", {_CS}, "60d")
+			format gui slot 5 of player with 2 diamond sword named "&c&oCrossteaming - Just DQ" to close:
+				DQ({_P}, "ban", "Crossteaming", {_CS}, "0s")
+			format gui slot 6 of player with diamond pickaxe named "&c&oMining Rules - 7d [2 Warns]" to close:
+				DQ({_P}, "ban", "Mining Rules", {_CS}, "7d", true)
+			format gui slot 7 of player with nether star named "&c&oServer disrespect - 30d [only for extreme cases]" to close:
+				DQ({_P}, "ban", "Server disrespect", {_CS}, "30d")
+			format gui slot 9 of player with paper named "&c&oChat punishments [Mute]"
+			format gui slot 10 of player with white glass
+			format gui slot 11 of player with book and quill named "&c&oSpamming - 1d" to close:
+				DQ({_P}, "mute", "Spamming", {_CS}, "1d")
+			format gui slot 12 of player with ink sack named "&c&oRacism - 7d" to close:
+				DQ({_P}, "mute", "Racism", {_CS}, "7d")
+			format gui slot 18 of player with firework star named "&c&oWarn [only warns]"
+			format gui slot 19 of player with white glass
+			format gui slot 20 of player with grass named "&c&oGo Up" to close:
+				DQ({_P}, "warn", "Go Up", {_CS}, "1d")
+			format gui slot 21 of player with cobblestone named "&c&oStop Camping" to close:
+				DQ({_P}, "warn", "Stop Camping", {_CS}, "1d")
+			format gui slot 22 of player with iron pickaxe named "&c&oStop Mining" to close:
+				DQ({_P}, "warn", "Stop Mining", {_CS}, "1d")
+
+on command "/unban":
+	player has permission "staff.member"
+	set {_d} to "%full command%"
+	replace all "unban" with "" in {_d}
+	discordLog("Punish", "%player% unbanned%{_d}%")
+
+on command "/unwarn":
+	player has permission "staff.member"
+	set {_d} to "%full command%"
+	replace all "unban" with "" in {_d}
+	discordLog("Punish", "%player% unwarned%{_d}%")
+
+on new litebans entry:
+	set {_executor} to offline player from uuid "%executor of event-entry%"
+	set {_player} to offline player from uuid "%player of event-entry%"
+	if duration of event-entry is set:
+		discordLog("Punish", "%{_executor}% %type of event-entry% %{_player}% for %reason of event-entry% with duration %duration of event-entry%")
+	else:
+		discordLog("Punish", "%{_executor}% %type of event-entry% %{_player}% for %reason of event-entry%")
+

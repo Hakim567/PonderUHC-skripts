@@ -1,0 +1,477 @@
+options:
+	P: &d&lPonderUHC &6»
+	C: &7
+	H: &d
+	NoPerms: &d&lPonderUHC &6» &cYou do not have the permission!
+	
+function colorTeams(uhc: text, color: string = "none"):
+	if {Teams::*} is not set:
+		stop trigger
+	else:
+		if {_color} != "none":
+			set {Teams.Colors::%{_uhc}%} to "%{_color}%"
+			stop
+		if {Teams.Colors::unused::*} is not set:
+			loop "&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9", "&a", "&b", "&c", "&d", "&e" and "&f":
+				add loop-value to {Teams.Colors::unused::*}
+			loop "&0&l", "&1&l", "&2&l", "&3&l", "&4&l", "&5&l", "&6&l", "&7&l", "&8&l", "&9&l", "&a&l", "&b&l", "&c&l", "&d&l", "&e&l" and "&f&l":
+				add loop-value to {Teams.Colors::unused::*}
+			loop "&0&o", "&1&o", "&2&o", "&3&o", "&4&o", "&5&o", "&6&o", "&7&o", "&8&o", "&9&o", "&a&o", "&b&o", "&c&o", "&d&o", "&e&o" and "&f&o":
+				add loop-value to {Teams.Colors::unused::*}
+			loop "&0&n", "&1&n", "&2&n", "&3&n", "&4&n", "&5&n", "&6&n", "&7&n", "&8&n", "&9&n", "&a&n", "&b&n", "&c&n", "&d&n", "&e&n" and "&f&n":
+				add loop-value to {Teams.Colors::unused::*}
+		loop {Teams.Colors::unused::*}:
+			set {_c} to loop-value
+			remove {_c} from {Teams.Colors::unused::*}
+			set {Teams.Colors::%{_uhc}%} to {_c}
+			stop loop
+	 
+function createTeam(n: number, color: string = "none"):
+	set {Teams::%{_n}%} to {_n}
+	colorTeams("%{_n}%", "%{_color}%")
+
+function deleteTeam(n: number):
+	delete {Teams::%{_n}%}
+	loop {Team.%{_n}%::*}:
+		send "{@P}{@C} Your team was {@H}deleted" to ("%loop-value%" parsed as offlineplayer)
+		delete {Teams.InTeam::%loop-value%}
+	delete {Team.%{_n}%::*} 
+	add {Teams.Colors::%{_n}%} to {Teams.Colors::unused::*}
+	delete {Teams.Colors::%{_n}%}
+	
+function leaveTeam(p: offline player):
+	set {_n} to ({Teams.InTeam::%{_p}%})
+	delete {Teams.InTeam::%{_p}%}
+	remove {_p} from {Team.%{_n}%::*}
+	updateNametagfor({_p})
+
+function joinTeam(p: offline player, n: number):
+	set {Teams.InTeam::%{_p}%} to {_n}
+	add {_p} to {Team.%{_n}%::*}
+	updateNametagfor({_p})
+
+command /team [<text>] [<text>] [<text>]:
+	aliases: /teams
+	trigger:
+		if arg-1 is not set:
+			command sender command "/team help"
+		else if arg-1 is "help":
+			send "&f      {@H}Team Help Page&f      "
+			send "{@P}{@H} /team list [<player>]&f - {@C}Lists teams"
+			send "{@P}{@H} /team create&f - {@C}Create a team to invite players!"
+			send "{@P}{@H} /team invite <player>&f - {@C}Invite <player> to your team!"
+			send "{@P}{@H} /team accept <player>&f - {@C}Accept <player>'s invite!"
+			send "{@P}{@H} /team leave&f - {@C}Leave your current team"
+			send "{@P}{@H} /team solos&f - {@C}Tells you who is not on a team"
+			send "{@P}{@H} /pmcoords&f - {@C}Send your teammates your coordinates!"
+			send "{@P}{@H} /pmores&f - {@C}Send your teammates your ores!"
+			send "{@P}{@H} /pm <text:coords:ores>&f - {@C}Chat with your teammates!"
+			if command sender has permission "staff.member":
+				send "{@P}{@H} /team management <on/off/toggle>"
+				send "{@P}{@H} /team reset"
+				send "{@P}{@H} /team fire <on/off>"
+				send "{@P}{@H} /team join <id/player in team> [<player=you>]"
+				send "{@P}{@H} /team makeleave [<player=you>]"
+				send "{@P}{@H} /team random <size> <amt>"
+				send "{@P}{@H} /team limit <number>"
+				send "{@P}{@H} /team redvsblue&f - {@C}RedvsBlue Team"
+				send "{@P}{@H} /ct <player names between 1 and infinite>&f - {@C}Creates teams with the listed players"
+		else if arg-1 is "list":
+			if arg-2 is set:
+				if {Teams.InTeam::%arg-2%} is not set:
+					send "{@P}{@C} %arg-2% does not have a team."
+				else:
+					set {_N} to {Teams.InTeam::%arg-2%}
+					send "{@P}{@C} Team {@H}%{_N}%"
+					loop {Team.%{_N}%::*}:
+						send "{@C}- {@H}%loop-value%"
+			else:
+				if {Teams::*} is not set:
+					send "{@P}{@C} No teams set."
+				else:
+					loop {Teams::*}:
+						if size of {Team.%loop-value%::*} is not 0:
+							send "{@P}{@C} Team {@H}%loop-value% {@C}: &7(%size of {Team.%loop-value%::*}%) %{Team.%loop-value%::*}%"
+						else:
+							add 1 to {_0}
+					if {_0} is size of {Teams::*}:
+						send "{@P}{@C} No teams set."
+		else if arg-1 is "invite":
+			if {Teams.Management} is not set:
+				send "{@P}{@C} Team Management is currently disabled!"
+			else:
+				if arg-2 is not set:
+					send "{@P}{@C} Please specify a player!"
+				else if {Teams.InTeam::%command sender%} is not set:
+					send "{@P}{@C} You don't have a team to invite {@H}%arg-2%{@C} to!"
+				else if {Teams.Limit} is not set:
+					send "{@P}{@C} Tell the host to set a team size limit!"
+				else if size of {Team.%{Teams.InTeam::%command sender%}%::*} is greater than or equal to {Teams.Limit}:
+					send "{@P}{@C} Your team is too big!"
+				else:
+					set {Teams.Invite::%arg-2%::%command sender%} to true
+					send "{@P}{@C} You have invited {@H}%arg-2%{@C} to your team!"
+					send "{@P}{@H} %command sender%{@C} invited you to their team! Do /team accept %command sender%!" to ("%arg-2%" parsed as offlineplayer)
+		else if arg-1 is "accept":
+			if {Teams.Management} is not set:
+				send "{@P}{@C} Team Management is currently disabled!"
+			else:
+				if arg-2 is not set:
+					send "{@P}{@C} Please specify a player!"
+				else if {Teams.Invite::%command sender%::%arg-2%} is not set:
+					send "{@P}{@C} You don't have a team invite from {@H}%arg-2%!"
+				else if {Teams.InTeam::%command sender%} is set:
+					send "{@P}{@C} You are already on a team!"
+					delete {Teams.Invite::%arg-2%::%command sender%}
+				else if {Teams.InTeam::%arg-2%} is not set:
+					send "{@P}{@C}{@H} %arg-2%{@C} does not have a team!"
+					delete {Teams.Invite::%arg-2%::%command sender%}
+				else if {Teams.Limit} is not set:
+					send "{@P}{@C} Tell the host to set a team size limit!"
+				else if size of {Team.%{Teams.InTeam::%arg-2%}%::*} is greater than or equal to {Teams.Limit}:
+					send "{@P}{@C}{@H} %arg-2%'s{@C} team is too big!"
+					delete {Teams.Invite::%arg-2%::%command sender%}
+				else:
+					set {_TM} to {Teams.InTeam::%arg-2%}
+					delete {Teams.Invite::%arg-2%::%command sender%}
+					send "{@P}{@C} You have joined {@H}%arg-2%'s{@C} team!"
+					loop {Team.%{_TM}%::*}:
+						send "{@P}{@H} %command sender%{@C} joined your team!" to ("%loop-value%" parsed as offlineplayer)
+					joinTeam(command sender, {_TM})
+		else if arg-1 is "leave":
+			if arg-2 is set:
+				if command sender has permission "staff.member":
+					command sender command "/team mleave %arg-2%"
+					stop trigger
+				else:
+					if {Teams.Management} is not set:
+						send "{@P}{@C} Team Management is currently disabled!"
+						stop trigger
+					else:
+						send "{@P}{@C} Wrong syntax!"
+						stop trigger
+			if {Teams.Management} is not set:
+				send "{@P}{@C} Team Management is currently disabled!"
+			else:
+				if {Teams.InTeam::%command sender%} is not set:
+					send "{@P}{@C} Your not in a team!"
+				else:
+					send "{@P}{@C} You have left team {@H}UHC%{Teams.InTeam::%command sender%}%"
+					set {_Team} to ({Teams.InTeam::%command sender%})
+					if (size of {Team.%{_Team}%::*} - 1) < 1:
+						deleteTeam({_Team})
+					leaveTeam(command sender)
+					loop {Team.%{Teams.InTeam::%command sender%}%::*}:
+						loop-value is not command sender
+						send "{@P}{@C}{@H} %command sender%{@C} left your team." to ("%loop-value%" parsed as offlineplayer)
+		else if arg-1 is "create":
+			if {Teams.Management} is not set:
+				send "{@P}{@C} Team Management is currently disabled!"
+			else:
+				if {Teams.InTeam::%command sender%} is set:
+					command sender does not have permission "staff.member"
+					send "{@P}{@C} Your in a team already!"
+					stop trigger
+				set {_TM} to 1
+				while {Teams::%{_TM}%} is set:
+					add 1 to {_TM}
+				createTeam({_TM})
+				joinTeam(command sender, {_TM})
+				send "{@P}{@C} You created team {@H}UHC%{_TM}%"
+		else if arg-1 is "reset":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				broadcast "{@P}{@C} Teams reset by {@H}%command sender%"
+				loop (size of {Teams::*}) times:
+					loop {Team.%loop-number%::*}:
+						leaveTeam(loop-value-2)
+				loop (size of {Teams::*}) times:
+					delete {Team.%loop-number%::*}
+				delete {Teams::*}
+				delete {Teams.Colors::*}
+				delete {Teams.InTeam::*}
+				delete {Teams.Limit}
+				delete {Teams.Invite::*}
+				delete {Teams.Management}
+		else if arg-1 is "solos" or "solo":
+			loop all players:
+				{UHC::Spectators::%loop-player%} is not set
+				if {Teams.InTeam::%loop-player%} is not set:
+					set {_solos::%loop-player%} to loop-player 
+			if size of {_solos::*} is more than 1:
+				send "{@P}{@C} Solos: {@H}%{_solos::*}%"
+			else:
+				send "{@P}{@C} There are {@H}no{@C} solos!"
+		else if arg-1 is "fire":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				if arg-2 is not set:
+					send "{@P}{@C} Specify to turn friendly fire on or off."
+				else:
+					if arg-2 is "on":
+						set {Config::Team damage} to true
+						broadcast "{@P}{@C}{@H} %command sender%{@C} enabled friendly fire!"
+					else if arg-2 is "off":
+						set {Config::Team damage} to false
+						broadcast "{@P}{@C}{@H} %command sender%{@C} disabled friendly fire!"
+		else if arg-1 is "redvsblue":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				loop all players:
+					{Teams.InTeam::%loop-player%} is not set
+					{UHC::Spectators::%loop-player%} is not set
+					add loop-player to {_RT::*}
+				set {_Size} to round(size of {_RT::*} / 2)
+				broadcast "{@P}{@C} Randomizing {@H}2{@C} teams of {@H}RedvsBlue{@C}..."
+				command "/psa note.snare"
+				wait 10 ticks
+				loop 2 times:
+					if loop-number is 1:
+						createTeam(loop-number, "&9")
+					else:
+						createTeam(loop-number, "&c")
+					loop {_Size} times:
+						set {_P} to a random element out of {_RT::*}
+						remove {_P} from {_RT::*}
+						joinTeam({_P}, (loop-number-1))
+				broadcast "{@P}{@C} Teams Randomized to RedVsBlue!"
+		else if arg-1 is "random":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else if arg-2 is not set:
+				send "{@P}{@C} Specify a team size!"
+			else if arg-3 is not set:
+				send "{@P}{@C} Specify a team amount!"
+			else:
+				set {_Size} to ("%arg-2%" parsed as integer)
+				set {_Amt} to ("%arg-3%" parsed as integer)
+				if {_Size} is not set:
+					send "{@P}{@C} Enter a valid team size!"
+				else if {_Amt} is not set:
+					send "{@P}{@C} Enter a valid team amount!"
+				else if {_Size} is less than 1:
+					send "{@P}{@C} Enter a valid team size!"
+				else if {_Amt} is less than 1:
+					send "{@P}{@C} Enter a valid team amount!"
+				else:
+					loop all players:
+						{Teams.InTeam::%loop-player%} is not set
+						{UHC::Spectators::%loop-player%} is not set
+						add loop-player to {_RT::*}
+					if ({_Size}*{_Amt}) is not (size of {_RT::*}):
+						send "{@P}{@C} The amount of players and teams does not match! %{_Size}*{_Amt}% isn't %size of {_RT::*}%!"
+					else:
+						set {_TM} to 1
+						while {Teams::%{_TM}%} is set:
+							add 1 to {_TM}
+						set {_TM} to ({_TM} - 1)
+						broadcast "{@P}{@C} Randomizing {@H}%arg-3%{@C} teams of {@H}%arg-2%{@C}..."
+						command "/psa note.snare"
+						wait 10 ticks
+						loop ({_Amt}) times:
+							set {_ttm} to ({_TM}+(loop-number))
+							createTeam({_ttm})
+							loop {_Size} times:
+								set {_P} to a random element out of {_RT::*}
+								remove {_P} from {_RT::*}
+								joinTeam({_P}, {_ttm})
+						broadcast "{@P}{@C} Teams Randomized!"
+						loop {Teams::*}:
+							loop-value is greater than {_TM}
+							loop {Team.%loop-value%::*}:
+								send "{@P}{@C} Your team:{@H} %{Team.%loop-value-1%::*}%" to ("%loop-value-2%" parsed as offlineplayer)
+		else if arg-1 is "management" or "man" or "manage":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				if arg-2 is not set:
+					send "{@P}{@C} Specify to toggle team management, turn it on, or off."
+				else:
+					if arg-2 is "on":
+						set {Teams.Management} to true
+						broadcast "{@P}{@C}{@H} %command sender%{@C} enabled team management!"
+					else if arg-2 is "off":
+						delete {Teams.Management}
+						delete {Teams.Invite::*}
+						broadcast "{@P}{@C}{@H} %command sender%{@C} disabled team management!"
+					else if arg-2 is "toggle":
+						if {Teams.Management} is not set:
+							command sender command "/team man on"
+						else:
+							command sender command "/team man off"
+		else if arg-1 is "limit" or "lim":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				if arg-2 is not set:
+					send "{@P}{@C} Specify an amount of players per team!"
+				else:
+					set {_L} to ("%arg-2%" parsed as integer)
+					if {_L} is not set:
+						send "{@P}{@C} Enter a valid amount of players per team!"
+					else if {_L} is less than 1:
+						send "{@P}{@C} Enter a valid amount of players per team!"
+					else:
+						broadcast "{@P}{@C}{@H} %command sender%{@C} set the team size limit to %{_L}%"
+						set {Teams.Limit} to {_L}
+		else if arg-1 is "makeleave" or "forceleave" or "mleave" or "fleave":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				if arg-2 is set:
+					set {_P} to ("%arg-2%" parsed as offlineplayer)
+				else:
+					set {_P} to command sender
+				if {Teams.InTeam::%{_P}%} is not set:
+					send "{@P}{@C} Specify a player on a team!"
+				else:
+					if {Teams.InTeam::%{_P}%} is not set:
+						send "{@P}{@C}{@H} %{_P}%{@C} is not in a team!"
+					else:
+						send "{@P}{@C} You removed %{_P}% from team {@H}UHC%{Teams.InTeam::%{_P}%}%"
+						send "{@P}{@C}{@H} %command sender%{@C} removed you from team {@H}UHC%{Teams.InTeam::%{_P}%}%" to {_P}
+						set {_Team} to ({Teams.InTeam::%{_P}%})
+						leaveTeam({_P})
+						loop {Team.%{_Team}%::*}:
+							loop-value is not {_P}
+							send "{@P}{@C}{@H} %{_P}%{@C} was removed your team." to ("%loop-value%" parsed as offlineplayer)
+						if size of {Team.%{_Team}%::*} is 0:
+							deleteTeam({_Team})
+						delete {Teams.InTeam::%{_P}%}
+		else if arg-1 is "join":
+			if command sender does not have the permission "staff.member":
+				send "{@NoPerms}"
+			else:
+				if arg-2 is not set: 
+					send "{@P}{@C} Specify a team/player that is on that team"
+				else:
+					set {_te} to ("%arg-2%" parsed as offlineplayer)
+					set {_Test1} to ("%arg-2%" parsed as integer)
+					if {_Test1} is set:
+						set {_TN} to ("%arg-2%" parsed as integer)
+					else if {Teams.InTeam::%{_te}%} is set:
+						set {_TN} to {Teams.InTeam::%{_te}%}
+					else:
+						send "{@P}{@C} Specify a valid team/player that is on that team"
+						stop trigger
+					if arg-3 is set:
+						set {_P} to ("%arg-3%" parsed as offlineplayer)
+					else:
+						set {_P} to command sender
+					if {Teams.InTeam::%{_P}%} is set:
+						send "{@P}{@C}{@H} %{_P}%{@C} is already a team!"
+						stop trigger
+					joinTeam({_P}, {_TN})
+					if {_P} is not command sender:
+						send "{@P}{@C}{@H} %command sender% added you to team {@H}UHC%{_TN}%" to {_P}
+					send "{@P}{@C} Added {@H}%{_P}%{@C} to team {@H}UHC%{_TN}%"
+					loop {Team.%{Teams.InTeam::%{_P}%}%::*}:
+						loop-value is not {_P}
+						send "{@P}{@C}{@H} %{_P}%{@C} was added your team by {@H}%command sender%{@C}." to ("%loop-value%" parsed as offlineplayer)
+		else:
+			command sender command "/team help"
+					
+command /ct <text>:
+	permission: staff.member
+	usage: /ct <players>
+	trigger:
+		set {_ToCreate::*} to ((arg-1) split at " ")
+		
+		loop {_ToCreate::*}:
+			if {Teams.InTeam::%loop-value%} is set:
+				add loop-value to {_OT::*}
+		
+		if size of {_OT::*} is greater than or equal to 1:
+			send "{@P}{@C} The following players already on a team: (cant create one)"
+			send "{@P}{@C}{@H} %join {_OT::*} with "", ""%"
+			
+		else:
+			
+			set {_TM} to 1
+			while {Teams::%{_TM}%} is set:
+				add 1 to {_TM}
+			createTeam({_TM})
+			
+			loop {_ToCreate::*}:
+				set {_P} to ("%loop-value%" parsed as offlineplayer)
+				joinTeam({_P}, {_TM})
+				if {_P} is offline:
+					command "/whitelist add %{_P}%"
+					add "&c%{_P}%" to {_S::*}
+				else:
+					add "&a%{_P}%" to {_S::*}
+					
+			loop {_ToCreate::*}:
+				set {_P} to ("%loop-value%" parsed as offlineplayer)
+				if {_P} is online:
+					command "/ps random.pop %{_P}%"
+					send "{@P}{@C}{@H} %command sender%{@C} put you on a team with:" to {_P}
+					send "{@P}{@C} %{_S::*}%" to {_P}
+					send "{@P}{@C} Names in &cred{@C} were offline, but are whitelisted (if not already)" to {_P}
+					send "{@P}{@C} Mistake? Use ""&4/helpop WRONG TEAM!{@C}""" to {_P}
+				
+			loop all players:
+				loop-player has permission "staff.member"
+				{_ToCreate::*} does not contain "%loop-player%"
+				send "{@P}{@C}{@H} %command sender%{@C}: created team with: %{_S::*}%" to loop-player
+		
+command /pmcoords:
+	aliases: /pmc
+	trigger:
+		if {Teams.InTeam::%command sender%} is not set:
+			send "{@P}{@C} You are not in a team!"
+			stop trigger
+		loop all players:
+			({Teams.InTeam::%loop-player%}) is ({Teams.InTeam::%command sender%})
+			send "{@P}{@C}{@H} %command sender%'s{@C} coordinates: {@C}x: {@H}%round(command sender's x-coordinate)%{@C}, {@C}y: {@H}%round(command sender's y-coordinate)%{@C}, {@C}z: {@H}%round(command sender's z-coordinate)%" to loop-player
+			
+command /pmores:
+	trigger:
+		if {Teams.InTeam::%command sender%} is not set:
+			send "{@P}{@C} You are not in a team!"
+			stop trigger
+		loop all players:
+			({Teams.InTeam::%loop-player%}) is ({Teams.InTeam::%command sender%})
+			send "{@P}{@C}{@H} %command sender%'s{@C} has &3%amount of iron ore in command sender's inventory + amount of iron ingots in command sender's inventory% iron{@C}, <gold>%amount of gold ore in command sender's inventory + amount of gold ingots in command sender's inventory% gold{@C}, and &b%amount of diamond ore in command sender's inventory + amount of diamonds in command sender's inventory% diamonds{@C}." to loop-player	
+		
+			
+command /pm <text>:
+	trigger:
+		if {Teams.InTeam::%command sender%} is not set:
+			send "{@P}{@C} You are not in a team!"
+		else if arg-1 is "coords" or "coordinates" or "c":
+			command sender command "/pmcoords"
+		else if arg-1 is "ores":
+			command sender command "/pmores"
+		else:
+			loop all players:
+				({Teams.InTeam::%loop-player%}) is ({Teams.InTeam::%command sender%})
+				send "{@P}{@C}{@H} %command sender%{@C}: %arg-1%" to loop-player
+
+on damage:
+	{UHC::Status} is true
+	attacker and victim is a player
+	{Config::Team damage} is not set
+	{Teams.InTeam::%attacker%} is set
+	{Teams.InTeam::%victim%} is set
+	{Teams.InTeam::%victim%} == {Teams.InTeam::%attacker%}
+	if damage cause is projectile:
+		"%projectile.getType()%" is "FISHING_HOOK"
+		stop
+	cancel the event
+
+on skript load:
+	loop (size of {Teams::*}) times:
+		loop {Team.%loop-number%::*}:
+			leaveTeam(loop-value-2)
+	loop (size of {Teams::*}) times:
+		delete {Team.%loop-number%::*}
+	delete {Teams::*}
+	delete {Teams.Colors::*}
+	delete {Teams.InTeam::*}
+	delete {Teams.Color::*}
+	delete {Teams.Invite::*}
+	delete {Teams.Management}

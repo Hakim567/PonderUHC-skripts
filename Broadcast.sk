@@ -1,0 +1,19 @@
+options:
+	P: &d&lPonderUHC &6»
+
+#Made with love by hakim <3 
+#Contact me on discord - 愛してる#5199
+
+command /broadcast <text>:
+	permission: staff.member
+	trigger:
+		broadcast "{@P} &d%arg-1%"
+		discordLog("Broadcast", "%sender% broadcasted %arg-1%")
+		execute console command "/playsoundall note.pling"
+
+command /bc [<text>]:
+	trigger:
+		if arg-1 is set:
+			make sender execute command "/broadcast %arg-1%"
+		else:
+			make sender execute command "/broadcast"	

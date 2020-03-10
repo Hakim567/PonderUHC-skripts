@@ -1,0 +1,44 @@
+function checkPast(event: string) :: string:
+	if {_event} is "Border shrink to 500":
+		set {_time} to ({Config::Meetup} * 60)
+		add 300 to {_time}
+	else if {_event} is "Border shrink to 100":
+		set {_time} to ({Config::Meetup} * 60)
+		add 600 to {_time}
+	else:
+		set {_time} to ({Config::%{_event}%} * 60)
+	if ({_time} - {UHC::GameTime}) <= 0:
+		return "&7%{_event}%"
+	else:
+		return "&a%{_event}%"
+
+function minutesUntil(event: string) :: string:
+	if {_event} is "Border shrink to 500":
+		set {_time} to ({Config::Meetup} * 60)
+		add 300 to {_time}
+	else if {_event} is "Border shrink to 100":
+		set {_time} to ({Config::Meetup} * 60)
+		add 600 to {_time}
+	else:
+		set {_time} to ({Config::%{_event}%} * 60)
+	set {_time} to ({_time} - {UHC::GameTime})
+	if {_time} >= 0:
+		if {_time} <= 60:
+			return "&7(&4%floor({_time})%&4s&7)"
+		else:
+			return "&7(&4%floor({_time} / 60)%m&7)"
+	else:
+		return ""
+
+command /timers:
+	aliases: /timer, /timeleft
+	trigger:
+		if {UHC::GameTimeT} is set:
+			message "&d&lPonderUHC &6» &dGame Time &c%{UHC::GameTimeT}%"
+		else:
+			message "&d&lPonderUHC &6» &dGame Time &c00:00:00"
+		message "&6» %checkPast(""Final Heal"")% @ %{Config::Final heal}% Minutes %minutesUntil(""Final Heal"")%"
+		message "&6» %checkPast(""PvP"")% @ %{Config::PvP}% Minutes %minutesUntil(""PvP"")%"
+		message "&6» %checkPast(""Meetup"")% / Border shrink to 1000 @ %{Config::Meetup}% Minutes %minutesUntil(""Meetup"")%"
+		message "&6» %checkPast(""Border shrink to 500"")% @ %({Config::Meetup} + 5)% Minutes %minutesUntil(""Border shrink to 500"")%"
+		message "&6» %checkPast(""Border shrink to 100"")% @ %({Config::Meetup} + 10)% Minutes %minutesUntil(""Border shrink to 100"")%"

@@ -1,0 +1,79 @@
+command /helpop [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&d&lPonderUHC &6» &c/helpop Message"
+			stop
+		if {HelpOP::%player%} >= 1:
+			message "&d&lPonderUHC &6» &cYou can HelpOP in %{HelpOP::%player%}% seconds"
+			stop
+		if arg-1 contains "apple":
+			first character of arg-1 is not "!"
+			if arg-1 contains "rate":
+				message "&d&lPonderUHC &6» &cApple rates are %{Config::Apple Rates}%%%"
+				message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			else if arg-1 contains "drop" or "tree":
+				message "&d&lPonderUHC &6» &cApple drops from all trees is %getConfigStatusText(""Apple drops from all trees"")%"
+				message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "shear":
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &cShears are %getConfigStatusText(""Shears"")%"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "horse":
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &cHorses are %getConfigStatusText(""Horses"")%"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "absorption":
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &cAbsorption is %getConfigStatusText(""Absorption"")%"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "strip" or "stair" or "sound" or "nether":
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &cWe believe your question is within /uhc"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "final heal" or "pvp" or "meetup" or "border":
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &c/timers for times"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		if arg-1 contains "level" or "lvl":
+			{Scenarios::InfiniteEnchanter} is true
+			first character of arg-1 is not "!"
+			message "&d&lPonderUHC &6» &c69 level is just for visual its actually infinite"
+			message "&d&lPonderUHC &6» &cNot the answer your looking for? add ! at the front of your question"
+			stop
+		set {_code} to "%random integer between 1 and 9%%random integer between 1 and 9%%random integer between 1 and 9%%random integer between 1 and 9%"
+		message "&d&lPonderUHC &6» &dSent HelpOP ""%arg-1%"" &7[&d%{_code}%&7]"
+		discordLog("Helpop", "%player% helpoped %arg-1%")
+		HelpOPMessage(player, "%arg-1%", "JSON", "%{_code}%")
+		set {HelpOP::Reply::%{_code}%} to true
+		set {HelpOP::Reply::%{_code}%::sender} to player
+		set {HelpOP::%player%} to 10
+		loop 10 times:
+			wait 1 second
+			set {HelpOP::%player%} to ({HelpOP::%player%} - 1)
+
+command /helpopreply <text> <text>:
+	trigger:
+		player has permission "staff.member"
+		set {_sender} to "%{HelpOP::Reply::%arg-1%::sender}%" parsed as player
+		if {HelpOP::Reply::%arg-1%} is true:
+			send "&d&lPonderUHC &6» &d%player%&7: &d%arg-2% &7[&d%arg-1%&7]" to {_sender}
+			discordLog("Helpop Reply", "%player% replied to %{_sender}%'s helpop with %arg-2%")
+			play sound "note_bass" to {_sender} with volume 1 and pitch 5
+			HelpOPMessage(player, "replied with ""%arg-2%"" to %{_sender}% [%arg-1%]", "normal", "%arg-1%")
+			set {HelpOP::Reply::%arg-1%} to false
+			set {HelpOP::Reply::%arg-1%::sender} to player
+			set {HelpOP::Reply::%arg-1%::reply} to "%arg-2%"
+		else if {HelpOP::Reply::%arg-1%} is false:
+			message "&cHelpOP &6» &c%arg-1% was already answered by %{HelpOP::Reply::%arg-1%::sender}% with ""%{HelpOP::Reply::%arg-1%::reply}%"""
+		else if {HelpOP::Reply::%arg-1%} is not set:
+			message "&cHelpOP &6» &cNo HelpOP's assosicated with that ID"
+
+
+on skript load:
+	delete {HelpOP::*}

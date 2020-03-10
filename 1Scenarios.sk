@@ -1,0 +1,2287 @@
+options:
+	P: &d&lPonderUHC &6»
+
+#Made with love by hakim <3 
+#Contact me on discord - 愛してる#5199
+
+function roundedTimespan(timespan: timespan) :: string:
+	loop split "%{_timespan}%" at " ":
+		if loop-value parsed as a number is set:
+			add "%round(loop-value parsed as a number)%" to {_return::*}
+		else:
+			add loop-value to {_return::*}
+	return join {_return::*} with " "
+
+expression scenario %strings% status:
+	get:
+		if {Scenarios::%expression-1%} is true:
+			return "&a%expression-1%"
+		if {Scenarios::%expression-1%} is false:
+			return "&c%expression-1%"
+		if {Scenarios::%expression-1%} is not set:
+			return "&c%expression-1%"
+
+expression scenario %strings% icon:
+	get:
+		if expression-1 is "CutClean":
+			return "iron ingot" parsed as item
+		else if expression-1 is "NoClean":
+			return "paper" parsed as item
+		else if expression-1 is "DoubleOres":
+			return "gold ingot" parsed as item
+		else if expression-1 is "TripleOres":
+			return "diamond" parsed as item
+		else if expression-1 is "Fireless":
+			return "flint and steel" parsed as item
+		else if expression-1 is "Bowless":
+			return "bow" parsed as item
+		else if expression-1 is "Timebomb":
+			return "tnt" parsed as item
+		else if expression-1 is "TeamInventory":
+			return "ender chest" parsed as item
+		else if expression-1 is "Superheroes":
+			return "speed potion" parsed as item
+		else if expression-1 is "HasteyBoys":
+			return "gold pickaxe" parsed as item
+		else if expression-1 is "Timber":
+			return "diamond axe" parsed as item
+		else if expression-1 is "Bats":
+			return "spawn egg:65" parsed as item
+		else if expression-1 is "LootCrates":
+			return "chest" parsed as item
+		else if expression-1 is "Moles":
+			return "rose" parsed as item
+		else if expression-1 is "Webcage":
+			return "cobweb" parsed as item
+		else if expression-1 is "Rush":
+			return "iron sword" parsed as item
+		else if expression-1 is "Entropy":
+			return "xp bottle" parsed as item
+		else if expression-1 is "InfiniteEnchanter":
+			return "enchantment table" parsed as item
+		else if expression-1 is "GoneFishin":
+			return "fishing rod" parsed as item
+		else if expression-1 is "NoFall":
+			return "feather" parsed as item
+		else if expression-1 is "FlowerPower":
+			return "dandelion" parsed as item
+		else if expression-1 is "LAFS":
+			return "eye of ender" parsed as item
+		else if expression-1 is "Diamondless":
+			return "diamond" parsed as item
+		else if expression-1 is "Chicken":
+			return "golden apple:1" parsed as item
+		else if expression-1 is "Eggs":
+			return "egg" parsed as item
+		else if expression-1 is "BloodDiamonds":
+			return "diamond" parsed as item
+		else if expression-1 is "DoubleDates":
+			return "gold sword" parsed as item
+		else if expression-1 is "Slavemarket":
+			return "lead" parsed as item
+		else if expression-1 is "GigaDrill":
+			return "diamond pickaxe" parsed as item
+		else if expression-1 is "Stock-Up":
+			return "spider eye" parsed as item
+		else if expression-1 is "VeinMiner":
+			return "diamond ore" parsed as item
+		else if expression-1 is "DoubleOrNothing":
+			return "coal" parsed as item
+		else if expression-1 is "Deathnote":
+			return "book" parsed as item
+		else if expression-1 is "OppositesAttract":
+			return "crafting table" parsed as item
+		else if expression-1 is "SkyHigh":
+			return "white wool" parsed as item
+		else if expression-1 is "Ender Dragon Rush":
+			return "dragon egg" parsed as item
+		else if expression-1 is "Birds":
+			return "feather" parsed as item
+		else if expression-1 is "Generous Admin":
+			return "diamond" parsed as item
+
+expression scenario %strings% description:
+	get:
+		if expression-1 is "CutClean":
+			return "Ores and animal drops are automatically smelted"
+		else if expression-1 is "NoClean":
+			return "For every kill you get a 30 second immunity||expires if you hit someone"
+		else if expression-1 is "DoubleOres":
+			return "Ores are doubled"
+		else if expression-1 is "TripleOres":
+			return "Ores are tripled"
+		else if expression-1 is "Fireless":
+			return "You cannot take fire damage"
+		else if expression-1 is "Bowless":
+			return "Bows are uncraftable and unusable"
+		else if expression-1 is "Timebomb":
+			return "After killing a player, their loot will drop into a chest||30 Seconds later the chest explodes"
+		else if expression-1 is "TeamInventory":
+			return "You will have a team shared inventory with /ti"
+		else if expression-1 is "Superheroes":
+			return "Each player will gain a special ability, the powers are||speed 1||strength 1||resistance 2||invisibility||6 extra hearts||jump boost 4"
+		else if expression-1 is "HasteyBoys":
+			return "Everyone mines faster"
+		else if expression-1 is "Timber":
+			return "Breaking a log of a tree will cause the whole tree to fall down"
+		else if expression-1 is "Bats":
+			return "When a player kills a bat, there's a 95%% chance of dropping a Golden Apple||5%% chance of killing the player."
+		else if expression-1 is "LootCrates":
+			return "Every 10 minutes, players will be given a ""loot crate"" filled with goodies."
+		else if expression-1 is "Moles":
+			return "One person on each team is chosen to be the Mole||The Moles are one team and can communicate with each other||trying to take out the other players||The normal players try to find out who the mole is on their team and kill them."
+		else if expression-1 is "Webcage":
+			return "A sphere of cobwebs spawns around a player's death location."
+		else if expression-1 is "Rush":
+			return "Shorter game, PvP at 15 minutes, Meetup at 30 minutes."
+		else if expression-1 is "Entropy":
+			return "Every 10 min 1XP level is ""drained"" from you||if you don't have any levels when the drain occurs||you die."
+		else if expression-1 is "InfiniteEnchanter":
+			return "All players start with 128 Bookshelves, Infinite XP Levels, 64 Anvils and 64 Enchantment Tables."
+		else if expression-1 is "GoneFishin":
+			return "Each player starts with an Unbreaking 250||Lure 3||Luck of the Sea 250 fishing rod||20 anvils."
+		else if expression-1 is "NoFall":
+			return "You cannot take fall damage"
+		else if expression-1 is "FlowerPower":
+			return "When a player breaks any random flower||the flower will drop a random item"
+		else if expression-1 is "LAFS":
+			return "You are scattered as a solo and you have to find your teammate||the first solo you damage will be your teammate."
+		else if expression-1 is "Diamondless":
+			return "Diamonds do not drop||Gold has a 50%% chance of dropping||Players drop 4 gold and 1 diamond upon death"
+		else if expression-1 is "Chicken":
+			return "Everyone starts on 1/2 heart with a notch apple."
+		else if expression-1 is "Eggs":
+			return "When you throw an egg, a random mob will spawn where it lands||When you kill a chicken, there is a 5%% chance of it dropping an egg."
+		else if expression-1 is "BloodDiamonds":
+			return "When a diamond ore is mined||you will take half a heart of damage."
+		else if expression-1 is "DoubleDates":
+			return "Players join with a chosen team and are combined randomly with another team."
+		else if expression-1 is "Slavemarket":
+			return "Slave owners are chosen and they get 30 diamonds to bid on players as they choose||Any spare diamonds and given back to the owner in the actual game."
+		else if expression-1 is "GigaDrill":
+			return "You spawn with haste 2 ||when you craft a pickaxe it turns into ||an efficiency 5 pickaxe"
+		else if expression-1 is "Stock-Up":
+			return "Each time a player dies||every other player currently alive gains 1 empty heart||(no regeneration to heal that heart)"
+		else if expression-1 is "VeinMiner":
+			return "Mining a block while shifting break blocks of the same type in a chain reaction||dropping the blocks at the end."
+		else if expression-1 is "DoubleOrNothing":
+			return "On mine of iron, diamond, or gold ore you have||50%% chance of 2 of the ore dropping or no ores dropping."
+		else if expression-1 is "Deathnote":
+			return "One player is chosen to be Kira and another is chosen to be L||Kira gets the Death Note that allows him to writes down the name of someone on his team||Once written down, the teammate has 40 seconds before they die||The Death Note has a 10 minute cool down||Similar to Moles, the Kira's can also communicate with each other||L has the power, that when Kira is hit, he will die||If L hits someone who is not Kira, L will die instead||If or when Kira dies, he does not drop the Death Note."
+		else if expression-1 is "OppositesAttract":
+			return "To2 Gamemode. Teammates may not have the same items in their inventory at once."
+		else if expression-1 is "SkyHigh":
+			return "After pvp enabled, you will take damage every 30 seconds if you are below y:100"
+		else if expression-1 is "Ender Dragon Rush":
+			return "First person or team to kill the Ender Dragon wins||the end portal will be automatically lit||if it is still not lit after meetup"
+		else if expression-1 is "Birds":
+			return "All players can fly!"
+		else if expression-1 is "Generous Admin":
+			return "Every so often||an admin spawns somewhere in the world||carrying random items on him. He announces his coordinates||so players can try to find and kill him||The Generous Admin may not fight back, but he can flee."
+
+plural expression all scenarios:
+	get:
+		return "CutClean", "NoClean", "DoubleOres", "TripleOres", "Fireless", "Bowless", "Timebomb", "TeamInventory", "Superheroes", "HasteyBoys", "Timber", "Bats", "LootCrates", "Moles" ,"Webcage" ,"Rush" ,"Entropy" ,"InfiniteEnchanter", "GoneFishin", "NoFall", "FlowerPower", "LAFS", "Diamondless", "Chicken", "Eggs", "BloodDiamonds", "DoubleDates", "Slavemarket", "GigaDrill", "Stock-Up", "VeinMiner", "DoubleOrNothing", "Deathnote", "OppositesAttract", "SkyHigh", "Ender Dragon Rush", "Birds" and "Generous Admin"
+
+plural expression activ(e|ated) scenarios:
+	get:
+		loop all scenarios:
+			if {Scenarios::%loop-value%} is true:
+				add loop-value to {_List::*}
+		return {_List::*}
+
+function DisableAllScenarios(s: text):
+	loop {Scenarios::*}:
+		set {Scenarios::%loop-index%} to false
+	broadcast "{@P} &dAll scenarios have been disabled"
+
+function OnScenario(s: text):
+	loop all scenarios:
+		loop-value == {_s}
+		set {Scenarios::%{_s}%} to true
+		broadcast "{@P} &d%{_s}% has been enabled"
+		set {_true} to true
+	if {_true} is not set:
+		broadcast "{@P} &c%{_s}% is not a valid scenario"
+
+function OffScenario(s: text):
+	loop all scenarios:
+		loop-value == {_s}
+		set {Scenarios::%{_s}%} to false
+		broadcast "{@P} &d%{_s}% has been disabled"
+		set {_true} to true
+	if {_true} is not set:
+		broadcast "{@P} &d%{_s}% is not a valid scenario"
+
+function ToggleScenario(s: text, p: player, slot: int):
+	if {Scenarios::%{_s}%} is not set:
+		set {Scenarios::%{_s}%} to true
+		broadcast "{@P} &d%{_s}% has been enabled"
+	else if {Scenarios::%{_s}%} is false:
+		set {Scenarios::%{_s}%} to true
+		broadcast "{@P} &d%{_s}% has been enabled"
+	else if {Scenarios::%{_s}%} is true:
+		set {Scenarios::%{_s}%} to false
+		broadcast "{@P} &d%{_s}% has been disabled"
+	format gui slot {_slot} of {_p} with scenario "%{_s}%" icon named scenario "%{_s}%" status to run function ToggleScenario("%{_s}%", {_p}, {_slot})
+
+function ScenarioStaff(p: player, page: number = 1):
+	if {_page} is 1:
+		open virtual chest inventory with size 6 named "&6Scenarios Page 1&7- &cStaff" to {_P}
+		format gui slot 1 of {_P} with slimeball named "&6&lEnabled Scenarios" with lore "&f%uncoloured activated scenarios%"
+		format gui slot 2 of {_P} with redstone named "&6&lDisable all scenarios" to close then run function DisableAllScenarios("")
+		format gui slot 8 of {_P} with book named "&6&lPage 2" to close then run function ScenarioStaff({_P}, 2)
+		loop 9 times:
+			format gui slot (loop-number + 8) of {_P} with white glass
+		format gui slot 18 of {_P} with iron ingot named scenario "CutClean" status to run function ToggleScenario("CutClean", {_P}, 18)
+		format gui slot 19 of {_P} with paper named scenario "NoClean" status to run function ToggleScenario("NoClean", {_P}, 19)
+		format gui slot 20 of {_P} with 2 gold ingot named scenario "DoubleOres" status to run function ToggleScenario("DoubleOres", {_P},20)
+		format gui slot 21 of {_P} with 3 diamonds named scenario "TripleOres" status to run function ToggleScenario("TripleOres", {_P}, 21)
+		format gui slot 22 of {_P} with fire named scenario "Fireless" status to run function ToggleScenario("Fireless", {_P}, 22)
+		format gui slot 23 of {_P} with bow named scenario "Bowless" status to run function ToggleScenario("Bowless", {_P}, 23)
+		format gui slot 24 of {_P} with tnt named scenario "Timebomb" status to run function ToggleScenario("Timebomb", {_P}, 24)
+		format gui slot 25 of {_P} with ender chest named scenario "TeamInventory" status to run function ToggleScenario("TeamInventory", {_P}, 25)
+		format gui slot 26 of {_P} with speed potion named scenario "Superheroes" status to run function ToggleScenario("Superheroes", {_P}, 26)
+		format gui slot 27 of {_P} with gold pickaxe named scenario "HasteyBoys" status to run function ToggleScenario("HasteyBoys", {_P}, 27)
+		format gui slot 28 of {_P} with diamond axe named scenario "Timber" status to run function ToggleScenario("Timber", {_P}, 28)
+		format gui slot 29 of {_P} with spawn egg:65 named scenario "Bats" status to run function ToggleScenario("Bats", {_P}, 29)
+		format gui slot 30 of {_P} with chest named scenario "LootCrates" status to run function ToggleScenario("LootCrates", {_P}, 30)
+		format gui slot 31 of {_P} with rose named scenario "Moles" status to run function ToggleScenario("Moles", {_P}, 31)
+		format gui slot 32 of {_P} with cobweb named scenario "Webcage" status to run function ToggleScenario("Webcage", {_P}, 32)
+		format gui slot 33 of {_P} with iron sword named scenario "Rush" status to run function ToggleScenario("Rush", {_P}, 33)
+		format gui slot 34 of {_P} with xp bottle named scenario "Entropy" status to run function ToggleScenario("Entropy", {_P}, 34)
+		format gui slot 35 of {_P} with enchantment table named scenario "InfiniteEnchanter" status to run function ToggleScenario("InfiniteEnchanter", {_P}, 35)
+		format gui slot 36 of {_P} with fishing rod named scenario "GoneFishin" status to run function ToggleScenario("GoneFishin", {_P}, 36)
+		format gui slot 37 of {_P} with feather named scenario "NoFall" status to run function ToggleScenario("NoFall", {_P}, 37)
+		format gui slot 38 of {_P} with dandelion named scenario "FlowerPower" status to run function ToggleScenario("FlowerPower", {_P}, 38)
+		format gui slot 39 of {_P} with eye of ender named scenario "LAFS" status to run function ToggleScenario("LAFS", {_P}, 39)
+		format gui slot 40 of {_P} with diamond named scenario "Diamondless" status to run function ToggleScenario("Diamondless", {_P}, 40)
+		format gui slot 41 of {_P} with golden apple:1 named scenario "Chicken" status to run function ToggleScenario("Chicken", {_P}, 41)
+		format gui slot 42 of {_P} with egg named scenario "Eggs" status to run function ToggleScenario("Eggs", {_P}, 42)
+		format gui slot 43 of {_P} with diamond named scenario "BloodDiamond" status to run function ToggleScenario("BloodDiamond", {_P}, 43)
+		format gui slot 44 of {_P} with 2 gold sword named scenario "DoubleDates" status to run function ToggleScenario("DoubleDates", {_P}, 44)
+		format gui slot 45 of {_P} with lead named scenario "Slavemarket" status to run function ToggleScenario("Slavemarket", {_P}, 45)
+		format gui slot 46 of {_P} with diamond pickaxe named scenario "GigaDrill" status to run function ToggleScenario("GigaDrill", {_P}, 46)
+		format gui slot 47 of {_P} with spider eye named scenario "Stock-Up" status to run function ToggleScenario("Stock-Up", {_P}, 47)
+		format gui slot 48 of {_P} with diamond ore named scenario "VeinMiner" status to run function ToggleScenario("VeinMiner", {_P}, 48)
+		format gui slot 49 of {_P} with 2 coal named scenario "DoubleOrNothing" status to run function ToggleScenario("DoubleOrNothing", {_P}, 49)
+		format gui slot 50 of {_P} with book named scenario "Deathnote" status to run function ToggleScenario("Deathnote", {_P}, 50)
+		format gui slot 51 of {_P} with 2 crafting table named scenario "OppositesAttract" status to run function ToggleScenario("OppositesAttract", {_P}, 51)
+		format gui slot 52 of {_P} with white wool named scenario "SkyHigh" status to run function ToggleScenario("SkyHigh", {_P}, 52)
+		format gui slot 53 of {_P} with dragon egg named scenario "Ender Dragon Rush" status to run function ToggleScenario("Ender Dragon Rush", {_P}, 53)
+	if {_page} is 2:
+		open virtual chest inventory with size 6 named "&6Scenarios Page 2&7- &cStaff Mode" to {_P}
+		format gui slot 0 of {_P} with book named "&6&lPage 1" to close then run function ScenarioStaff({_P}, 1)
+		format gui slot 1 of {_P} with slimeball named "&6&lEnabled Scenarios" with lore "&f%uncoloured activated scenarios%"
+		format gui slot 2 of {_P} with redstone named "&6&lDisable all scenarios" to close then run function DisableAllScenarios("")
+		loop 9 times:
+			format gui slot (loop-number + 8) of {_P} with white glass
+		format gui slot 18 of {_P} with feather named scenario "Birds" status to run function ToggleScenario("Birds", {_P}, 18)
+		format gui slot 19 of {_P} with diamond named scenario "Generous Admin" status to run function ToggleScenario("Generous Admin", {_P}, 19)
+
+effect open normal scenario gui [to] %players%:
+	trigger:
+		open virtual chest inventory with size 5 named "&6Scenarios" to expression-1
+		set {_N} to 0
+		loop activated scenarios:
+			set {_Lore} to scenario "%loop-value%" description
+			replace all "||" with "||&f" in {_Lore}
+			format gui slot {_N} of expression-1 with scenario "%loop-value%" icon named "&d&l%loop-value%" with lore "&f%{_Lore}%" to do nothing
+			add 1 to {_N}
+
+command /scenarios [<text>] [<text>]:
+	aliases: /scen, /scens, /scenario
+	trigger:
+		if arg-1 is set:
+			if command sender is not CONSOLE:
+				if player doesn't have permission "staff.member":
+					stop
+			if arg-1 is "Disableall":
+				DisableAllScenarios("Gay")
+			else:
+				loop all scenarios:
+					loop-value == arg-1
+					if arg-2 is "on":
+						OnScenario("%arg-1%")
+					if arg-2 is "off":
+						OffScenario("%arg-1%")
+					set {_true} to true
+				if {_true} is not set:
+					message "{@P} &c%arg-1% is not a valid scenario"
+		if arg-1 is "list":
+			if player has permission "staff.member":
+				message "{@P} &dActivated scenarios: %activated scenarios%" to command sender
+				stop
+		if arg-1 is not set:
+			if player has permission "staff.member":
+				ScenarioStaff(player)
+			else:
+				open normal scenario gui to player
+
+function HelpOPMessage(p: player, m: text, type: text, code: text):
+	loop all players:
+		loop-player has permission "staff.member"
+		{UHC::Spectators::%loop-player%} is true
+		if {_type} is "JSON":
+			json("%loop-player%", "&cHelpOP &6» &c%{_p}%&7: &c%{_m}% [%{_code}%]||ttp:&dReply to sender||sgt:/helpopreply %{_code}% ")
+			play sound "note_bass" to loop-player with volume 1 and pitch 5
+		else:
+			send "&cHelpOP &6» &c%{_p}%&7: &c%{_m}%" to loop-player
+			play sound "note_bass" to loop-player with volume 1 and pitch 5
+
+function StaffMessage(m: text, type: text):
+	loop all players:
+		loop-player has permission "staff.member"
+		{UHC::Spectators::%loop-player%} is true
+		if {_type} is "JSON":
+			set {_TP::*} to {_m} split at "CMD"
+			json("%loop-player%", "&dStaff &6» &d%coloured {_TP::1}%||ttp:&dTeleport to player||cmd:%{_TP::2}%")
+		else:
+			send "&dStaff &6» &d%coloured {_m}%" to loop-player
+	if {_type} is "JSON":
+		set {_TP::*} to {_m} split at "CMD"
+		send "&dStaff &6» &d%coloured {_TP::1}%" to CONSOLE
+	else:
+		send "&dStaff &6» &d%coloured {_m}%" to CONSOLE
+
+command /ponderac <player> <text> <text>:
+	trigger:
+		command sender == CONSOLE
+		set {_ping} to arg-1.getHandle().ping!
+		StaffMessage("&c%arg-1% &dfailed &c%arg-2% &7[&c%arg-3%VL&7] &d%{_ping}% msCMD/tp %arg-1%", "JSON")
+
+function Vanish(P: player, O: text):
+	if {_P} is online:
+		if {_O} is "On":
+			hide {_P} from all players
+			reveal all players to {_P}
+			loop {Vanish::*}:
+				reveal {_P} to ("%loop-index%" parsed as player)
+			{_P}.spigot().setCollidesWithEntities(false)
+			set {Vanish::%{_P}%} to true
+			send "{@P} &dYou are now &ainvisible!" to {_P}
+			if name of slot 6 of {_P}'s inventory contains "Vanish":
+				set slot 6 of {_P}'s inventory to light green dye named "&a&oVanish"
+			Scoreboard({_P})
+		if {_O} is "Off":
+			reveal {_P} to all players
+			loop {Vanish::*}:
+				hide ("%loop-index%" parsed as player) from {_P}
+			{_P}.spigot().setCollidesWithEntities(true)
+			delete {Vanish::%{_P}%}
+			send "{@P} &dYou are &cno longer invisible!" to {_P}
+			if name of slot 6 of {_P}'s inventory contains "Vanish":
+				set slot 6 of {_P}'s inventory to gray dye named "&c&oVanish"
+			Scoreboard({_P})
+		if {_O} is "OffSilent":
+			reveal {_P} to all players
+			loop {Vanish::*}:
+				hide ("%loop-index%" parsed as player) from {_P}
+			{_P}.spigot().setCollidesWithEntities(true)
+			delete {Vanish::%{_P}%}
+		if {_O} is "Toggle":
+			if {Vanish::%{_P}%} is true:
+				Vanish({_P}, "Off")
+			else:
+				Vanish({_P}, "On")
+
+command /vanish [<text>] [<text>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is not set:
+			Vanish(player, "Toggle")
+		else if arg-1 is "on":
+			Vanish(player, "On")
+		else if arg-1 is "off":
+			Vanish(player, "Off")
+		else if contains(all players, "%arg-1%" parsed as player):
+			if arg-2 is set:
+				if arg-2 is "On":
+					send "{@P} &dYou toggled vanish &aon &dfor %arg-1%" to player
+					Vanish("%arg-1%" parsed as player, "On")
+				else if arg-2 is "Off":
+					send "{@P} &dYou toggled vanish &coff &dfor %arg-1%" to player
+					Vanish("%arg-1%" parsed as player, "Off")
+				else:
+					message "{@P} &c/vanish (player|on/off) [on/off]"
+			else:
+				Vanish("%arg-1%" parsed as player, "Toggle")
+				if {Vanish::%arg-1%} is true:
+					send "{@P} &dYou toggled vanish &aon &dfor %arg-1%" to player
+				else:
+					send "{@P} &dYou toggled vanish &coff &dfor %arg-1%" to player
+		else:
+			message "{@P} &c/vanish (player|on/off) [on/off]"
+
+command /v [<text>]:
+	permission: staff.member
+	trigger:
+		if arg-1 is set:
+			make player execute command "/vanish %arg-1%"
+		else:
+			make player execute command "/vanish"
+
+
+on vehicle enter:
+	{Vanish::%passenger of event-entity%} is true
+	cancel the event
+
+on right click:
+	{Vanish::%player%} is true
+	cancel the event
+
+on inventory click:
+	{Vanish::%player%} is true
+	cancel the event
+
+on break:
+	{Vanish::%player%} is true
+	cancel the event
+
+on target:
+	{Vanish::%target of entity%} is true
+	cancel the event
+
+on pressure plate:
+	{Vanish::%event-player%} is true
+	cancel the event
+
+on tripwire:
+	{Vanish::%event-player%} is true
+	cancel the event
+
+on damage:
+	{Vanish::%attacker%} is true
+	cancel the event
+
+on damage:
+	{Vanish::%victim%} is true
+	cancel the event
+
+on pickup:
+	{Vanish::%player%} is true
+	cancel the event
+
+on drop:
+	{Vanish::%player%} is true
+	cancel the event
+
+on join:
+	wait 5 ticks
+	if {Vanish::%player%} is not set:
+		loop all players:
+			if {Vanish::%loop-player%} is true:
+				hide loop-player from player
+			else:
+				reveal loop-player to player
+	else:
+		loop all players:
+			if {Vanish::%loop-player%} is not set:
+				hide player from loop-player
+
+function ClearAllEffects(P: player):
+	clear {_P}'s inventory
+	clear {_P}'s enderchest
+	extinguish {_P}
+	set {_P}'s gamemode to survival
+	set {_P}'s walking speed to 0.2
+	set {_P}'s max health to 10
+	set {_P}'s health to 10
+	set {_P}'s food to 10
+	set {_P}'s level to 0
+	execute console command "/effect %{_P}% clear"
+	if {UHC::Spectators::%{_P}%} is not set:
+		{Vanish::%{_P}%} is true
+		Vanish({_P}, "OffSilent")
+
+function SpecMode(P: player, O: text):
+	if {_P} is online:
+		if {_O} is "On":
+			message "{@P} &dYou are now spec :D" to {_P}
+			StaffMessage("%{_P}% became a spec", "Normal")
+			set {UHC::Spectators::%{_P}%} to true
+			Scoreboard({_P})
+			Vanish({_P}, "On")
+			clear {_P}'s inventory
+			set slot 1 of {_P}'s inventory to compass named "&6&oPassthrough blocks"
+			set slot 2 of {_P}'s inventory to iron sword named "&6&oTeleport to 0,0"
+			set slot 3 of {_P}'s inventory to book named "&6&oView Inventory"
+			set slot 4 of {_P}'s inventory to ender pearl named "&6&oTeleport"
+			set slot 5 of {_P}'s inventory to end portal frame named "&6&oRandom Teleport"
+			if {Vanish::%{_P}%} is true:
+				set slot 6 of {_P}'s inventory to light green dye named "&a&oVanish"
+			else:
+				set slot 6 of {_P}'s inventory to gray dye named "&c&oVanish"
+			set {_P}'s gamemode to creative
+			updateNametagfor({_P})
+			loop all players:
+				updateSpectators(loop-player)
+				updatePlayers(loop-player)
+			while {UHC::Spectators::%{_P}%} is true:
+				wait 5 ticks
+				updateTPS({_p})
+		else if {_O} is "Off":
+			message "{@P} &dYou are now player :D" to {_P}
+			StaffMessage("%{_P}% became a player", "Normal")
+			delete {UHC::Spectators::%{_P}%}
+			Scoreboard({_P})
+			Vanish({_P}, "Off")
+			set {_P}'s gamemode to survival
+			clear {_P}'s inventory
+			updateNametagfor({_P})
+			loop all players:
+				updateSpectators(loop-player)
+				updatePlayers(loop-player)
+		else:
+			if {UHC::Spectators::%{_P}%} is true:
+				message "{@P} &dYou are now player :D" to {_P}
+				StaffMessage("%{_P}% became a player", "Normal")
+				delete {UHC::Spectators::%{_P}%}
+				Scoreboard({_P})
+				Vanish({_P}, "Off")
+				set {_P}'s gamemode to survival
+				clear {_P}'s inventory
+				updateNametagfor({_P})
+				loop all players:
+					updateSpectators(loop-player)
+					updatePlayers(loop-player)
+			else:
+				message "{@P} &dYou are now spec :D" to {_P}
+				StaffMessage("%{_P}% became a spec", "Normal")
+				set {UHC::Spectators::%{_P}%} to true
+				Scoreboard({_P})
+				Vanish({_P}, "On")
+				clear {_P}'s inventory
+				set slot 1 of {_P}'s inventory to compass named "&6&oPassthrough blocks"
+				set slot 2 of {_P}'s inventory to iron sword named "&6&oTeleport to 0,0"
+				set slot 3 of {_P}'s inventory to book named "&6&oView Inventory"
+				set slot 4 of {_P}'s inventory to ender pearl named "&6&oTeleport"
+				set slot 5 of {_P}'s inventory to end portal frame named "&6&oRandom Teleport"
+				if {Vanish::%{_P}%} is true:
+					set slot 6 of {_P}'s inventory to light green dye named "&a&oVanish"
+				else:
+					set slot 6 of {_P}'s inventory to gray dye named "&c&oVanish"
+				set {_P}'s gamemode to creative
+				updateNametagfor({_P})
+				loop all players:
+					updateSpectators(loop-player)
+					updatePlayers(loop-player)
+				while {UHC::Spectators::%{_P}%} is true:
+					wait 5 ticks
+					updateTPS({_p})
+
+function TeamNumber(p: number) :: number:
+	set {_TM} to 1
+	while {Teams::%{_TM}%} is set:
+		add 1 to {_TM}
+	return {_TM}
+
+function fortuneEffect(p: player, b: block, i: item):
+	if {_p}'s tool is enchanted with fortune 1:
+		chance of 33%
+		drop 1 of {_i} at {_b}
+	else if {_p}'s tool is enchanted with fortune 2:
+		if chance of 25%:
+			drop 1 of {_i} at {_b}
+			if chance of 25%:
+				drop 1 of {_i} at {_b}
+	else if {_p}'s tool is enchanted with fortune 3:
+		if chance of 20%:
+			drop 1 of {_i} at {_b}
+			if chance of 20%:
+				drop 1 of {_i} at {_b}
+				if chance of 20%:
+					drop 1 of {_i} at {_b}
+
+#CutClean,Diamondless,DoubleOres,TripleOres
+function ironDrop(p: player, b: block, xp: boolean):
+	if {_xp} is true:
+		spawn 1 xp at {_b}
+	if {Scenarios::DoubleOrNothing} is true:
+		chance of 50%
+		drop 2 iron ingot at {_b}
+	else if {Scenarios::DoubleOres} is true:
+		drop 2 iron ingot at {_b}
+	else if {Scenarios::TripleOres} is true:
+		drop 3 iron ingot at {_b}
+	else:
+		drop 1 iron ingot at {_b}
+		fortuneEffect({_p}, {_b}, iron ingot)
+
+function goldDrop(p: player, b: block, xp: boolean):
+	if {_xp} is true:
+		spawn 2 xp at {_b}
+	if {Scenarios::DoubleOrNothing} is true:
+		chance of 50%
+		drop 2 gold ingot at {_b}
+	else if {Scenarios::DoubleOres} is true:
+		drop 2 gold ingot at {_b}
+	else if {Scenarios::TripleOres} is true:
+		drop 3 gold ingot at {_b}
+	else:
+		drop 1 gold ingot at {_b}
+		fortuneEffect({_p}, {_b}, gold ingot)
+		
+function diamondDrop(p: player, b: block, xp: boolean):
+	if {_xp} is true:
+		set {_i} to random integer between 3 and 7
+		spawn {_i} of xp at {_b}
+	if {Scenarios::Diamondless} is true:
+		stop
+	if {Scenarios::DoubleOrNothing} is true:
+		chance of 50%
+		drop 2 diamond at {_b}
+	else if {Scenarios::DoubleOres} is true:
+		drop 2 diamond at {_b}
+	else if {Scenarios::TripleOres} is true:
+		drop 3 diamond at {_b}
+	else:
+		drop 1 diamond at {_b}
+		fortuneEffect({_p}, {_b}, diamond)
+
+#Birds
+function BirdsEffect(p: player):
+	{Scenarios::Birds} is true
+	set flight mode of {_p} to true
+
+function BirdsStart(s: text):
+	{Scenarios::Birds} is true
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		set flight mode of {_P} to true
+	broadcast "{@P} &dPlayers can fly now due to birds"
+
+on join:
+	{Scenarios::Birds} is true
+	{UHC::AlivePlayers::%player%} is true
+	set player's flight mode to true
+
+#Ender Dragon Rush
+function EnderDragonRushStart(s: text):
+	{Scenarios::Ender Dragon Rush} is true
+	set {_loc} to location(0, 256, 0, world("UHC"))
+	while {_true} is not set:
+		remove 1 from y-coordinate of {_loc}
+		if y-coordinate of {_loc} <= 0:
+			stop loop
+		if block at {_loc} is not air or grass:
+			stop loop
+	add 1 to y-coordinate of {_loc}
+	set {UHC::EndPortal} to {_loc}
+	loop north, south, west, east:
+		if loop-value is north:
+			set {_loc2} to block 2 meter north of {_loc}
+		if loop-value is south:
+			set {_loc2} to block 2 meter south of {_loc}
+		if loop-value is east:
+			set {_loc2} to block 2 meter east of {_loc}
+		if loop-value is west:
+			set {_loc2} to block 2 meter west of {_loc}
+		set block at {_loc2} to end portal frame
+		if loop-value is north or south:
+			set block 1 meter east of {_loc2} to end portal frame
+			set block 1 meter west of {_loc2} to end portal frame
+		if loop-value is east or west:
+			set block 1 meter north of {_loc2} to end portal frame
+			set block 1 meter south of {_loc2} to end portal frame
+	broadcast "{@P} &dAn empty portal to the end has been made at 0,%y-coordinate of {_loc}%,0!"
+
+function EnderDragonRushPortalCreate(s: text):
+	{Scenarios::Ender Dragon Rush} is true
+	{UHC::EndPortal::lit} is not set
+	set block at {UHC::EndPortal} to end portal
+	set block 1 meter north of {UHC::EndPortal} to end portal
+	set block 1 meter east of block 1 meter north of {UHC::EndPortal} to end portal
+	set block 1 meter west of block 1 meter north of {UHC::EndPortal} to end portal
+	set block 1 meter south of {UHC::EndPortal} to end portal
+	set block 1 meter east of block 1 meter south of {UHC::EndPortal} to end portal
+	set block 1 meter west of block 1 meter south of {UHC::EndPortal} to end portal
+	set block 1 meter east of {UHC::EndPortal} to end portal
+	set block 1 meter west of {UHC::EndPortal} to end portal
+	broadcast "{@P} &dThe end portal at 0,0 has been lit! (automatically since nobody lit it, come on people its been 50 minutes)"
+
+on right click with eye of ender:
+	{Scenarios::Ender Dragon Rush} is true
+	{UHC::EndPortal::lit} is not set
+	clicked block is end portal frame:0
+	loop blocks in radius 3 of {UHC::EndPortal}:
+		type of loop-block is type of clicked block
+		add 1 to {UHC::EndPortal::count}
+		if {UHC::EndPortal::count} >= 3:
+			set {UHC::EndPortal::lit} to true
+			set block at {UHC::EndPortal} to end portal
+			set block 1 meter north of {UHC::EndPortal} to end portal
+			set block 1 meter east of block 1 meter north of {UHC::EndPortal} to end portal
+			set block 1 meter west of block 1 meter north of {UHC::EndPortal} to end portal
+			set block 1 meter south of {UHC::EndPortal} to end portal
+			set block 1 meter east of block 1 meter south of {UHC::EndPortal} to end portal
+			set block 1 meter west of block 1 meter south of {UHC::EndPortal} to end portal
+			set block 1 meter east of {UHC::EndPortal} to end portal
+			set block 1 meter west of {UHC::EndPortal} to end portal
+			broadcast "{@P} &dThe end portal at 0,0 has been lit!"
+		stop loop
+
+on death of ender dragon:
+	{Scenarios::Ender Dragon Rush} is true
+	broadcast "{@P} &dThe EnderDragon has been slain by %attacker% woooh!"
+
+#SkyHigh
+function SkyHighStart(s: text):
+	{Scenarios::SkyHigh} is true
+	broadcast "{@P} &cSkyHigh has started you will start taking damage if you are under y100"
+	while {UHC::Status} is true:
+		wait 30 seconds
+		{Scenarios::SkyHigh} is true
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as player
+			{_P}'s y-coordinate <= 100
+			damage loop-index parsed as player by 0.5 hearts
+			send "{@P} &cYou are under y100!" to {_P}
+
+function SkyHighItems(p: player):
+	{Scenarios::SkyHigh} is true
+	give 4 snow block to {_p}
+	give 2 pumpkin to {_p}
+	give 2 string to {_p}
+	give 16 feather to {_p}
+	give 64 clay block to {_p}
+	give 64 clay block to {_p}
+	give 1 diamond shovel to {_p}
+
+command /Skyhighitems <player>:
+	aliases: /shitems
+	trigger:
+		player has permission "staff.member"
+		if {Scenarios::SkyHigh} is true:
+			SkyHighItems(arg-1)
+			message "{@P} &dGave %arg-1% SkyHigh Items"
+		else:
+			message "{@P} &dSkyHigh is disabled"
+
+function SkyHighItemStart(s: text):
+	{Scenarios::SkyHigh} is true
+	broadcast "{@P} &dSky High items has been given"
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		if {_P} is online:
+			SkyHighItems({_P})
+		else:
+			set {UHC::SkyHighItems::%{_P}%} to true
+
+on join:
+	{Scenarios::SkyHigh} is true
+	if {UHC::SkyHighItems::%player%} is true:
+		SkyHighItems(player)
+		delete {UHC::SkyHighItems::%player%}
+
+#OppositesAttract
+on inventory click:
+	{UHC::Status} is true
+	{Scenarios::OppositesAttract} is true
+	if "%event.getAction()%" contains "place":
+		event.getClickedInventory() != player's inventory
+		stop
+	else if "%event.getAction()%" contains "move to other inventory":
+		event.getClickedInventory() == player's inventory
+		stop
+	else:
+		stop
+	loop {Team.%{Teams.InTeam::%player%}%::*}:
+		set {_P} to ("%loop-value%" parsed as offline player)
+		{_P} != player
+		if {_P} is online:
+			loop all items in {_P}'s inventory:
+				if "%event.getAction()%" contains "move to other inventory":
+					type of loop-item is type of clicked item
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%type of clicked item%" to player
+				else:
+					type of loop-item is type of clicked cursor
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%type of clicked cursor%" to player
+			set {_N} to 35
+			loop 4 times:
+				add 1 to {_N}
+				if "%event.getAction()%" contains "move to other inventory":
+					type of slot {_N} of {_P} is type of clicked item
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%type of clicked item%" to player
+				else:
+					type of slot {_N} of {_P} is type of clicked cursor
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%type of clicked cursor%" to player
+		else:
+			loop {UHC::OppositesAttractInventory::%loop-value%::*}:
+				if "%event.getAction()%" contains "move to other inventory":
+					loop-value-2 == clicked item
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%event.getCursor()%" to player
+				else:
+					loop-value-2 == clicked cursor
+					cancel the event
+					send "{@P} &c%loop-value-1% &dalready has &c%event.getCursor()%" to player
+
+on craft:	
+	{UHC::Status} is true
+	{Scenarios::OppositesAttract} is true
+	loop {Team.%{Teams.InTeam::%player%}%::*}:
+		set {_P} to ("%loop-value%" parsed as offline player)
+		{_P} != player
+		if {_P} is online:
+			loop all items in {_P}'s inventory:
+				type of loop-item is event-item
+				cancel the event
+				send "{@P} &c%loop-value-1% &dalready has &c%type of event-item%" to player
+			set {_N} to 35
+			loop 4 times:
+				add 1 to {_N}
+				type of slot {_N} of {_P} is event-item
+				cancel the event
+				send "{@P} &c%loop-value-1% &dalready has &c%type of event-item%" to player
+		else:
+			loop {UHC::OppositesAttractInventory::%loop-value%::*}:
+				loop-value-2 == event-item
+				cancel the event
+				send "{@P} &c%loop-value-1% &dalready has &c%type of event-item%" to player
+
+on pickup:
+	{UHC::Status} is true
+	{Scenarios::OppositesAttract} is true
+	loop {Team.%{Teams.InTeam::%player%}%::*}:
+		set {_P} to ("%loop-value%" parsed as offline player)
+		{_P} != player
+		if {_P} is online:
+			loop all items in {_P}'s inventory:
+				type of loop-item is type of event-item
+				cancel the event
+				if {UHC::OppositesAttractDelay::%player%} is not set:
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+				else:
+					difference between {UHC::OppositesAttractDelay::%player%} and now is more than 2 seconds
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+			set {_N} to 35
+			loop 4 times:
+				add 1 to {_N}
+				type of slot {_N} of {_P} is type of event-item
+				cancel the event
+				if {UHC::OppositesAttractDelay::%player%} is not set:
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+				else:
+					difference between {UHC::OppositesAttractDelay::%player%} and now is more than 2 seconds
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+		else:
+			loop {UHC::OppositesAttractInventory::%loop-value%::*}:
+				loop-value-2 == type of event-item
+				cancel event
+				if {UHC::OppositesAttractDelay::%player%} is not set:
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+				else:
+					difference between {UHC::OppositesAttractDelay::%player%} and now is more than 2 seconds
+					set {UHC::OppositesAttractDelay::%player%} to now
+					send "{@P} &dFailed pickup cause &c%loop-value-1% &dalready has &c%type of event-item%" to player
+
+on quit:
+	{UHC::Status} is true
+	{Scenarios::OppositesAttract} is true
+	{UHC::AlivePlayers::%player%} is true
+	delete {UHC::OppositesAttractInventory::%player%::*}
+	loop all items in player's inventory:
+		add type of loop-item to {UHC::OppositesAttractInventory::%player%::*}
+	loop player's helmet, player's chestplate, player's leggings and player's boots:
+		add type of loop-value to {UHC::OppositesAttractInventory::%player%::*}
+
+#Deathnote
+function SetKiraL(s: text):
+	{Scenarios::Deathnote} is true
+	loop {Teams::*}:
+		set {_List::*} to {Team.%loop-index%::*}
+		set {_Loop} to true
+		while {_Loop} is true:
+			set {_Kira} to a random element out of {_List::*}
+			set {_Kira} to "%{_Kira}%" parsed as player
+			remove {_Kira} from {_List::*}
+			if {_Kira} is online:
+				set {UHC::Kira::%{_Kira}%} to true
+				message "{@P} &dYou are Kira, betray your team. Use /kirahelp" to {_Kira}
+				set {_Loop} to false
+			if {_List::*} is not set:
+				set {_Loop} to false
+			wait 1 tick
+		set {_Loop} to true
+		while {_Loop} is true:
+			set {_L} to a random element out of {_List::*}
+			set {_L} to "%{_L}%" parsed as player
+			remove {_L} from {_List::*}
+			if {_L} is online:
+				set {UHC::L::%{_L}%} to true
+				message "{@P} &dYou are L, find kira and protect the innocent. Use /Lhelp" to {_L}
+				set {_Loop} to false
+			if {_List::*} is not set:
+				set {_Loop} to false
+			wait 1 tick
+	broadcast "{@P} &dKira's and L's have been set!"
+	execute console command "/playsoundall note.pling"
+
+on damage:
+	{Scenarios::Deathnote} is true
+	{Teams.InTeam::%victim%} == {Teams.InTeam::%attacker%}
+	if {UHC::L::%attacker%} is true:
+		if {UHC::Kira::%victim%} is true:
+			set {UHC::DeathByL::%victim%} to true
+			kill victim
+			message "{@P} &dYou succesfully killed Kira!" to attacker
+		else:
+			set {UHC::LFail::%attacker%} to true
+			kill attacker
+
+on death:
+	{Scenarios::Deathnote} is true
+	if {UHC::Kira::%victim%} is true:
+		delete {UHC::Kira::%victim%}
+	if {UHC::L::%victim%} is true:
+		delete {UHC::L::%victim%}
+
+command /lhelp:
+	usage: /lhelp
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		message "{@P} &dL needs to find Kira and kill him by damaging kira"
+		message "{@P} &dIf L attacks someone who is not Kira, L will die."
+
+command /kirahelp:
+	usage: /kirahelp
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnotes is currently disabled"
+			stop
+		message "{@P} &dUse the command /kcc or /kirachat to speak to your fellow kira"
+		message "{@P} &dUse the command /kcl or /kiraloc to tell your fellow kira where you are"
+		message "{@P} &dUse the command /kcp or /kiralist to find out who your fellow kira are"
+		message "{@P} &dUse the command /deathnote <player> to kill someone in your team"
+
+command /deathnote <player>:
+	usage: /deathnote <teammate>
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		set {_waited} to difference between {UHC::DeathnoteCooldown::%player%} and now
+		if {_waited} is less than 10 minutes:
+			message "{@P} &cDeathnote is on cooldown, you can use it again in %{_waited}%"
+		else if {UHC::Kira::%player%} is true:
+			if {UHC::AlivePlayers::%arg-1%} is not set:
+				message "{@P} &d%arg-1% is not an alive player"
+			else if {Teams.InTeam::%player%} == {Teams.InTeam::%arg-1%}:
+				set {UHC::DeathnoteCooldown::%player%} to now
+				message "{@P} &d%arg-1% will die in 40 seconds"
+				wait 40 seconds
+				set {UHC::DeathbyKira::%arg-1%} to true
+				kill arg-1
+			else:
+				message "{@P} &dYou can only kill someone in your team."
+		else:
+			message "{@P} &cYou are not kira!"
+ 
+command /kcc <text>:
+	aliases: /kirachat
+	usage: /kcc <message>
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {UHC::Kira::%player%} is true:
+			loop all players:
+				{UHC::Kira::%loop-player%} is true
+				message "&dKira &6» &e%command sender%&7: &f%arg-1%" to the loop-value
+		else:
+			message "{@P} &cYou are not kira!"
+ 
+command /kcl:
+	aliases: /kiraloc
+	usage: /kcl - broadcast location to other kiras
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {UHC::Deathnote::%player%} is true:
+			loop all players:
+				{UHC::Kira::%loop-player%} is true
+				message "&dKira &6» &9%command sender%'s coords&7: &f%player's location%" to the loop-value
+		else:
+			message "{@P} &cYou are not kira!"
+ 
+command /kcp:
+	aliases: /kiralist
+	usage: /kcp - list kira's players alive
+	trigger:
+		if {Scenarios::Deathnote} is not set:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {Scenarios::Deathnote} is false:
+			message "{@P} &cDeathnote is currently disabled"
+			stop
+		if {UHC::Kira::%player%} is true:
+			loop all players:
+				{UHC::Kira::%loop-player%} is true
+				add loop-player to {_list::*}
+			message "{@P} &dAll Kira's&7: &d%{_list::*}%"
+		else:
+			message "{@P} &cYou are not kira!"
+
+#VeinMiner
+on mine of coal ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is coal ore
+		set loop-block to air
+		damage player's tool by 1
+		drop 1 coal at loop-block
+		add 1 to {_xp}
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+
+on mine of nether quartz ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is nether quartz ore
+		set loop-block to air
+		damage player's tool by 1
+		drop 1 nether quartz at loop-block
+		add 1 to {_xp}
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+	   
+on mine of iron ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is iron ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		ironDrop(player, loop-block, false)
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+   
+on mine of gold ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is gold ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		goldDrop(player, loop-block, false)
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+
+on mine of diamond ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is diamond ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		diamondDrop(player, loop-block, false)
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+
+on mine of lapis lazuli ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is lapis lazuli ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		drop 6 of lapis lazuli at loop-block
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+			   
+on mine of redstone ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is redstone ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		drop 4 of redstone at loop-block
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+			   
+on mine of emerald ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::VeinMiner} is true
+	player is sneaking
+	loop blocks in radius 2 around event-block:
+		loop-block is equal to emerald ore
+		set loop-block to air
+		damage player's tool by 1
+		add 1 to {_xp}
+		drop 1 of emerald at loop-block
+	spawn 1 xp at event-block
+	add ({_xp}-1) to player's xp
+
+#Stock-Up
+on death:
+	{UHC::Status} is true
+	{Scenarios::Stock-Up} is true
+	{UHC::AlivePlayers::%victim%} is true
+	add 1 to {UHC::Stock-Up}
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		if {_P} is online:
+			set {_P}'s max health to ({UHC::Stock-Up} + 10)
+		else:
+			set {UHC::Stock-Up::%loop-index%} to true
+
+on join:
+	{UHC::Status} is true
+	{Scenarios::Stock-Up} is true
+	{UHC::AlivePlayers::%player%} is true
+	{UHC::Stock-Up::%player%} is true
+	set player's max health to ({UHC::Stock-Up} + 10)
+	message "{@P} &dYou got your hearts from fallen players while you were offline"
+
+#GigaDrill
+function GigaDrillStart(s: text):
+	{UHC::Status} is true
+	{Scenarios::GigaDrill} is true
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		apply potion of Haste of tier 2 to {_P} for 1 day
+
+function GigaDrillEffect(p: player):
+	{UHC::Status} is true
+	{Scenarios::GigaDrill} is true
+	apply potion of Haste of tier 2 to {_p} for 1 day
+
+on inventory close:
+	{UHC::Status} is true
+	{Scenarios::GigaDrill} is true
+	loop all items in the inventory of player:
+		loop-item is pickaxe
+		loop-item is not a diamond pickaxe of efficiency 5
+		set loop-item to diamond pickaxe of efficiency 5
+
+on drinking of milk:
+	if {Scenarios::GigaDrill} is true:
+		cancel the event
+		remove 1 milk bucket from player's inventory
+		message "{@P} &cScenario is currently GigaDrill"
+
+#DoubleDates
+function DoubleDatesStart(s: text):
+	{UHC::Status} is true
+	{Scenarios::DoubleDates} is true
+	set {_list::*} to {Teams::*}
+	loop {_list::*}:
+		set {_team1} to a random element out of {_list::*}
+		remove {_team1} from {_list::*}
+		set {_team2} to a random element out of {_list::*}
+		remove {_team2} from {_list::*}
+		set {_team1} to {_team1} parsed as integer
+		set {_team2} to {_team2} parsed as integer
+		if {_team2} is not set:
+			loop {Team.%{_team1}%::*}:
+				message "{@P} &dYou dont have a double date since ur lonely(not enough teams)" to loop-value-2
+			stop
+		loop {Team.%{_team1}%::*}:
+			add loop-value-2 to {_players::*}
+		loop {Team.%{_team2}%::*}:
+			add loop-value-2 to {_players::*}
+		loop {_players::*}:
+			leaveTeam(loop-value-2)
+		deleteTeam({_team1})
+		deleteTeam({_team2})
+		set {_TM} to TeamNumber(1)
+		createTeam({_TM})
+		loop {_players::*}:
+			joinTeam(loop-value-2, {_TM})
+			message "{@P} &dYour double dates are &d%{_players::*}% no roleplay in chat plz" to loop-value-2
+		delete {_players::*}
+
+#Slavemarket
+function SlavemarketDiamonds(s: text):
+	loop {UHC::SlaveMarket::DiamondsReturn::*}:
+		set {_P} to loop-index parsed as player
+		if {_P} is online:
+			give {_P} {UHC::SlaveMarket::DiamondsReturn::%loop-index%} of diamonds
+			delete {UHC::SlaveMarket::DiamondsReturn::%loop-index%}
+
+on join:
+	{UHC::SlaveMarket::DiamondsReturn::%player%} is set
+	give player {UHC::SlaveMarket::DiamondsReturn::%player%} of diamonds
+	delete {UHC::SlaveMarket::DiamondsReturn::%player%}
+
+command /slavemarket [<text>] [<text>] [<text>]:
+	trigger:
+		{Scenarios::Slavemarket} is true
+		if arg-1 is "startbid":
+			player has permission "staff.member"
+			loop all players:
+				{UHC::Spectators::%loop-player%} is not set
+				{UHC::SlaveMarket::Owners::%loop-player%} is not set
+				add loop-player to {_slaves::*}
+			broadcast "{@P} &dStarting slaves bidding"
+			wait 2 seconds
+			loop {_slaves::*}:
+				delete {UHC::SlaveMarket::CurrentBid::*}
+				set {UHC::SlaveMarket::CurrentBid} to loop-value
+				broadcast "{@P} &4Current slave being bidded - &d%loop-value%"
+				execute console command "/warp slavebid %loop-value%"
+				set {UHC::SlaveMarket::CurrentBidTimer} to 7
+				while {UHC::SlaveMarket::CurrentBidTimer} > 0:
+					if {UHC::SlaveMarket::CurrentBidTimer} is 3:
+						broadcast "{@P} &dBid ending in 3 seconds"
+					else if {UHC::SlaveMarket::CurrentBidTimer} is 2:
+						broadcast "{@P} &dBid ending in 2 seconds"
+					else if {UHC::SlaveMarket::CurrentBidTimer} is 1:
+						broadcast "{@P} &dBid ending in 1 second"
+					wait 1 second
+					remove 1 from {UHC::SlaveMarket::CurrentBidTimer}
+				set {UHC::SlaveMarket::CurrentBid::me} to 0
+				loop {UHC::SlaveMarket::CurrentBid::*}:
+					add loop-index-2 to {_indexes::*}
+				set {_sortedIndexes::*} to sortHighestToLowest({_indexes::*}, {UHC::SlaveMarket::CurrentBid::*})
+				set {_N} to 0
+				loop {_sortedIndexes::*}:
+					{_N} < 1
+					if "%loop-value-2%" is "me":
+						broadcast "{@P} &7Nobody bidded for %loop-value-1%, giving him a random team"
+						set {_TM} to a random element out of {UHC::SlaveMarket::Owners::*}
+						joinTeam(loop-value-1, ("%{_TM}%" parsed as integer))
+					else:
+						broadcast "{@P} &aThe slave %loop-value-1% has been sold to %loop-value-2% with %{UHC::SlaveMarket::CurrentBid::%loop-value-2%}% diamonds"
+						delete {UHC::SlaveMarket::CurrentBidMax}
+						remove {UHC::SlaveMarket::CurrentBid::%loop-value-2%} of diamond from ("%loop-value-2%" parsed as player)'s inventory
+						joinTeam(loop-value-1, {UHC::SlaveMarket::Owners::%loop-value-2%})
+						execute console command "/warp slaveowner%{UHC::SlaveMarket::Owners::%loop-value-2%}% %loop-value-1%"
+						add 1 to {_N}
+				delete {_N}
+				delete {_indexes::*}
+				delete {_sortedIndexes::*}
+				delete {UHC::SlaveMarket::CurrentBid::*}
+				delete {UHC::SlaveMarket::CurrentBid}
+			broadcast "{@P} &dBidding has finished, leftover diamonds saved and will be re-given"
+			loop {UHC::SlaveMarket::Owners::*}:
+				set {_P} to loop-index parsed as player
+				set {UHC::SlaveMarket::DiamondsReturn::%loop-index%} to amount of diamonds in {_P}'s inventory
+				clear {_P}'s inventory
+		if arg-1 is "owner":
+			player has permission "staff.member"
+			{UHC::SlaveMarket::Owners::%arg-2%} is not set
+			set {_p} to arg-2 parsed as player
+			{_p} is online
+			set {_TM} to TeamNumber(1)
+			broadcast "{@P} %arg-2% has became a slave owner ##%{_TM}%"
+			give {_p} 30 diamonds
+			loop 5 times:
+				send "{@P} &cUse ""/slavemarket bid amount"" to Bid!" to {_p}
+			send "{@P} yes the spam is necessary" to {_p}
+			play sound "note_bass" to {_p} with volume 1 and pitch 5
+			set {UHC::SlaveMarket::Owners::%arg-2%} to {_TM}
+			createTeam({_TM})
+			joinTeam({_p}, {_TM})
+			execute console command "/warp slaveowner%{_TM}% %arg-2%"
+		if arg-1 is "bid":
+			{UHC::SlaveMarket::Owners::%player%} is set
+			{UHC::SlaveMarket::CurrentBid} is set
+			set {_amount} to arg-2 parsed as integer
+			if {_amount} is not set:
+				message "{@P} &dThat is not a valid amount"
+				stop
+			if {_amount} < 1:
+				message "{@P} &dYou cannot bid under atleast 1 diamond"
+				stop
+			if {_amount} <= {UHC::SlaveMarket::CurrentBidMax}:
+				message "{@P} &dCurrent bid is %{UHC::SlaveMarket::CurrentBidMax}% diamonds you must bid higher"
+				stop
+			if amount of diamond in player's inventory is less than {_amount}:
+				message "{@P} &dYou dont have enough diamonds"
+				stop
+			set {UHC::SlaveMarket::CurrentBid::%player%} to {_amount}
+			if {UHC::SlaveMarket::CurrentBidTimer} <= 3:
+				broadcast "{@P} &eBid Timer extended for 4 seconds"
+			add 4 to {UHC::SlaveMarket::CurrentBidTimer}
+			set {UHC::SlaveMarket::CurrentBidMax} to {_amount}
+			broadcast "{@P} &b%player% has bidded %{UHC::SlaveMarket::CurrentBid::%player%}% diamonds for %{UHC::SlaveMarket::CurrentBid}%"
+
+on drop:
+	{Scenarios::Slavemarket} is true
+	{UHC::Status} is not set
+	{UHC::SlaveMarket::Owners::%player%} is set
+	player's tool is diamond
+	cancel the event
+
+#BloodDiamonds
+on mine of a diamond ore:
+	{UHC::Status} is true
+	{Scenarios::BloodDiamonds} is true
+	damage the player by 0.5
+
+#Eggs
+on projectile hit:
+	{UHC::Status} is true
+	{Scenarios::Eggs} is true
+	event-projectile's world is not world("Spawn")
+	"%projectile.getType()%" is "EGG"
+	if {UHC::Eggs::*} is not set:
+		set {UHC::Eggs::*} to sheep, cow, chicken, zombie, giant, wither, mooshroom, skeleton, horse, donkey, mule, enderdragon, zombie pigman, wither skeleton, baby zombie, wolf, enderman, creeper, pig, silverfish, squid, ocelot, villager, witch, bat, magma cube, blaze, spider, slime and cave spider
+	set {_mob} to a random element out of {UHC::Eggs::*}
+	spawn {_mob} at event-location
+
+on death of chicken:
+	{UHC::Status} is true
+	{Scenarios::Eggs} is true
+	chance of 5%
+	drop 1 egg at victim
+
+#Chicken
+function ChickenEffect(p: player):
+	{UHC::Status} is true
+	{Scenarios::Chicken} is true
+	set {_p}'s health to 0.5
+	give {_p} 1 golden apple:1
+
+function ChickenStart(s: text):
+	{UHC::Status} is true
+	{Scenarios::Chicken} is true
+	loop {UHC::AlivePlayers::*}:
+		set {_p} to loop-index parsed as offline player
+		if {_p} is online:
+			set {_p}'s health to 0.5
+			give {_p} 1 golden apple:1
+		else:
+			set {UHC::Chicken::%{_p}%} to true
+	broadcast "{@P} &dChicken scenario has been started"
+
+on join:
+	{UHC::Status} is true
+	{Scenarios::Chicken} is true
+	{UHC::Chicken::%player%} is true
+	set player's health to 0.5
+	give player 1 golden apple:1
+	delete {UHC::Chicken::%player%}
+
+#Diamondless (Some code is in CutClean's code)
+on death of a player:
+	{UHC::Status} is true
+	{Scenarios::Diamondless} is true
+	{UHC::AlivePlayers::%player%} is true
+	drop 1 diamond at victim
+	drop 4 gold ingots at victim
+
+#LAFS
+on rightclick on player:
+	{UHC::Status} is true
+	{Scenarios::LAFS} is true
+	{UHC::AlivePlayers::%player%} is true
+	{UHC::AlivePlayers::%player's target%} is true
+	{Teams.InTeam::%player's target%} is not set
+	{Teams.InTeam::%player%} is not set
+	set {_TM} to TeamNumber(1)
+	createTeam({_TM})
+	joinTeam(player's target, {_TM})
+	joinTeam(player, {_TM})
+	send "{@P} &dYou are now teamed with %player% [LAFS]" to player's target
+	send "{@P} &dYou are now teamed with %player's target% [LAFS]" to player
+
+on damage:
+	{UHC::Status} is true
+	{Scenarios::LAFS} is true
+	attacker != victim
+	{UHC::AlivePlayers::%attacker%} is true
+	{UHC::AlivePlayers::%victim%} is true
+	{Teams.InTeam::%attacker%} is not set
+	{Teams.InTeam::%victim%} is not set
+	cancel the event
+	set {_TM} to TeamNumber(1)
+	createTeam({_TM})
+	joinTeam(victim, {_TM})
+	joinTeam(attacker, {_TM})
+	send "{@P} &dYou are now teamed with %victim% [LAFS]" to attacker
+	send "{@P} &dYou are now teamed with %attacker% [LAFS]" to victim
+
+#FlowerPower
+on item spawning of all flowers:
+	{UHC::Status} is true
+	{Scenarios::FlowerPower} is true
+	cancel the event
+	set {_list::*} to all items
+	remove golden apple:1, end portal, portal and bedrock from {_list::*}
+	set {_item} to a random item out of {_list::*}
+	drop (random number between 1 and {_item}'s max stacksize) of {_item}
+
+#NoFall
+on damage:
+	{Scenarios::NoFall} is true
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%victim%} is true
+	damage cause is fall
+	cancel the event
+
+#GoneFishin
+function GoneFishinItems(P: player):
+	{Scenarios::GoneFishin} is true
+	give {_P} 1 fishing rod of unbreaking 250 and luck of the sea 250 and lure 3
+	give {_P} 20 anvils
+	set {_P}'s level to 2000
+
+function GoneFishinStart(s: text):
+	{Scenarios::GoneFishin} is true
+	broadcast "{@P} &dGoneFishin items has been given"
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		if {_P} is online:
+			GoneFishinItems({_P})
+		else:
+			set {UHC::GoneFishin::%{_P}%} to true
+
+on join:
+	{UHC::Status} is true
+	{Scenarios::GoneFishin} is true
+	{UHC::GoneFishin::%player%} is true
+	GoneFishinItems(player)
+	delete {UHC::GoneFishin::%player%}
+
+on craft of enchantment table:
+	{UHC::Status} is true
+	{Scenarios::GoneFishin} is true
+	cancel event
+
+#InfiniteEnchanter
+function InfiniteEnchanterItems(P: player):
+	{Scenarios::InfiniteEnchanter} is true
+	give {_P} 64 anvil
+	give {_P} 128 bookshelves
+	give {_P} 64 enchantment table
+	set {_P}'s level to 69
+
+command /IEitems <player>:
+	aliases: /InfiniteEnchanteritems
+	trigger:
+		player has permission "staff.member"
+		if {Scenarios::InfiniteEnchanter} is true:
+			InfiniteEnchanterItems(arg-1)
+			message "{@P} &dGave %arg-1% IE Items"
+		else:
+			message "{@P} &dInfiniteEnchanter is disabled"
+
+function InfiniteEnchanterStart(s: text):
+	{Scenarios::InfiniteEnchanter} is true
+	broadcast "{@P} &dInfinite Enchanter items has been given"
+	loop {UHC::AlivePlayers::*}:
+		set {_P} to loop-index parsed as player
+		if {_P} is online:
+			give {_P} 64 anvil
+			give {_P} 128 bookshelves
+			give {_P} 64 enchantment table
+			set {_P}'s level to 69
+		else:
+			set {UHC::InfiniteEnchanter::%{_P}%} to true
+
+on "org.bukkit.event.player.PlayerLevelChangeEvent":
+	{Scenarios::InfiniteEnchanter} is true
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%event.getPlayer()%} is true
+	set event.getPlayer()'s level to 69
+
+on join:
+	{UHC::Status} is true
+	{Scenarios::InfiniteEnchanter} is true
+	{UHC::InfiniteEnchanter::%{_P}%} is true
+	InfiniteEnchanterItems({_P})
+	delete {UHC::InfiniteEnchanter::%{_P}%}
+
+#Entropy
+function EntropyStart(s: text):
+	{UHC::Status} is true
+	{Scenarios::Entropy} is true
+	broadcast "{@P} &dEntropy has started"
+	loop all players:
+		add 2 to loop-player's level
+	while {Scenarios::Entropy} is true:
+		broadcast "{@P} &dNext XP Drain in the next 10 minutes"
+		wait 10 minutes
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as player
+			if {_P}'s level > 0:
+				remove 1 from {_P}'s level
+				send "{@P} &dYou survived the drain (-1 Level)!" to {_P}
+			else:
+				set {UHC::Entropy::%{_P}%} to true
+				kill {_P}
+
+#Webcage
+on death of player:
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%victim%} is true
+	{Scenarios::Webcage} is true
+	loop blocks in radius 10 around victim's location:
+		round(distance between victim's location and loop-block) == 4
+		loop-block is air
+		set loop-block to cobweb
+
+#Moles
+plural expression all moles:
+	get:
+		loop all players:
+			{UHC::Moles::%loop-player%} is true
+			{UHC::Spectators::%loop-player%} is not set
+			add loop-player to {_List::*}
+		return {_List::*}
+
+function SetMoles(s: text):
+	{Scenarios::Moles} is true
+	loop {Teams::*}:
+		if {UHC::MolesSize} is set:
+			loop {UHC::MolesSize} times:
+				set {_List::*} to {Team.%loop-index%::*}
+				set {_Loop} to true
+				while {_Loop} is true:
+					set {_Mole} to a random element out of {_List::*}
+					set {_Mole} to "%{_Mole}%" parsed as player
+					remove {_Mole} from {_List::*}
+					set {_team} to {Teams.InTeam::%{_Mole}%}
+					if {_Mole} is online:
+						set {UHC::Moles::%{_Mole}%} to true
+						message "{@P} &dYou are the mole! Betray your team, use kits with /molekit, use /molehelp for commands!" to {_Mole}
+						set {_Loop} to false
+					if {_List::*} is not set:
+						set {_Loop} to false
+					wait 1 tick
+		else:
+			set {_List::*} to {Team.%loop-index%::*}
+			set {_Loop} to true
+			while {_Loop} is true:
+				set {_Mole} to a random element out of {_List::*}
+				set {_Mole} to "%{_Mole}%" parsed as player
+				remove {_Mole} from {_List::*}
+				set {_team} to {Teams.InTeam::%{_Mole}%}
+				if {UHC::MolesTeamCheck::%{_team}%} is true:
+					set {_Loop} to false
+				else if {_Mole} is online:
+					set {UHC::Moles::%{_Mole}%} to true
+					set {UHC::MolesTeamCheck::%{_team}%} to true
+					message "{@P} &dYou are the mole! Betray your team, use kits with /molekit, use /molehelp for commands!" to {_Mole}
+					set {_Loop} to false
+				if {_List::*} is not set:
+					set {_Loop} to false
+				wait 1 tick
+	broadcast "{@P} &7Moles have been set!"
+	execute console command "/playsoundall note.pling"
+
+on death:
+	{Scenarios::Moles} is true
+	{UHC::Moles::%victim%} is true
+	delete {UHC::Moles::%victim%}
+
+command /molehelp:
+	usage: /molehelp
+	trigger:
+		if {Scenarios::Moles} is not set:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {Scenarios::Moles} is false:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		message "{@P} &dUse the command /mcc or /molechat to speak to your fellow moles"
+		message "{@P} &dUse the command /mcl or /moleloc to tell your fellow moles where you are"
+		message "{@P} &dUse the command /mcp or /molelist to find out who your fellow moles are"
+		message "{@P} &dUse the command /molekits to use kits"
+ 
+command /mcc <text>:
+	aliases: /molechat
+	usage: /mcc <message>
+	trigger:
+		if {Scenarios::Moles} is not set:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {Scenarios::Moles} is false:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {UHC::Moles::%player%} is true:
+			loop all moles:
+				message "&dMoles &6» &e%command sender%&7: &f%arg-1%" to the loop-value
+		else:
+			message "{@P} &cYou're not a mole!"
+ 
+command /mcl:
+	aliases: /moleloc
+	usage: /mcl - broadcast location to other moles
+	trigger:
+		if {Scenarios::Moles} is not set:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {Scenarios::Moles} is false:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {UHC::Moles::%player%} is true:
+			loop all moles:
+				message "&dMoles &6» &9%command sender%'s coords&7: &f%player's location%" to the loop-value
+		else:
+			message "{@P} &cYou're not a mole!"
+ 
+command /mcp:
+	aliases: /molelist
+	usage: /mcp - list mole players alive
+	trigger:
+		if {Scenarios::Moles} is not set:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {Scenarios::Moles} is false:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {UHC::Moles::%player%} is true:
+			message "{@P} &dAll Moles&7: &d%all moles%"
+		else:
+			message "{@P} &cYou're not a mole!"
+
+command /selfmole:
+	trigger:
+		player has permission "staff.member"
+		if {Scenarios::Moles} is true:
+			set {UHC::Moles::%player%} to true
+			message "{@P} &dYou are now a mole ABUSE AND UR FUCKED"
+		else:
+			message "{@P} &cMoles is currently disabled"
+
+command /moleset <integer>:
+	trigger:
+		player has permission "staff.member"
+		broadcast "{@P} &dMole size has been set to %arg-1% mole(s) per team"
+		set {UHC::MolesSize} to arg-1
+
+command /molekit:
+	aliases: /molekits
+	trigger:
+		if {Scenarios::Moles} is not set:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {Scenarios::Moles} is false:
+			message "{@P} &cMoles is currently disabled"
+			stop
+		if {UHC::Moles::%player%} is true:
+			if {UHC::MolesKit::%player%} is true:
+				message "{@P} &cYou already received a kit"
+				stop
+			open virtual chest inventory with size 3 named "&4Mole Kits" to player
+			format gui slot 0 of player with red glass pane to do nothing
+			loop 26 times:
+				loop-number != 9,10,11,12,13,14,15,16 and 17
+				format gui slot loop-number of player with red glass pane to do nothing
+			format gui slot 9 of player with cobweb named "&eThe Troll »" with lore "&716 Cobwebs||&75 TNT||&71 Flint And Steel" to close:
+				if player has enough space for 16 cobwebs, 5 tnt and 1 flint and steel:
+					set {UHC::MolesKit::%player%} to true
+					give player 16 cobweb
+					give player 5 TNT
+					give player 1 flint and steel
+					message "{@P} &aYou have received your Troll Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 10 of player with potion of:8226 named "&eThe Potter »" with lore "&71 Speed 2 Potion||&71 Splash Potion Of Weakness||&71 Splash Potion Of Harming 2" to close:
+				if player has enough space for potion:8226, potion:16424 and potion:16428:
+					set {UHC::MolesKit::%player%} to true
+					give player potion of:8226
+					give player potion of:16424
+					give player potion of:16428
+					message "{@P} &aYou have received your Potter Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 11 of player with diamond sword named "&eThe Fighter »" with lore "&71 Diamond Sword||&71 Golden Apple||&71 Fishing Rod" to close:
+				if player has enough space for diamond sword, golden apple and fishing rod:
+					set {UHC::MolesKit::%player%} to true
+					give player a diamond sword
+					give player a golden apple:0
+					give player a fishing rod
+					message "{@P} &aYou have received your Fighter Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 12 of player with tnt named "&eThe Trapper »" with lore "&716 TNT||&72 Of Each Piston||&71 Flint and Steel" to close:
+				if player has enough space for 16 tnt, 2 piston, 2 sticky piston and flint and steel:
+					set {UHC::MolesKit::%player%} to true
+					give player 16 tnt
+					give player 2 sticky pistons
+					give player 2 pistons
+					give player 1 flint and steel
+					message "{@P} &aYou have received your Trapper Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 13 of player with spawn egg:61 named "&eThe Pyro »" with lore "&75 Blaze Spawn Eggs||&71 Fire Resistance Potion||&73 TNT" to close:
+				if player has enough space for spawn egg:61, potion of:8227 and 3 tnt:
+					set {UHC::MolesKit::%player%} to true
+					give player 5 spawn egg:61
+					give player potion of:8227
+					give player 3 tnt
+					message "{@P} &aYou have received your Pyro Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			set {_item} to diamond chestplate
+			set durability of {_item} to 523
+			format gui slot 14 of player with {_item} named "&eThe Tank »" with lore "&7A set of diamond armour with 5 durability on each piece" to close:
+				if player has enough space for diamond helmet, diamond chestplate, diamond leggings and diamond boots:
+					set {UHC::MolesKit::%player%} to true
+					loop 4 times:
+						if loop-number is 1:
+							set {_item} to diamond helmet
+							set durability of {_item} to 358
+						else if loop-number is 2:
+							set {_item} to diamond chestplate
+							set durability of {_item} to 523
+						else if loop-number is 3:
+							set {_item} to diamond leggings
+							set durability of {_item} to 490
+						else if loop-number is 4:
+							set {_item} to diamond boots
+							set durability of {_item} to 424
+						give player {_item}
+					message "{@P} &aYou have received your Tank Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 15 of player with enchantment table named "&eThe Enchanter »" with lore "&71 Enchanting Table||&764 Experience Bottles||&764 Lapis" to close:
+				if player has enough space for 1 enchantment table, 64 experience bottle and 64 lapis:
+					set {UHC::MolesKit::%player%} to true
+					give player 1 enchantment table
+					give player 64 experience bottle
+					give player 64 lapis
+					message "{@P} &aYou have received your Enchanter Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 16 of player with golden apple:0 named "&eThe Healer »" with lore "&72 Golden Apples||&71 Healing Potion||&71 Splash Healing Potion" to close:
+				if player has enough space for 2 golden apple, potion of:8261 and potion of:16453:
+					set {UHC::MolesKit::%player%} to true
+					give player 2 golden apple
+					give player potion of:8261
+					give player potion of:16453
+					message "{@P} &aYou have received your Healer Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+			format gui slot 17 of player with bow named "&eThe Archer »" with lore "&71 Bow||&764 Arrows||&71 Fishing Rod" to close:
+				if player has enough space for bow, 64 arrows and 1 fishing rod:
+					set {UHC::MolesKit::%player%} to true
+					give player 1 bow
+					give player 64 arrows
+					give player 1 fishing rod
+					message "{@P} &aYou have received your Archer Kit!"
+				else:
+					message "{@P} &cYour inventory is full and cannot contain the mole items"
+		else:
+			message "{@P} &cYou're not a mole!"
+
+#LootCrates
+function LootCratesStart(s: text):
+	while {Scenarios::LootCrates} is true:
+		broadcast "{@P} &dLootcrates have been given out"
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as player
+			if {_P} is online:
+				if {_P} doesn't have space for 1 chest:
+					drop a chest named "&eLootCrate" at {_P}'s location
+				else:
+					give {_P} a chest named "&eLootCrate"
+			else:
+				add 1 to {UHC::LootCrates::%{_P}%}
+		wait 10 minutes
+
+on join:
+	{UHC::LootCrates::%player%} is set
+	message "{@P} &dYour %{UHC::LootCrates::%player%}% lootcrates while you were logged out has been given"
+	loop {UHC::LootCrates::%player%} times:
+		if player doesn't have space for 1 chest:
+			drop a chest named "&eLootCrate" at player's location
+		else:
+			give player a chest named "&eLootCrate"
+	delete {UHC::LootCrates::%player%}
+
+on right click with chest:
+	{Scenarios::LootCrates} is true
+	player's tool is chest named "&eLootCrate"
+	cancel the event
+	remove 1 chest named "&eLootCrate" from the player's inventory
+	if chance of 5%:
+		set {_item} to a random element out of diamond or enchantment table or diamond sword or diamond helmet or diamond boots
+	else if chance of 30%:
+		set {_item} to a random element out of 5 gold ingot or 10 iron ingot or 32 arrow or bow or fishing rod or 3 books
+	else if chance of 50%:
+		set {_item} to a random element out of 10 xp bottle or 1 golden apple:0 or 16 snowball
+	else:
+		set {_item} to a random element out of 8 steak or a cake or diamond shovel or 3 cobweb or 16 lapis
+	if player has space for {_item}:
+		give {_item} to player
+		message "{@P} &dYou received %{_item}% from the lootcrate!"
+		play sound "note_pling" to player with volume 1 and pitch 5
+	else:
+		drop {_item} at the player
+		message "{@P} &dYou received %{_item}% from the lootcrate but it has been dropped on the ground"
+		play sound "note_pling" to player with volume 1 and pitch 5
+
+
+#BATSSS
+on death of a bat:
+	{Scenarios::Bats} is true
+	attacker is a player
+	drop 1 golden apple at location of victim
+	chance of 5%:
+		set {UHC::Bats::%attacker%} to true
+		kill the attacker
+
+
+#HASTEYBOYS
+on inventory close:
+	if {Scenarios::HasteyBoys} is true:
+		loop all items in the inventory of player:
+			if loop-item is shovel or pickaxe or axe:
+				if loop-item is not enchanted with efficiency 3:
+					enchant loop-item with efficiency 3
+					enchant loop-item with unbreaking 3
+
+#SUPERHEROES
+function SuperHeroesStart(s: text):
+	if {Scenarios::Superheroes} is true:
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as player
+			if {UHC::Superheroes::%{_P}%} is not set:
+				set {_N} to random integer between 1 and 5
+				if {_N} is 1:
+					set {UHC::Superheroes::%{_P}%} to 1
+					apply potion of strength of tier 1 to {_P} for 1 day
+					message "{@P} &dYour power is Strength 1!" to {_P}
+				if {_N} is 2:
+					set {UHC::Superheroes::%{_P}%} to 2
+					apply potion of Health Boost of tier 3 to {_P} for 1 day
+					message "{@P} &dYour power is Health boost 3! (6 Extra Hearts)" to {_P}
+				if {_N} is 3:
+					set {UHC::Superheroes::%{_P}%} to 3
+					apply potion of Jump Boost of tier 4 to {_P} for 1 day
+					message "{@P} &dYour power is Jump Boost 4!" to {_P}
+				if {_N} is 4:
+					set {UHC::Superheroes::%{_P}%} to 4
+					apply potion of Speed of tier 1 to {_P} for 1 day
+					message "{@P} &dYour power is Speed 1!" to {_P}
+				if {_N} is 5:
+					set {UHC::Superheroes::%{_P}%} to 5
+					apply potion of Damage Resistance of tier 1 to {_P} for 1 day
+					apply potion of Fire Resistance of tier 1 to {_P} for 1 day
+					message "{@P} &dYour power is Resistance!" to {_P}
+				if {_N} is 6:
+					set {UHC::Superheroes::%{_P}%} to 6
+					apply potion of invisibility of tier 1 to {_P} for 1 day
+					message "{@P} &dYour power is Invisibility! (nametags are hidden)" to {_P}
+
+function SuperHeroesEffect(P: player):
+	{Scenarios::Superheroes} is true
+	if {UHC::Superheroes::%{_P}%} is not set:
+		set {_N} to random integer between 1 and 6
+		if {_N} is 1:
+			set {UHC::Superheroes::%{_P}%} to 1
+			apply potion of strength of tier 1 to {_P} for 1 day
+			message "{@P} &dYour power is Strength 1!" to {_P}
+		if {_N} is 2:
+			set {UHC::Superheroes::%{_P}%} to 2
+			apply potion of Health Boost of tier 3 to {_P} for 1 day
+			message "{@P} &dYour power is Health boost 3! (6 Extra Hearts)" to {_P}
+		if {_N} is 3:
+			set {UHC::Superheroes::%{_P}%} to 3
+			apply potion of Jump Boost of tier 4 to {_P} for 1 day
+			message "{@P} &dYour power is Jump Boost 4!" to {_P}
+		if {_N} is 4:
+			set {UHC::Superheroes::%{_P}%} to 4
+			apply potion of Speed of tier 1 to {_P} for 1 day
+			message "{@P} &dYour power is Speed 1!" to {_P}
+		if {_N} is 5:
+			set {UHC::Superheroes::%{_P}%} to 5
+			apply potion of Damage Resistance of tier 1 to {_P} for 1 day
+			apply potion of Fire Resistance of tier 1 to {_P} for 1 day
+			message "{@P} &dYour power is Resistance!" to {_P}
+		if {_N} is 6:
+			set {UHC::Superheroes::%{_P}%} to 6
+			apply potion of invisibility of tier 1 to {_P} for 1 day
+			message "{@P} &dYour power is Invisibility! (nametags are hidden)" to {_P}
+	else:
+		if {UHC::Superheroes::%{_P}%} is 1:
+			apply potion of strength of tier 1 to {_P} for 1 day
+		if {UHC::Superheroes::%{_P}%} is 2:
+			{_P} doesn't have health boost
+			apply potion of Health Boost of tier 3 to {_P} for 1 day
+		if {UHC::Superheroes::%{_P}%} is 3:
+			apply potion of Jump Boost of tier 4 to {_P} for 1 day
+		if {UHC::Superheroes::%{_P}%} is 4:
+			apply potion of Speed of tier 1 to {_P} for 1 day
+		if {UHC::Superheroes::%{_P}%} is 5:
+			apply potion of Damage Resistance of tier 1 to {_P} for 1 day
+			apply potion of Fire Resistance of tier 1 to {_P} for 1 day
+		if {UHC::Superheroes::%{_P}%} is 6:
+			apply potion of invisibility of tier 1 to {_P} for 1 day
+
+command /superheroes <player>:
+	permission: staff.member
+	trigger:
+		{Scenarios::Superheroes} is true
+		SuperHeroesEffect(arg-1)
+
+on join:
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::Superheroes} is true
+	SuperHeroesEffect(player)
+	
+on drinking of milk:
+	if {Scenarios::Superheroes} is true:
+		cancel the event
+		remove 1 milk bucket from player's inventory
+		message "{@P} &cScenario is currently superheroes"
+
+on damage:
+	{Scenarios::Superheroes} is true
+	damage cause is fall
+	if {UHC::Superheroes::%victim%} is 3:
+		cancel the event
+						
+#TEAMINV
+command /teaminv:
+	aliases: /ti, /teaminventory
+	trigger:
+		if {Scenarios::TeamInventory} is true:
+			if {UHC::Status} is true:
+				{UHC::AlivePlayers::%player%} is true
+				if {Teams.InTeam::%player%} is not set:
+					open the player's ender chest to the player
+					stop
+				else:
+					if {UHC::teaminv::%{Teams.InTeam::%player%}%} is not set:
+						open the player's ender chest to the player
+						set {UHC::teaminv::%{Teams.InTeam::%player%}%} to "%command sender%" parsed as offline player
+						stop
+					else:
+						open {UHC::teaminv::%{Teams.InTeam::%player%}%}'s ender chest to the player
+			else:
+				message "{@P} &cUHC Hasn't start yet"
+		else:
+			message "{@P} &cTeamInv is currently disabled"
+			
+on death of player:
+	{UHC::Status} is true
+	if {Scenarios::TeamInventory} is true:
+		if {Teams.InTeam::%victim%} is not set:
+			set {_ender} to the victim's ender chest
+			set {_deathloc} to the block above the victim
+			set the block at {_deathloc} to a chest
+			set the inventory of the block at {_deathloc} to {_ender}
+			stop
+		else:
+			if size of {Team.%{Teams.InTeam::%victim%}%::*} <= 1:
+				set {_ender} to {UHC::teaminv::%{Teams.InTeam::%victim%}%}'s ender chest
+				set {_deathloc} to the block above the victim
+				set the block at {_deathloc} to a chest
+				set the inventory of the block at {_deathloc} to {_ender}
+
+#TIMEBOMB SHIT
+import:
+	org.bukkit.Bukkit
+	com.gmail.filoghost.holographicdisplays.api.HologramsAPI
+
+on death of player:
+	{UHC::Status} is true
+	{Scenarios::Timebomb} is true
+	{UHC::AlivePlayers::%victim%} is true
+	set {UHC::Timebomb::%victim%} to true
+	set {_templocation::%victim%} to the block at the victim
+	set {UHC::Timebomb::%victim%::block1} to the block at the victim
+	set {UHC::Timebomb::%victim%::block2} to the block 1 meter north of {_templocation::%victim%}
+	set block 1 meter north of {_templocation::%victim%} to Chest
+	set block at {_templocation::%victim%} to Chest
+	if {Config::Golden Heads} is true:
+		add 1 golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit" to the inventory of the block at {_templocation::%victim%}
+	else:
+		add 1 golden apple:0 to the inventory of the block at {_templocation::%victim%}
+	add victim's inventory to the block at {_templocation::%victim%}
+	add the victim's helmet slot to the inventory of the block at {_templocation::%victim%}
+	add the victim's chestplate slot to the inventory of the block at {_templocation::%victim%}
+	add the victim's leggings slot to the inventory of the block at {_templocation::%victim%}
+	add the victim's boots slot to the inventory of the block at {_templocation::%victim%}
+	clear drops
+	set {_holo} to HologramsAPI.createHologram(Bukkit.getPluginManager().getPlugin("Skript"), location of block above {_templocation::%victim%})
+	set {_time} to 30
+	set {_line} to {_holo}.appendTextLine("&d%{_time}% s")
+	loop 30 times:
+		{_line}.setText("&d%{_time}% s")
+		remove 1 from {_time}
+		wait 1 second
+	{_holo}.delete()
+	if {UHC::Timebomb::%victim%::cancel} is true:
+		delete {UHC::Timebomb::%victim%::cancel}
+	else:
+		delete {UHC::Timebomb::%victim%}
+		set block at {_templocation::%victim%} to air
+		set block 1 meter north of {_templocation::%victim%} to air
+		wait 1 tick
+		create an explosion of force 12 at {_templocation::%victim%}
+
+#BOWLESS SHIT
+on shoot:
+	if shooter is a player:
+		if shooter's world is "UHC":
+			if {Scenarios::Bowless} is true:
+				if projectile is arrow:
+					cancel event
+					remove bow from shooter
+					message "{@P} &cScenario is currently bowless" to shooter
+ 
+on craft of bow:
+	if {Scenarios::Bowless} is true:
+		cancel the event
+		message "{@P} &cScenario is currently bowless"
+
+#FIRELESS STUFF
+on damage:
+	if victim's world is "UHC":
+		if {Scenarios::Fireless} is true:
+			if victim is a player:
+				damage is caused by burning or lava or fire
+				cancel event
+				
+#NOCLEAN STUFF				
+on death:
+	{Scenarios::NoClean} is true
+	{UHC::Status} is true
+	victim and attacker is a player
+	{UHC::AlivePlayers::%attacker%} and {UHC::AlivePlayers::%victim%} is true
+	set {UHC::NoClean::%attacker%} to true
+	message "{@P} &dYou are currently immune for 30 seconds unless you hit someone" to attacker
+	set {UHC::NoClean::%attacker%::Timer} to 30
+	Scoreboard(attacker)
+	loop 30 times:
+		wait 1 second
+		remove 1 from {UHC::NoClean::%attacker%::Timer}
+		updateImmunity(attacker)
+	if {UHC::NoClean::%attacker%} is not set:
+		stop
+	else:
+		delete {UHC::NoClean::%attacker%}
+		message "{@P} &dYour immunity has expired" to attacker
+		Scoreboard(attacker)
+				
+on damage:
+	{Scenarios::NoClean} is true
+	{UHC::Status} is true
+	victim and attacker is a player
+	{UHC::AlivePlayers::%attacker%} and {UHC::AlivePlayers::%victim%} is true
+	if damage cause is projectile:
+		"%projectile.getType()%" is "FISHING_HOOK"
+		stop
+	if {UHC::NoClean::%attacker%} is true:
+		delete {UHC::NoClean::%attacker%}
+		message "{@P} &dYour immunity has expired" to attacker
+		Scoreboard(attacker)
+	if {UHC::NoClean::%victim%} is true:
+		cancel event
+		message "{@P} &dTarget is currently immune" to attacker
+
+#CUTCLEAN AND DO,TO STUFF
+on mine of iron ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::CutClean} is true
+	cancel event
+	set event-block to air
+	damage player's tool by 1
+	ironDrop(player, event-block, true)
+ 
+on mine of gold ore:
+	{UHC::AlivePlayers::%player%} is true
+	{Scenarios::CutClean} is true
+	cancel event
+	set event-block to air
+	damage player's tool by 1
+	goldDrop(player, event-block, true)
+		
+on mine of diamond ore:
+	{UHC::AlivePlayers::%player%} is true
+	cancel the event
+	set event-block to air
+	damage player's tool by 1
+	diamondDrop(player, event-block, true)
+
+on mine of gravel:
+	{UHC::AlivePlayers::%player%} is true
+	cancel the event
+	set event-block to air
+	if player's tool is shovel:
+		damage player's tool by 1
+	drop 1 flint at event-block
+ 
+on death of a pig:
+	drop 1 xp at the pig
+	clear drops
+	if {Scenarios::CutClean} is true:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 cooked porkchop at the pig
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 cooked porkchop at the pig
+			stop
+		else:
+			drop 1 cooked porkchop at the pig
+			stop
+	if {Scenarios::CutClean} is false:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 raw porkchop at the pig
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 raw porkchop at the pig
+			stop
+		else:
+			drop 1 raw porkchop at the pig
+			stop
+ 
+on death of a cow:
+	drop 1 xp at the cow
+	clear drops
+	if {Scenarios::CutClean} is true:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 steak at the cow
+			drop 2 leather at the cow
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 steak at the cow
+			drop 3 leather at the cow
+			stop
+		else:
+			drop 1 steak at the cow
+			drop 1 leather at the cow
+			stop
+	if {Scenarios::CutClean} is false:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 raw beef at the cow
+			drop 2 leather at the cow
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 raw beef at the cow
+			drop 3 leather at the cow
+			stop
+		else:
+			drop 1 raw beef at the cow
+			drop 1 leather at the cow
+			stop
+ 
+on death of a sheep:
+	drop 1 white wool at the sheep
+	drop 1 xp at the sheep
+	clear drops
+	if {Scenarios::CutClean} is true:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 cooked beef at the sheep
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 cooked beef at the sheep
+			stop
+		else:
+			drop 1 cooked beef at the sheep
+			stop
+	if {Scenarios::CutClean} is false:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 raw beef at the sheep
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 raw beef at the sheep
+			stop
+		else:
+			drop 1 raw beef at the sheep
+			stop
+ 
+on death of a chicken:
+	drop 1 xp at the chicken
+	clear drops
+	if {Scenarios::CutClean} is true:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 cooked chicken at the chicken
+			drop 2 feathers at the chicken
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 cooked chicken at the chicken
+			drop 3 feathers at the chicken
+			stop
+		else:
+			drop 1 cooked chicken at the chicken
+			drop 1 feathers at the chicken
+			stop
+	if {Scenarios::CutClean} is false:
+		if {Scenarios::DoubleOres} is true:
+			drop 2 raw chicken at the chicken
+			drop 2 feathers at the chicken
+			stop
+		if {Scenarios::TripleOres} is true:
+			drop 3 raw chicken at the chicken
+			drop 3 feathers at the chicken
+			stop
+		else:
+			drop 1 raw chicken at the chicken
+			drop 1 feathers at the chicken
+			stop
+ 
+on death of a spider:
+	if {Scenarios::DoubleOres} is true:
+		drop 2 string at the spider
+		stop
+	if {Scenarios::TripleOres} is true:
+		drop 3 string at the spider
+		stop
+	else:
+		drop 1 string at the spider
+		stop
+	drop 1 xp at the spider
+
+#TIMBER
+on break:
+	{UHC::AlivePlayers::%player%} is true
+	if {Scenarios::Timber} is true:
+		event-block is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood
+		loop blocks upwards:
+			if loop-block is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood:
+				drop the loop-block-1 at event-block
+				set the loop-block to air
+				loop blocks in radius 2 around loop-block:
+					if loop-block-2 is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood:
+						drop the loop-block-2 at event-block
+						set the loop-block-2 to air
+		loop blocks below:
+			if loop-block is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood:
+				drop the loop-block-1 at event-block
+				set the loop-block to air
+				loop blocks in radius 2 around loop-block:
+					if loop-block-2 is oak wood or birch wood or spruce wood or jungle wood or acacia wood or dark oak wood:
+						drop the loop-block-2 at event-block
+						set the loop-block-2 to air

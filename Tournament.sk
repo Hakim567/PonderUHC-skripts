@@ -1,0 +1,537 @@
+#Point 1 is always the lower point
+
+options:
+	P: &d&lPonderUHC &6»
+	SpawnPointArena1: location(-339.5, 219.5, -245.5, world("Tournament"))
+	SpawnPointArena2: location(-339.5, 219.5, -211.5, world("Tournament"))
+	Arena1Point1: location(-356.5, 218.5, -245.5, world("Tournament"))
+	Arena1Point2: location(-321.5, 227.5, -211.5, world("Tournament"))
+	SpawnPointArena3: location(-339.5, 219.5, -208.5, world("Tournament"))
+	SpawnPointArena4: location(-339.5, 219.5, -174.5, world("Tournament"))
+	Arena2Point1: location(-356.5, 218.5, -208.5, world("Tournament"))
+	Arena2Point2: location(-321.5, 227.5, -174.5, world("Tournament"))
+	SpawnPointArena5: location(-376.5, 219.5, -245.5, world("Tournament"))
+	SpawnPointArena6: location(-376.5, 219.5, -211.5, world("Tournament"))
+	Arena3Point1: location(-393.5, 218.5, -245.5, world("Tournament"))
+	Arena3Point2: location(-358.5, 227.5, -211.5, world("Tournament"))
+	SpawnPointArena7: location(-376.5, 219.5, -208.5, world("Tournament"))
+	SpawnPointArena8: location(-376.5, 219.5, -174.5, world("Tournament"))
+	Arena4Point1: location(-393.5, 218.5, -208.5, world("Tournament"))
+	Arena4Point2: location(-358.5, 227.5, -174.5, world("Tournament"))
+	SpawnPointSpec: location(-340.47, 231, -229.3, world("Tournament"))
+
+on skript load:
+	delete {Tournaments::*}
+
+function clearArena(A: number):
+	if {_A} is 1:
+		loop blocks within {@Arena1Point1} and {@Arena1Point2}:
+			if loop-block is water or lava or obsidian or cobblestone or wooden plank or fire:
+				set loop-block to air
+			wait 0.2 ticks
+	if {_A} is 2:
+		loop blocks within {@Arena2Point1} and {@Arena2Point2}:
+			if loop-block is water or lava or obsidian or cobblestone or wooden plank or fire:
+				set loop-block to air
+			wait 0.2 ticks
+	if {_A} is 3:
+		loop blocks within {@Arena3Point1} and {@Arena3Point2}:
+			if loop-block is water or lava or obsidian or cobblestone or wooden plank or fire:
+				set loop-block to air
+			wait 0.2 ticks
+	if {_A} is 4:
+		loop blocks within {@Arena4Point1} and {@Arena4Point2}:
+			if loop-block is water or lava or obsidian or cobblestone or wooden plank or fire:
+				set loop-block to air
+			wait 0.2 ticks
+
+function getArenaByPlayer(P: player) :: number:
+	if {Tournaments::CurrentFight::1} or {Tournaments::CurrentFight::2} is {_P}:
+		return 1
+	else if {Tournaments::CurrentFight::3} or {Tournaments::CurrentFight::4} is {_P}:
+		return 2
+	else if {Tournaments::CurrentFight::5} or {Tournaments::CurrentFight::6} is {_P}:
+		return 3
+	else if {Tournaments::CurrentFight::7} or {Tournaments::CurrentFight::8} is {_P}:
+		return 4
+	else:
+		return 0
+
+function ifArenaPlayer(P: player) :: boolean:
+	if {Tournaments::CurrentFight::1} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::2} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::3} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::4} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::5} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::6} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::7} is {_P}:
+		return true
+	else if {Tournaments::CurrentFight::8} is {_P}:
+		return true
+	else:
+		return false
+
+function SpawnFreezeTournament(p: player):
+	spawn 1 pig at {_p}'s location
+	apply invisibility 2 to the last spawned entity for 999 days
+	set {Tournaments::SpawnEntity::%{_p}%} to last spawned entity
+	Apply potion of slowness 500 to {Tournaments::SpawnEntity::%{_p}%} for a day
+	while {Tournaments::SpawnEntity::%{_p}%} is alive:
+		if {_p}'s vehicle isn't set:
+			make {_p} ride {Tournaments::SpawnEntity::%{_p}%}
+		wait 10 ticks
+
+function giveKit(P: player):
+	if {Tournaments::Kit} is "Default":
+		set {_P}'s helmet slot to diamond helmet of protection 2
+		set {_P}'s chestplate slot to diamond chestplate of protection 2
+		set {_P}'s leggings slot to diamond leggings of protection 2
+		set {_P}'s boots slot to diamond boots of projectile protection 2
+		set slot 0 of {_P} to diamond sword of sharpness 3
+		set slot 1 of {_P} to fishing rod
+		set slot 2 of {_P} to bow of power 2
+		set slot 3 of {_P} to 2 golden apple
+		set slot 4 of {_P} to 1 golden apple named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit"
+		set slot 17 of {_P} to 16 arrow
+	else if {Tournaments::Kit} is "Soup":
+		set {_P}'s helmet slot to iron helmet
+		set {_P}'s chestplate slot to iron chestplate
+		set {_P}'s leggings slot to iron leggings
+		set {_P}'s boots slot to iron boots
+		set slot 0 of {_P} to diamond sword
+		loop numbers from 8 to 10:
+			set slot loop-number of {_P} to potion:8226
+		loop numbers from 1 to 35:
+			loop-number is not 8, 9 or 10
+			set slot loop-number of {_P} to soup
+	else if {Tournaments::Kit} is "BuildUHC":
+		set {_P}'s helmet slot to diamond helmet of protection 2
+		set {_P}'s chestplate slot to diamond chestplate of protection 2
+		set {_P}'s leggings slot to diamond leggings of protection 2
+		set {_P}'s boots slot to diamond boots of protection 2
+		set slot 0 of {_P} to diamond sword of sharpness 3
+		set slot 1 of {_P} to fishing rod
+		set slot 2 of {_P} to bow of power 2
+		set slot 3 of {_P} to 6 of golden apple:0
+		set slot 4 of {_P} to 3 of golden apple:0 named "&5Golden Head" with lore "The head of a fallen foe||Strengthens the warrior spirit"
+		set slot 5 of {_P} to water bucket
+		set slot 6 of {_P} to water bucket
+		set slot 7 of {_P} to lava bucket
+		set slot 8 of {_P} to lava bucket
+		set slot 9 of {_P} to 64 of oak plank
+		set slot 10 of {_P} to 64 of cobblestone
+		set slot 11 of {_P} to diamond axe
+		set slot 12 of {_P} to diamond pickaxe
+		set slot 17 of {_P} to 30 of arrow
+	else if {Tournaments::Kit} is "Archer":
+		set {_P}'s helmet slot to leather helmet
+		set {_P}'s chestplate slot to leather chestplate
+		set {_P}'s leggings slot to leather leggings
+		set {_P}'s boots slot to leather boots
+		set slot 0 of {_P} to bow of infinity 1
+		set slot 1 of {_P} to 16 of golden apple:0
+		set slot 9 of {_P} to arrow
+	else if {Tournaments::Kit} is "MCSG":
+		set {_P}'s helmet slot to iron helmet
+		set {_P}'s chestplate slot to gold chestplate
+		set {_P}'s leggings slot to chain leggings
+		set {_P}'s boots slot to leather boots
+		set slot 0 of {_P} to stone sword
+		set slot 1 of {_P} to fishing rod
+		set slot 2 of {_P} to bow
+		set slot 3 of {_P} to flint and steel:62
+		set slot 4 of {_P} to 1 of golden apple:0
+		set slot 17 of {_P} to 8 of arrow
+
+function startDuel(P1: player, P2: player, A: number):
+	{Tournaments::Status} is true
+	if {_A} is 1:
+		set {Tournaments::CurrentFight::1} to {_P1}
+		set {Tournaments::CurrentFight::2} to {_P2}
+	else if {_A} is 2:
+		set {Tournaments::CurrentFight::3} to {_P1}
+		set {Tournaments::CurrentFight::4} to {_P2}
+	else if {_A} is 3:
+		set {Tournaments::CurrentFight::5} to {_P1}
+		set {Tournaments::CurrentFight::6} to {_P2}
+	else if {_A} is 4:
+		set {Tournaments::CurrentFight::7} to {_P1}
+		set {Tournaments::CurrentFight::8} to {_P2}
+	wait 2 seconds
+	broadcast "{@P} Currently fighting %{_P1}% vs %{_P2}% in arena %{_A}%"
+	execute console command "/playsoundall note.pling"
+	if size of {Tournaments::AlivePlayers::*} is 2:
+		broadcast "{@P} &cFinal fight!"
+	ClearAllEffects({_P1})
+	if {_A} is 1:
+		teleport {_P1} to {@SpawnPointArena1}
+	else if {_A} is 2:
+		teleport {_P1} to {@SpawnPointArena3}
+	else if {_A} is 3:
+		teleport {_P1} to {@SpawnPointArena5}
+	else if {_A} is 4:
+		teleport {_P1} to {@SpawnPointArena7}
+	SpawnFreezeTournament({_P1})
+	giveKit({_P1})
+	ClearAllEffects({_P2})
+	if {_A} is 1:
+		teleport {_P2} to {@SpawnPointArena2}
+	else if {_A} is 2:
+		teleport {_P2} to {@SpawnPointArena4}
+	else if {_A} is 3:
+		teleport {_P2} to {@SpawnPointArena6}
+	else if {_A} is 4:
+		teleport {_P2} to {@SpawnPointArena8}
+	SpawnFreezeTournament({_P2})
+	giveKit({_P2})
+	if {Tournaments::Kit} is "BuildUHC":
+		send "{@P} Both of you now have 7 seconds to set up your kit!" to {_P1}
+		send "{@P} Both of you now have 7 seconds to set up your kit!" to {_P2}
+		play sound "note_pling" to {_P1} with volume 1 and pitch 5
+		wait 7 seconds
+	if {Tournaments::Kit} is "MCSG":
+		send "{@P} Both of you now have 4 seconds to set up your kit!" to {_P1}
+		send "{@P} Both of you now have 4 seconds to set up your kit!" to {_P2}
+		play sound "note_pling" to {_P1} with volume 1 and pitch 5
+		wait 4 seconds
+	send "{@P} Fight in 3!" to {_P1}
+	send "{@P} Fight in 3!" to {_P2}
+	play sound "note_pling" to {_P1} with volume 1 and pitch 5
+	play sound "note_pling" to {_P2} with volume 1 and pitch 5
+	wait 1 second
+	send "{@P} Fight in 2!" to {_P1}
+	send "{@P} Fight in 2!" to {_P2}
+	play sound "note_pling" to {_P1} with volume 1 and pitch 5
+	play sound "note_pling" to {_P2} with volume 1 and pitch 5
+	wait 1 second
+	send "{@P} Fight in 1!" to {_P1}
+	send "{@P} Fight in 1!" to {_P2}
+	play sound "note_pling" to {_P1} with volume 1 and pitch 5
+	play sound "note_pling" to {_P2} with volume 1 and pitch 5
+	wait 1 second
+	delete random entity out of {Tournaments::SpawnEntity::%{_P1}%}
+	delete random entity out of {Tournaments::SpawnEntity::%{_P2}%}
+	delete {Tournaments::SpawnEntity::%{_P1}%}
+	delete {Tournaments::SpawnEntity::%{_P2}%}
+
+function startNewRound(A: number):
+	{Tournaments::Status} is true
+	clearArena({_A})
+	wait 10 ticks
+	if size of {Tournaments::AlivePlayers::*} <= 1:
+		loop {Tournaments::AlivePlayers::*}:
+			execute console command "/winner %loop-index%"
+			broadcast "{@P} &aCongrats to %loop-index% for winning the tournament in the %{Tournaments::Brackets}% bracket!"
+			wait 10 second
+			execute console command "/tournament stop"
+			stop loop
+		stop
+	if {Tournaments::Brackets%{Tournaments::Brackets}%::*} is not set:
+		add 1 to {Tournaments::Brackets}
+		loop {Tournaments::AlivePlayers::*}:
+			set {Tournaments::Brackets%{Tournaments::Brackets}%::%loop-index%} to true
+			add "%Loop-index%" to {_list::*}
+		broadcast "{@P} &dNext bracket starting in 10 seconds"
+		broadcast "{@P} &dPlayers alive &7- &d%{_list::*}%"
+		wait 10 seconds
+		broadcast "{@P} &dBracket %{Tournaments::Brackets}% is now starting"
+		execute console command "/playsoundall note.pling"
+		wait 2 seconds
+		startNewRound(1)
+		wait 2 seconds
+		startNewRound(2)
+		wait 2 seconds
+		startNewRound(3)
+		wait 2 seconds
+		startNewRound(4)
+		stop
+	delete {_list::*}
+	loop {Tournaments::Brackets%{Tournaments::Brackets}%::*}:
+		if ifArenaPlayer("%loop-index%" parsed as player) is true:
+			delete {_cancel}
+		else:
+			set {_list::%loop-index%} to true
+	if size of {_list::*} <= 0:
+		stop
+	loop 2 times:
+		set {_N1} to a random integer between 1 and size of {_list::*}
+		set {_N2} to 0
+		loop {_list::*}:
+			add 1 to {_N2}
+			{_N1} is {_N2}
+			if {_P1} is not set:
+				set {_P1} to "%loop-index%" parsed as offline player
+				delete {_list::%{_P1}%}
+			else:
+				set {_P2} to "%loop-index%" parsed as offline player
+				delete {_list::%{_P2}%}
+	if {_P1} is not online:
+		delete {Tournaments::AlivePlayers::%{_P1}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{_P1}%}
+		set {Tournaments::DeathByOffline::%{_P1}%} to true
+		broadcast "{@P} &c%{_P1}% was not online for the fight thus killed"
+		execute console command "/playsoundall note.pling"
+		wait 2 seconds
+		startNewRound({_A})
+	else if {_P2} is not online:
+		delete {Tournaments::AlivePlayers::%{_P2}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{_P2}%}
+		set {Tournaments::DeathByOffline::%{_P2}%} to true
+		broadcast "{@P} &c%{_P2}% was not online for the fight thus killed"
+		execute console command "/playsoundall note.pling"
+		wait 2 seconds
+		startNewRound({_A})
+	else if {_P2} is not set:
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{_P1}%}
+		broadcast "{@P} &d%{_P1}% had no opponent thus advances to the next bracket"
+		execute console command "/playsoundall note.pling"
+		wait 2 seconds
+		startNewRound({_A})
+	else if {_P1}.getHandle().ping! > 450:
+		delete {Tournaments::AlivePlayers::%{_P1}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{_P1}%}
+		broadcast "{@P} &d%{_P1}%'s ping is above 450ms therefore he is not allowed to play"
+		execute console command "/playsoundall note.pling"
+		execute console command "/wl remove %{_P1}%"
+		message "{@P} &cYou have more than 450 ms you are not allowed to play this tournament" to {_P1}
+		wait 3 seconds
+		kick {_P1} due to "{@P}%nl%&cExcessive ping %{_P1}.getHandle().ping!%&cms"
+		startNewRound({_A})
+	else if {_P2}.getHandle().ping! > 450:
+		delete {Tournaments::AlivePlayers::%{_P2}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{_P2}%}
+		broadcast "{@P} &d%{_P2}%'s ping is above 450ms therefore he is not allowed to play"
+		execute console command "/playsoundall note.pling"
+		execute console command "/wl remove %{_P2}%"
+		message "{@P} &cYou have more than 450 ms you are not allowed to play this tournament" to {_P2}
+		wait 3 seconds
+		kick {_P2} due to "{@P}%nl%&cExcessive ping %{_P2}.getHandle().ping!%&cms"
+		startNewRound({_A})
+	else:
+		startDuel({_P1}, {_P2}, {_A})
+
+function duelerDeath(P: player, A: object = 1):
+	if {Tournaments::CurrentFight::1} or {Tournaments::CurrentFight::2} is {_P}:
+		if {_A} != 1:
+			if {Tournaments::CurrentFight::1} is {_P}:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::2}%"
+			else:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::1}%"
+		delete {Tournaments::AlivePlayers::%{_P}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::1}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::2}%}
+		teleport {Tournaments::CurrentFight::1} to {@SpawnPointSpec}
+		teleport {Tournaments::CurrentFight::2} to {@SpawnPointSpec}
+		ClearAllEffects({Tournaments::CurrentFight::1})
+		ClearAllEffects({Tournaments::CurrentFight::2})
+		message "{@P} &dYou are now out of the tournament you may stay to spec or leave" to {_P}
+		delete {Tournaments::CurrentFight::1}
+		delete {Tournaments::CurrentFight::2}
+		startNewRound(1)
+	else if {Tournaments::CurrentFight::3} or {Tournaments::CurrentFight::4} is {_P}:
+		if {_A} != 1:
+			if {Tournaments::CurrentFight::3} is {_P}:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::4}%"
+			else:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::3}%"
+		delete {Tournaments::AlivePlayers::%{_P}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::3}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::4}%}
+		teleport {Tournaments::CurrentFight::3} to {@SpawnPointSpec}
+		teleport {Tournaments::CurrentFight::4} to {@SpawnPointSpec}
+		ClearAllEffects({Tournaments::CurrentFight::3})
+		ClearAllEffects({Tournaments::CurrentFight::4})
+		message "{@P} &dYou are now out of the tournament you may stay to spec or leave" to {_P}
+		delete {Tournaments::CurrentFight::3}
+		delete {Tournaments::CurrentFight::4}
+		startNewRound(2)
+	else if {Tournaments::CurrentFight::5} or {Tournaments::CurrentFight::6} is {_P}:
+		if {_A} != 1:
+			if {Tournaments::CurrentFight::5} is {_P}:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::6}%"
+			else:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::5}%"
+		delete {Tournaments::AlivePlayers::%{_P}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::5}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::6}%}
+		teleport {Tournaments::CurrentFight::5} to {@SpawnPointSpec}
+		teleport {Tournaments::CurrentFight::6} to {@SpawnPointSpec}
+		ClearAllEffects({Tournaments::CurrentFight::5})
+		ClearAllEffects({Tournaments::CurrentFight::6})
+		message "{@P} &dYou are now out of the tournament you may stay to spec or leave" to {_P}
+		delete {Tournaments::CurrentFight::5}
+		delete {Tournaments::CurrentFight::6}
+		startNewRound(3)
+	else if {Tournaments::CurrentFight::7} or {Tournaments::CurrentFight::8} is {_P}:
+		if {_A} != 1:
+			if {Tournaments::CurrentFight::7} is {_P}:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::8}%"
+			else:
+				broadcast "{@P} &d%{_P}% was slain by %{Tournaments::CurrentFight::7}%"
+		delete {Tournaments::AlivePlayers::%{_P}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::7}%}
+		delete {Tournaments::Brackets%{Tournaments::Brackets}%::%{Tournaments::CurrentFight::8}%}
+		teleport {Tournaments::CurrentFight::7} to {@SpawnPointSpec}
+		teleport {Tournaments::CurrentFight::8} to {@SpawnPointSpec}
+		ClearAllEffects({Tournaments::CurrentFight::7})
+		ClearAllEffects({Tournaments::CurrentFight::8})
+		message "{@P} &dYou are now out of the tournament you may stay to spec or leave" to {_P}
+		delete {Tournaments::CurrentFight::7}
+		delete {Tournaments::CurrentFight::8}
+		startNewRound(4)
+
+on join:
+	{Tournaments::Status} is true
+	if {Tournaments::DeathByOffline::%player%} is true:
+		message "{@P} You were up for a fight but you were offline thus killed"
+		delete {Tournaments::DeathByOffline::%player%}
+
+on hunger level change:
+	{Tournaments::Status} is true
+	cancel the event
+
+on damage:
+	{Tournaments::Status} is true
+	if ifArenaPlayer(attacker) is not true:
+		cancel the event
+
+on break:
+	{Tournaments::Status} is true
+	if ifArenaPlayer(player) is not true:
+		cancel the event
+	else:
+		if event-block is not water or lava or obsidian or cobblestone or wooden plank or fire:
+			cancel the event
+			message "{@P} &cYou can only break blocks placed!"
+
+on left click:
+	{Tournaments::Status} is true
+	clicked block is set
+	if clicked block is not water or lava or obsidian or cobblestone or wooden plank or fire:
+		cancel the event
+
+on quit:
+	{Tournaments::Status} is true
+	if ifArenaPlayer(player) is true:
+		duelerDeath(player)
+		broadcast "{@P} &c%player% logged out while fighting"
+
+on death of player:
+	{Tournaments::Status} is true
+	if ifArenaPlayer(victim) is true:
+		set death message to ""
+		cancel drops
+		duelerDeath(victim, "yes")
+		while victim is not alive:
+			wait 1 second
+		teleport victim to {@SpawnPointSpec}
+		ClearAllEffects(victim)
+
+command /tournaments [<text>] [<text>] [<text>]:
+	aliases: /tournament, /bracket, /brackets
+	trigger:
+		if arg-1 is "start":
+			if player has permission "staff.member":
+				if {Tournaments::Kit} is not set:
+					message "{@P} &cYou havent chosen a kit yet /tournaments kit"
+				else:
+					if {Tournaments::Status} is true:
+						message "{@P} &cTournament is already running! Use /tournament stop to stop the running tournament"
+					else:
+						broadcast "{@P} &dStarting the tournament!"
+						wait 1 second
+						set {Tournaments::Status} to true
+						set {Tournaments::Brackets} to 1
+						loop all players:
+							{UHC::Spectators::%loop-player%} is not set
+							if loop-player.getHandle().ping! > 450:
+								execute console command "/wl remove %loop-player%"
+								message "{@P} &cYou have more than 450 ms you are not allowed to play this tournament" to loop-player
+								wait 3 seconds
+								kick loop-player due to "{@P}%nl%&cExcessive ping %loop-player.getHandle().ping!%"
+								StaffMessage("%loop-player% was kicked and removed for having more than 450 ms", "Normal")
+							else:
+								set {Tournaments::AlivePlayers::%loop-player%} to true
+								set {Tournaments::Brackets%{Tournaments::Brackets}%::%loop-player%} to true
+						teleport all players to {@SpawnPointSpec}
+						wait 5 seconds
+						startNewRound(1)
+						wait 2 seconds
+						startNewRound(2)
+						wait 2 seconds
+						startNewRound(3)
+						wait 2 seconds
+						startNewRound(4)
+			else:
+				make player execute command "/tournaments info"
+		else if arg-1 is "stop":
+			broadcast "{@P} &dTournament has been stopped and cleared"
+			clearArena(1)
+			clearArena(2)
+			clearArena(3)
+			clearArena(4)
+			wait 10 ticks
+			delete {Tournaments::*}
+			loop all players:
+				execute console command "/mv tp %loop-player% Spawn"
+				ClearAllEffects(loop-player)
+		else if arg-1 is "kit" or "kits":
+			if player has permission "staff.member":
+				create a gui with virtual chest with 1 rows named "&dTournament - Kits":
+					make next gui with diamond sword named "&cDefault":
+						close player's inventory
+						broadcast "{@P} &d%player% has chosen &cDefault &das the tournament kit"
+						set {Tournaments::Kit} to "Default"
+					make next gui with soup named "&cSoup":
+						close player's inventory
+						broadcast "{@P} &d%player% has chosen &cSoup &das the tournament kit"
+						set {Tournaments::Kit} to "Soup"
+					make next gui with diamond pickaxe named "&cBuildUHC":
+						close player's inventory
+						broadcast "{@P} &d%player% has chosen &cBuildUHC &das the tournament kit"
+						set {Tournaments::Kit} to "BuildUHC"
+					make next gui with bow named "&cArcher":
+						close player's inventory
+						broadcast "{@P} &d%player% has chosen &cArcher &das the tournament kit"
+						set {Tournaments::Kit} to "Archer"
+					make next gui with flint and steel:62 named "&cMCSG":
+						close player's inventory
+						broadcast "{@P} &d%player% has chosen &cMCSG &das the tournament kit"
+						set {Tournaments::Kit} to "MCSG"
+				open last gui to player
+			else:
+				make player execute command "/tournaments info"
+		else:
+			if {Tournaments::Status} is not set:
+				message "{@P} You can only check tournament status once its started"
+			else:
+				loop {Tournaments::AlivePlayers::*}:
+					add ("%loop-index%" parsed as offline player) to {_list::*}
+					{Tournaments::Brackets%{Tournaments::Brackets}%::%loop-index%} is true
+					add ("%loop-index%" parsed as offline player) to {_list2::*}
+				message "{@P} &dBracket %{Tournaments::Brackets}%"
+				message "{@P} &dPlayers alive - &6%{_list::*}%"
+				message "{@P} &dPlayers in bracket - &a%{_list2::*}%"
+
+#SOUP
+on right click:
+	player's tool is soup
+	{Tournaments::Status} is true
+	{Tournaments::Kit} is "Soup"
+	set player's health to 10
+	wait 1 tick
+	set player's tool to bowl
+
+on drop:
+	{Tournaments::Status} is true
+	{Tournaments::AlivePlayers::%player%} is true
+	cancel event
+	if event-item is bowl or glass bottle:
+		wait 1 tick
+		remove event-item.getAmount() of event-item from player's inventory

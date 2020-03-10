@@ -1,0 +1,71 @@
+command /vote [<text>] [<text>]:
+	permission: staff.member
+	usage: /Vote create
+	trigger:
+		if arg-1 is not set:
+			message "&d&lPonderUHC &6» &d/Vote Create"
+			stop
+		if arg-1 is "yes":
+			if arg-2 is not set:
+				message "&d&lPonderUHC &6» &d/Vote yes [Message] (This will set the /yes)"
+			else:
+				set {Vote.Yes} to arg-2
+				message "&d&lPonderUHC &6» &d/yes has been set to %arg-2%"
+		if arg-1 is "no":
+			if arg-2 is not set:
+				message "&d&lPonderUHC &6» &d/Vote no [Message] (This will set the /no)"
+			else:
+				set {Vote.No} to arg-2
+				message "&d&lPonderUHC &6» &d/no has been set to %arg-2%"
+		if arg-1 is "create":
+			if {Vote.No} is not set:
+				message "&d&lPonderUHC &6» &dYou need to set /vote yes [Message] and /vote no [Message]"
+				stop
+			if {Vote.Yes} is not set:
+				message "&d&lPonderUHC &6» &dYou need to set /vote yes [Message] and /vote no [Message]"
+				stop
+			else:
+				delete {PlayerVoteYes}
+				delete {PlayerVoteNo}
+				delete {PlayerVoted::*}
+				broadcast "&d&lPonderUHC &6» &dVoting! &a/yes for %{Vote.Yes}% &c/no for %{Vote.No}%"
+				execute console command "/playsoundall note.pling"
+				set {CurrentVoteStatus} to true
+				wait 10 seconds
+				set {CurrentVoteStatus} to false
+				broadcast "&d&lPonderUHC &6» &dVoting finished &7- &a/yes %({PlayerVoteYes}-0)% votes &7- &c/no %({PlayerVoteNo}-0)% votes"
+				execute console command "/playsoundall note.pling"
+				delete {Vote.Yes}
+				delete {Vote.No}
+				delete {PlayerVoteYes}
+				delete {PlayerVoteNo}
+				delete {PlayerVoted::*}
+				
+command /yes:
+	trigger:
+		if {CurrentVoteStatus} is false:
+			message "&d&lPonderUHC &6» &dNo voting in progress"
+			stop
+		if {PlayerVoted::%player%} is true:
+			message "&d&lPonderUHC &6» &dYou already voted"
+			stop
+		set {PlayerVoted::%player%} to true
+		set {PlayerVoteYes} to ({PlayerVoteYes} + 1)
+		message "&d&lPonderUHC &6» &dYou voted for %{Vote.Yes}%!"
+
+command /no:
+	trigger:
+		if {CurrentVoteStatus} is false:
+			message "&d&lPonderUHC &6» &dNo voting in progress"
+			stop
+		if {PlayerVoted::%player%} is true:
+			message "&d&lPonderUHC &6» &dYou already voted"
+			stop
+		set {PlayerVoted::%player%} to true
+		set {PlayerVoteNo} to ({PlayerVoteNo} + 1)
+		message "&d&lPonderUHC &6» &dYou voted for %{Vote.No}%!"
+
+on chat:
+	if {CurrentVoteStatus} is true:
+		cancel the event
+		message "&d&lPonderUHC &6» &cYou cannot chat until the voting finishes"

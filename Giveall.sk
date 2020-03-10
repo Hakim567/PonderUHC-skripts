@@ -1,0 +1,15 @@
+command /giveall <item> [<integer>]:
+	usage: /giveall <item> [<amount>]
+	permission: staff.member
+	trigger:
+		if arg-2 is more than 1:
+			set {_amt} to arg-2
+		else:
+			set {_amt} to 1
+		loop {UHC::AlivePlayers::*}:
+			set {_P} to loop-index parsed as player
+			loop {_amt} times:
+				if {_P} has space for (1 of (arg-1)):
+					give {_P} (1 of (arg-1))
+				else:
+					drop (1 of (arg-1)) at (location 0.5 above {_P})

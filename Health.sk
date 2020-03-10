@@ -1,0 +1,10 @@
+on damage of player:
+	attacker is a player:
+		projectile is an arrow
+		wait 1 tick
+		message "&d&lPonderUHC &6» &d%victim% is now at %(health of victim)% ❤" to the attacker
+			
+command /h <player>:
+	aliases: /health
+	trigger:
+		message "&d&lPonderUHC &6» &d%arg% is on %health of arg% ❤"

@@ -1,0 +1,208 @@
+#LEADERBOARDS
+function updateLeaderboard(score: text):
+	execute unsafe "SELECT * FROM `player_stats` ORDER BY `player_stats`.`%{_score}%` DESC LIMIT 5;" in {sql} and store the result in {_output::*}
+	if the last database error is set:
+		broadcast "%last database error%"
+	loop 5 times:
+		set {_name} to offline player from uuid "%{_output::uuid::%loop-number%}%"
+		if {_name} is not set:
+			set {_UUID} to {_output::uuid::%loop-number%}
+			replace all "-" with "" in {_UUID}
+			send a "GET" request to "https://api.mojang.com/user/profiles/%{_UUID}%/names"
+			set {_s} to "%last http response%"
+			set {_s::*} to {_s} split at ","
+			set {_i} to (size of {_s::*} - 1)
+			set {_s} to {_s::%{_i}%}
+			replace all "]" with "" in {_s}
+			replace all "[" with "" in {_s}
+			replace all """" with "" in {_s}
+			set {_name} to "%subtext of {_s} from characters 7 to the length of {_s}%"	
+		set line 1 of {Leaderboards::%{_score}%::%loop-number%} to "&f&nTop ##%loop-number%"
+		set line 2 of {Leaderboards::%{_score}%::%loop-number%} to "%{_name}%"
+		set line 3 of {Leaderboards::%{_score}%::%loop-number%} to "&f%{_output::%{_score}%::%loop-number%}% %{_score}%"
+		set line 4 of {Leaderboards::%{_score}%::%loop-number%} to ""
+
+function addStats(UUID: text, score: text, amount: number):
+	execute "SELECT * FROM player_stats WHERE uuid = %{_UUID}%" in {sql} and store the result in {_output::*}
+	if the last database error is set:
+		discordLog("Stats-Database", "%{_score}% - %last database error% @Hakim | ModFromPlanetMC")
+	set {_output::%{_score}%::1} to ({_output::%{_score}%::1} + {_amount})
+	if {_output::playtime::1} is not set:
+		set {_output::playtime::1} to "0 seconds"
+	execute "REPLACE INTO player_stats (uuid, kills, deaths, highest_killstreak, health_regained, gapples_consumed, levels_gained, playtime, wins) VALUES (%{_UUID}%, %({_output::kills::1}-0)%, %({_output::deaths::1}-0)%, %({_output::highest_killstreak::1}-0)%, %({_output::health_regained::1}-0)%, %({_output::gapples_consumed::1}-0)%, %({_output::levels_gained::1}-0)%, %{_output::playtime::1}%, %({_output::wins::1}-0)%)" in {sql}
+	if the last database error is set:
+		discordLog("Stats-Database", "%{_score}% - %last database error% @Hakim | ModFromPlanetMC")
+
+function removeStats(UUID: text, score: text, amount: number):
+	execute "SELECT * FROM player_stats WHERE uuid = %{_UUID}%" in {sql} and store the result in {_output::*}
+	set {_output::%{_score}%::1} to ({_output::%{_score}%::1} - {_amount})
+	if {_output::playtime::1} is not set:
+		set {_output::playtime::1} to "0 seconds"
+	execute "REPLACE INTO player_stats (uuid, kills, deaths, highest_killstreak, health_regained, gapples_consumed, levels_gained, playtime, wins) VALUES (%{_UUID}%, %({_output::kills::1}-0)%, %({_output::deaths::1}-0)%, %({_output::highest_killstreak::1}-0)%, %({_output::health_regained::1}-0)%, %({_output::gapples_consumed::1}-0)%, %({_output::levels_gained::1}-0)%, %{_output::playtime::1}%, %({_output::wins::1}-0)%)" in {sql}
+	if the last database error is set:
+		discordLog("Stats-Database", "%{_score}% - %last database error% @Hakim | ModFromPlanetMC")
+
+on sign change:
+	false is true
+	line 1 is "Leaderboard"
+	set {Leaderboards::%line 2%::%line 3%} to event-block
+
+function roundedTimespan(timespan: timespan) :: string:
+	loop split "%{_timespan}%" at " ":
+		if loop-value parsed as a number is set:
+			add "%round(loop-value parsed as a number)%" to {_return::*}
+		else:
+			add loop-value to {_return::*}
+	return join {_return::*} with " "
+
+on skript load:
+	set {sql} to the database "mysql://88.99.81.186:3306/s515_litebans?user=u515_eyV5Ks1GKD&password=iSCoK5YZsvBFEvKm&useSSL=false"
+	updateLeaderboard("kills")
+	updateLeaderboard("wins")
+
+#Stats
+command /stats [<text>]:
+	aliases: /stat
+	trigger:
+		if arg-1 is not set:
+			set {_p} to player
+		else:
+			set {_p} to arg-1 parsed as offline player
+		open virtual chest inventory with size 1 named "&3%{_p}%'s stats" to player
+		set {_UUID} to {_p}'s UUID
+		execute "SELECT * FROM player_stats WHERE uuid = %{_UUID}%" in {sql} and store the result in {_output::*}
+		format a gui slot 0 of player with an iron sword named "&cKills &6» &7%{_output::kills::*}%" to do nothing
+		format a gui slot 1 of player with skeleton head named "&cDeaths &6» &7%{_output::deaths::*}%" to do nothing
+		format a gui slot 2 of player with a diamond sword named "&cHighest KillStreak &6» &7%{_output::highest_killstreak::*}%" to do nothing
+		format a gui slot 3 of player with potion:8261 named "&cHealth Regained &6» &7%{_output::health_regained::*}%" to do nothing
+		format a gui slot 4 of player with golden apple:0 named "&cGapples consumed &6» &7%{_output::gapples_consumed::*}%" to do nothing
+		format a gui slot 5 of player with xp bottle named "&cLevels Gained &6» &7%{_output::levels_gained::*}%" to do nothing
+		set {_time} to roundedTimespan("%{_output::playtime::*}%" parsed as timespan)
+		format a gui slot 7 of player with clock named "&bPlaytime &6» &7%{_time}%" to do nothing
+		format a gui slot 8 of player with nether star named "&bWins &6» &7%{_output::wins::*}%" to do nothing
+
+on guild message receive seen by "Matches":
+	"%server region%" is "EU"
+	delete {_m::*}
+	set {_m::*} to event-string split at " "
+	if {_m::1} is "!stat":
+		delete {_m::1}
+		set {_s} to "%{_m::*}%"
+		set {_p} to "%{_s}%" parsed as offline player
+		if {_p} is not set:
+			send a request to "https://api.mojang.com/users/profiles/minecraft/%{_s}%"
+			set {_s} to last http response
+			if "%{_s}%" does not contain "No Content":
+				set {_s} to "%response bodies of {_s}%"
+				set {_s::*} to {_s} split at ","
+				set {_s} to {_s::1}
+				replace all """" with "" in {_s}
+				set {_UUID} to "%subtext of {_s} from characters 5 to the length of {_s}%"
+				set {_UUID} to "%subtext of {_UUID} from characters 1 to 8%-%subtext of {_UUID} from characters 9 to 12%-%subtext of {_UUID} from characters 13 to 16%-%subtext of {_UUID} from characters 17 to 20%-%subtext of {_UUID} from characters 21 to length of {_UUID}%"
+		else:
+			set {_UUID} to {_p}'s UUID
+		if {_m::2} is not set:
+			reply with "!stat <player>"
+		else if {_UUID} is not set:
+			reply with "`%{_s}%` is not a valid player"
+		else:
+			execute "SELECT * FROM player_stats WHERE uuid = %{_UUID}%" in {sql} and store the result in {_output::*}
+			if {_output::uuid::1} is not set:
+				reply with "Player `%{_s}%` has never played on the server"
+			else:
+				clear embed "stats"
+				make embed "stats"
+				set title of embed "stats" to "%{_s}%'s stats"
+				set thumbnail of embed "stats" to "https://crafatar.com/avatars/%{_UUID}%"
+				set color of embed "stats" to "PINK"
+				add field "**Kills**", with value "%{_output::kills::*}%", split true to embed "stats"
+				add field "**Deaths**", with value "%{_output::deaths::*}%", split true to embed "stats"
+				add field "**Highest KillStreak**", with value "%{_output::highest_killstreak::*}%", split true to embed "stats"
+				add field "**Health Regained**", with value "%{_output::health_regained::*}%", split true to embed "stats"
+				add field "**Gapples Consumed**", with value "%{_output::gapples_consumed::*}%", split true to embed "stats"
+				add field "**Levels Gained**", with value "%{_output::levels_gained::*}%", split true to embed "stats"
+				add field "**Playtime**", with value "%{_output::playtime::*}%", split true to embed "stats"
+				add field "**Wins**", with value "%{_output::wins::*}%", split true to embed "stats"
+				send embed "stats" to channel event-channel with "Matches"
+
+command /addkill <offline player>:
+	permission: staff.member
+	trigger:
+		execute "SELECT kills FROM player_stats WHERE uuid = %arg-1's UUID%" in {sql} and store the result in {_output::*}
+		addStats("%arg-1's UUID%", "kills", 1)
+		message "&d&lPonderUHC &6» &7Added 1 kill stat to %arg-1% &7[%({_output::kills::1} + 1)%]"
+		discordLog("Kills", "%player% added 1 kill stat to %arg-1% [%({_output::kills::1} + 1)%]")
+
+command /removekill <offline player>:
+	permission: staff.member
+	trigger:
+		execute "SELECT kills FROM player_stats WHERE uuid = %arg-1's UUID%" in {sql} and store the result in {_output::*}
+		removeStats("%arg-1's UUID%", "kills", 1)
+		message "&d&lPonderUHC &6» &7Removed 1 kill stat from %arg-1% &7[%({_output::kills::1} - 1)%]"
+		discordLog("Kills", "%player% removed 1 kill stat from %arg-1% [%({_output::kills::1} - 1)%]")
+
+command /winner <offline player>:
+	permission: staff.member
+	trigger:
+		execute "SELECT wins FROM player_stats WHERE uuid = %arg-1's UUID%" in {sql} and store the result in {_output::*}
+		addStats("%arg-1's UUID%", "wins", 1)
+		set {Winner::%arg-1%} to now
+		message "&d&lPonderUHC &6» &7Added 1 win to %arg-1% &7[%({_output::wins::1} + 1)%]"
+		discordLog("Wins", "%sender% added 1 win to %arg-1% [%({_output::wins::1} + 1)%]")
+
+command /removewinner <offline player>:
+	permission: staff.member
+	trigger:
+		execute "SELECT wins FROM player_stats WHERE uuid = %arg-1's UUID%" in {sql} and store the result in {_output::*}
+		removeStats("%arg-1's UUID%", "wins", 1)
+		message "&d&lPonderUHC &6» &7Removed 1 win from %arg-1% &7[%({_output::wins::1} - 1)%]"
+		discordLog("Wins", "%sender% removed 1 win from %arg-1% [%({_output::wins::1} - 1)%]")
+
+on join:
+	if difference between {Winner::%player%} and now is more than 7 days:
+		delete {Winner::%player%}
+
+on join:
+	wait 1 minute
+	while player is online:
+		execute "SELECT * FROM player_stats WHERE uuid = %player's uuid%" in {sql} and store the result in {_output::*}
+		set {_time} to "%{_output::playtime::1}%" parsed as timespan
+		add 1 minute to {_time}
+		set {_time} to "%{_time}%"
+		execute "REPLACE INTO player_stats (uuid, kills, deaths, highest_killstreak, health_regained, gapples_consumed, levels_gained, playtime, wins) VALUES (%player's uuid%, %({_output::kills::1}-0)%, %({_output::deaths::1}-0)%, %({_output::highest_killstreak::1}-0)%, %({_output::health_regained::1}-0)%, %({_output::gapples_consumed::1}-0)%, %({_output::levels_gained::1}-0)%, %{_time}%, %({_output::wins::1}-0)%)" in {sql}
+		if last database error is set:
+			discordLog("Stats-Database", "playtime - %last database error% @Hakim | ModFromPlanetMC")
+		wait 1 minute
+
+on death of a player:
+	{UHC::Status}
+	{UHC::AlivePlayers::%victim%} is true
+	victim != attacker
+	attacker and victim is a player
+	addStats("%victim's UUID%", "deaths", 1)
+
+on death of a player:
+	{UHC::Status} is true
+	{UHC::AlivePlayers::%victim%} and {UHC::AlivePlayers::%attacker%} is true
+	victim != attacker
+	addStats("%attacker's UUID%", "kills", 1)
+	add 1 to {UHC::%attacker%::KillStreak}
+	delete {UHC::%victim%::KillStreak}
+	execute "SELECT highest_killstreak FROM player_stats WHERE uuid = %attacker's UUID%" in {sql} and store the result in {_output::*}
+	if {UHC::%attacker%::KillStreak} > ({_output::highest_killstreak::1}-0):
+		addStats("%attacker's UUID%", "highest_killstreak", {UHC::%attacker%::KillStreak})
+
+on "org.bukkit.event.entity.EntityRegainHealthEvent":	
+	{UHC::Status} or {Tournaments::Status} is true
+	event.getEntity() is a player
+	addStats("%event.getEntity()'s UUID%", "health_regained", event.getAmount())
+
+on "org.bukkit.event.player.PlayerLevelChangeEvent":
+	{UHC::Status} or {Tournaments::Status} is true
+	event.getNewLevel() > event.getOldLevel()
+	addStats("%event.getPlayer()'s UUID%", "levels_gained", 1)
+
+on consume:
+	{UHC::Status} or {Tournaments::Status} is true
+	event-item is a golden apple:0
+	addStats("%event.getPlayer()'s UUID%", "gapples_consumed", 1)
